@@ -10,6 +10,7 @@ functies en tussenkopjes) en hoge resolutie afbeeldingen op te halen.
 import html
 import json
 import logging
+import os
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
@@ -197,6 +198,74 @@ def fetch_full_article(link: str, fallback_desc: str) -> tuple[str, list[str], s
     return clean_desc, paragraphs, None
 
 
+# Tussenkopjes en retorische vragen die geen informatieve meerwaarde bieden op digital signage
+SKIP_SUBHEADINGS = [
+    r"^wat betekent dit voor jou\??$",
+    r"^wat houdt dit in\??$",
+    r"^waarom is dit belangrijk\??$",
+    r"^handig om te weten:?$",
+    r"^goed om te weten:?$",
+    r"^belangrijke informatie:?$",
+    r"^belangrijk:?$",
+    r"^let op:?$",
+]
+
+# Beleefdheidsafsluiters en formaliteiten die scanbaarheid in 10 seconden in de weg staan
+BOILERPLATE_PATTERNS = [
+    r"bedankt voor (de|uw|jullie) (medewerking|inzet|hulp)[!.]?",
+    r"alvast (hartelijk )?bedankt[!.]?",
+    r"met (sportieve|vriendelijke) groet(en)?[a-z\s,]*",
+    r"succes (allemaal|iedereen)[!.]?",
+    r"veel succes met je dienst[!.]?",
+    r"fijn weekend[!.]?",
+    r"tot (dan|snel|zaterdag|zondag)[!.]?",
+    r"namens het bestuur[a-z\s,]*"
+]
+
+
+def filter_and_compact_article(paragraphs: list[str]) -> list[str]:
+    """
+    Slimme filter in Python (zonder AI) die nieuwsberichten automatisch compact en scanbaar maakt:
+    1. Tussenkopjes zoals 'Wat betekent dit voor jou?' overslaan.
+    2. Opsommingen / actiepunten beperken tot maximaal de 3 belangrijkste punten.
+    3. Beleefdheidsafsluiters zoals 'Bedankt voor de medewerking!' weglaten.
+    """
+    cleaned = []
+
+    for p in paragraphs:
+        p_str = p.strip()
+        if not p_str:
+            continue
+
+        # 1. Tussenkopjes zoals 'Wat betekent dit voor jou?' overslaan
+        is_subheading = any(re.match(pat, p_str.lower().strip()) for pat in SKIP_SUBHEADINGS)
+        if is_subheading:
+            continue
+
+        # 2. Opsommingen beperken tot maximaal de 3 belangrijkste actiepunten
+        if "•" in p_str:
+            lines = [l.strip() for l in p_str.split("\n") if l.strip()]
+            bullets = [l for l in lines if l.startswith("•")]
+            if bullets:
+                bullets = bullets[:3]  # Maximaal 3 punten
+                cleaned.append("\n".join(bullets))
+                continue
+
+        # 3. Beleefdheidsafsluiters weglaten uit de lopende tekst
+        cleaned_p = p_str
+        for pat in BOILERPLATE_PATTERNS:
+            cleaned_p = re.sub(pat, "", cleaned_p, flags=re.IGNORECASE).strip()
+
+        # Opschonen van leestekens en overtollige spaties (bijv. 'openen van de zaal .' -> 'openen van de zaal.')
+        cleaned_p = re.sub(r"\s{2,}", " ", cleaned_p)
+        cleaned_p = re.sub(r"\s+([.,!?])", r"\1", cleaned_p).strip()
+
+        if cleaned_p:
+            cleaned.append(cleaned_p)
+
+    return cleaned
+
+
 def update_nieuws():
     logging.info("Starten met ophalen van nieuwsberichten...")
 
@@ -247,8 +316,12 @@ def update_nieuws():
                 rss_image_url = url
 
         # 4. Open het nieuwsbericht op de website voor de volledige inhoud
-        full_text, paragraphs, article_image_url = fetch_full_article(link, desc_raw)
+        raw_full_text, raw_paragraphs, article_image_url = fetch_full_article(link, desc_raw)
         final_image = article_image_url or rss_image_url
+
+        # 5. Pas de slimme filter toe (zonder AI)
+        compact_paragraphs = filter_and_compact_article(raw_paragraphs)
+        full_text = "\n\n".join(compact_paragraphs)
 
         is_flyer = False
         if final_image and ("afbeelding_" in final_image or "poster" in final_image.lower()):
@@ -260,7 +333,7 @@ def update_nieuws():
                 "datum": formatted_date,
                 "iso_datum": dt.isoformat() if dt else "",
                 "tekst": full_text,
-                "paragrafen": paragraphs,
+                "paragrafen": compact_paragraphs,
                 "link": link,
                 "afbeelding": final_image,
                 "is_flyer": is_flyer

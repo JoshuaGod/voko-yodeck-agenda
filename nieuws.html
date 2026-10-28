@@ -45,18 +45,17 @@
             <h2 class="news-slide-title">Openen van de zaal op de thuisspeeldagen</h2>
             <div class="news-slide-body">
               <p>Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.</p>
-              <p style="font-weight: 700; color: #17263c;">Wat betekent dit voor jou?</p>
-              <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px; font-weight: 500; color: #1e293b;">
-                <li>• <strong>Controleer Clubtaken:</strong> Weet vooraf wanneer je de eerste dienst hebt.</li>
-                <li>• <strong>Regel de sleutel tijdig:</strong> Zorg dat je weet waar je de sleutel ophaalt.</li>
-                <li>• <strong>Wees op tijd:</strong> Zaal open vóórdat tegenstanders arriveren.</li>
+              <ul>
+                <li>• <strong>Controleer Clubtaken voor het rooster:</strong> Weet vooraf wanneer je de eerste dienst hebt.</li>
+                <li>• <strong>Regel de sleutel van te voren:</strong> Zorg dat je tijdig weet waar je de sleutel ophaalt en hoe je binnen komt.</li>
+                <li>• <strong>Wees op tijd:</strong> Zorg dat de zaal open is voordat de tegenstander arriveert.</li>
               </ul>
-              <p style="font-size: 24px; color: #64748b; margin-top: 6px;">Zorg dat de thuisspeeldag vlekkeloos start en niemand voor een dichte deur staat!</p>
+              <p style="color: #64748b;">Zorg dat de thuisspeeldag vlekkeloos start en laat niemand voor een gesloten deur staan.</p>
             </div>
           </div>
           <div class="news-slide-media">
             <div class="news-slide-media-card">
-              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg" alt="VOKO Nieuws" class="news-slide-img">
+              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/image_20261028160857347.png" alt="VOKO Nieuws" class="news-slide-img">
             </div>
           </div>
         </article>
@@ -295,11 +294,27 @@
         stage.appendChild(slide);
       });
 
+      fitSlideText();
       currentSlideIndex = 0;
       showSlide(0);
       restartRotation();
     }
 
+    function fitSlideText() {
+      document.querySelectorAll('.news-slide').forEach(slide => {
+        const bodyEl = slide.querySelector('.news-slide-body');
+        if (!bodyEl) return;
+        let size = 26;
+        bodyEl.style.fontSize = `${size}px`;
+        while (bodyEl.scrollHeight > bodyEl.clientHeight && size > 18) {
+          size -= 1;
+          bodyEl.style.fontSize = `${size}px`;
+        }
+      });
+    }
+
+    window.addEventListener('resize', fitSlideText);
+    fitSlideText();
     restartRotation();
     fetchNieuws();
     setInterval(fetchNieuws, 15 * 60 * 1000);
