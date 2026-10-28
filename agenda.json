@@ -1,0 +1,36 @@
+{
+  "updated_at": "2026-10-28T12:37:17.833173",
+  "total_upcoming": 10,
+  "items": [
+    {
+      "datum": "2 december",
+      "titel": "Pietentraining - Volleystars",
+      "iso_datum": "2026-12-02"
+    },
+    {
+      "datum": "30 december",
+      "titel": "Oliebollen Toernooi",
+      "iso_datum": "2026-12-30"
+    },
+    {
+      "datum": "22 januari",
+      "titel": "Pubquiz",
+      "iso_datum": "2027-01-22"
+    },
+    {
+      "datum": "27 februari",
+      "titel": "WinterBBQ",
+      "iso_datum": "2027-02-27"
+    },
+    {
+      "datum": "21 maart",
+      "titel": "Ouder-Kind Toernooi - Familie",
+      "iso_datum": "2027-03-21"
+    },
+    {
+      "datum": "10 april",
+      "titel": "Eindfeest",
+      "iso_datum": "2027-04-10"
+    }
+  ]
+}
