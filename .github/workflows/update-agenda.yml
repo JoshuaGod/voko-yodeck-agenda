@@ -1,10 +1,10 @@
-name: Update VOKO Agenda Signage
+name: Update VOKO Narrowcasting (Agenda & Nieuws)
 
 on:
   schedule:
     # Draait elke 6 uur (om 00:00, 06:00, 12:00 en 18:00 UTC)
     - cron: '0 */6 * * *'
-  workflow_dispatch: # Maakt handmatig triggeren via GitHub UI mogelijk
+  workflow_dispatch: # Handmatig starten mogelijk via GitHub UI
 
 permissions:
   contents: write
@@ -25,13 +25,14 @@ jobs:
         run: |
           pip install requests beautifulsoup4
 
-      - name: Run agenda scraper
+      - name: Run scrapers (Agenda & Nieuws)
         run: |
           python update_agenda.py
+          if [ -f "update_nieuws.py" ]; then python update_nieuws.py; fi
 
       - name: Commit en push updates indien gewijzigd
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
-          git add agenda.json
-          git diff --staged --quiet || (git commit -m "Automated update: agenda.json [skip ci]" && git push)
+          git add agenda.json nieuws.json || git add agenda.json
+          git diff --staged --quiet || (git commit -m "Automated update: agenda.json & nieuws.json [skip ci]" && git push)

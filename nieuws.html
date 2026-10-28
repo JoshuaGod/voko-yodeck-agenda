@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VOKO Digital Signage - Laatste Nieuws</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk met wit VOKO logo -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+      </header>
+
+      <!-- 2. Rode Banner met 'Laatste nieuws:' en subtiele curve onderzijde -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,158 Q 1100,172 450,190 Q 180,192 0,176 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Laatste nieuws:</h1>
+        </div>
+      </div>
+
+      <!-- 3. Hoofdcontent: Nieuwsoverzicht links, Uitgelichte foto rechts -->
+      <main class="news-layout">
+        
+        <!-- Linkerkolom: 3 Nieuwsberichten (1 Uitgelicht + 2 Recent) -->
+        <div class="news-feed-column" id="news-container">
+          <!-- Fallback items worden direct gerenderd om flikkeringen te voorkomen -->
+          <article class="news-card featured">
+            <div class="news-meta">
+              <span class="news-date-badge">3 oktober 2026</span>
+            </div>
+            <h2 class="news-card-title">Openen van de zaal op de thuisspeeldagen</h2>
+            <p class="news-card-desc">
+              Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.
+            </p>
+          </article>
+
+          <article class="news-card">
+            <div class="news-meta">
+              <span class="news-date-badge">2 oktober 2026</span>
+            </div>
+            <h2 class="news-card-title">Vacatures!</h2>
+            <p class="news-card-desc">
+              Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar versterking voor diverse commissies.
+            </p>
+          </article>
+
+          <article class="news-card">
+            <div class="news-meta">
+              <span class="news-date-badge">1 november 2024</span>
+            </div>
+            <h2 class="news-card-title">VOKO debuteert bij het Tournoi international Lys</h2>
+            <p class="news-card-desc">
+              Afgelopen weekend reisde een aantal mannen van VOKO HS 5 af naar Frankrijk om deel te nemen aan het jaarlijkse toernooi met 7 teams uit Frankrijk, België en Nederland.
+            </p>
+          </article>
+        </div>
+
+        <!-- Rechterkolom: Uitgelichte foto met bijschrift -->
+        <div class="news-photo-column">
+          <div class="news-image-card">
+            <img id="featured-image" src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg" alt="VOKO Nieuws" class="news-featured-img">
+            <div class="news-image-caption" id="featured-caption">
+              Openen van de zaal op de thuisspeeldagen
+            </div>
+          </div>
+          <div class="news-footer-info">
+            <span>Lees meer op voko-oosterhout.nl</span>
+          </div>
+        </div>
+
+      </main>
+
+      <div class="signage-status" id="status-indicator">VOKO Digital Signage</div>
+
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. Automatische Schaling naar elk schermformaat (behoudt vaste 16:9 verhouding)
+    // -------------------------------------------------------------------------
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+      const currentWidth = window.innerWidth;
+      const currentHeight = window.innerHeight;
+
+      const scale = Math.min(currentWidth / targetWidth, currentHeight / targetHeight);
+      canvas.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+    fitViewport();
+
+    // -------------------------------------------------------------------------
+    // 2. Client-Side Auto-Refresh (elke 15 minuten nieuwe nieuws.json ophalen)
+    // -------------------------------------------------------------------------
+    const REFRESH_INTERVAL_MS = 15 * 60 * 1000;
+    let currentNewsFingerprint = '';
+
+    async function fetchNieuws() {
+      try {
+        const cacheBuster = Date.now();
+        const response = await fetch(`nieuws.json?v=${cacheBuster}`, {
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP fout: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data || !Array.isArray(data.items)) {
+          throw new Error('Ongeldige JSON structuur ontvangen');
+        }
+
+        const items = data.items.slice(0, 3);
+        const newFingerprint = JSON.stringify(items);
+
+        if (newFingerprint !== currentNewsFingerprint) {
+          updateNieuwsDOM(items);
+          currentNewsFingerprint = newFingerprint;
+        }
+
+        const statusEl = document.getElementById('status-indicator');
+        if (statusEl) {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+          statusEl.textContent = `Bijgewerkt: ${timeStr}`;
+        }
+      } catch (err) {
+        console.warn('Nieuws refresh waarschuwing:', err);
+      }
+    }
+
+    function updateNieuwsDOM(items) {
+      const container = document.getElementById('news-container');
+      const imgEl = document.getElementById('featured-image');
+      const capEl = document.getElementById('featured-caption');
+      if (!container || items.length === 0) return;
+
+      container.innerHTML = '';
+      items.forEach((item, index) => {
+        const card = document.createElement('article');
+        card.className = index === 0 ? 'news-card featured' : 'news-card';
+
+        const meta = document.createElement('div');
+        meta.className = 'news-meta';
+
+        const dateBadge = document.createElement('span');
+        dateBadge.className = 'news-date-badge';
+        dateBadge.textContent = item.datum || '';
+        meta.appendChild(dateBadge);
+
+        const title = document.createElement('h2');
+        title.className = 'news-card-title';
+        title.textContent = item.titel || '';
+
+        const desc = document.createElement('p');
+        desc.className = 'news-card-desc';
+        desc.textContent = item.omschrijving || '';
+
+        card.appendChild(meta);
+        card.appendChild(title);
+        card.appendChild(desc);
+        container.appendChild(card);
+      });
+
+      // Update uitgelichte foto naar het eerste artikel dat een foto heeft
+      const itemWithPhoto = items.find(it => it.afbeelding) || items[0];
+      if (itemWithPhoto && imgEl) {
+        if (itemWithPhoto.afbeelding) {
+          imgEl.src = itemWithPhoto.afbeelding;
+        }
+        if (capEl) {
+          capEl.textContent = itemWithPhoto.titel || '';
+        }
+      }
+    }
+
+    fetchNieuws();
+    setInterval(fetchNieuws, REFRESH_INTERVAL_MS);
+  </script>
+
+</body>
+</html>
