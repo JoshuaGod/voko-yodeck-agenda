@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-28T13:24:08.680265",
+  "updated_at": "2026-10-28T16:07:33.352469",
   "filter": "afgelopen 3 maanden",
   "total": 2,
   "items": [
@@ -7,24 +7,29 @@
       "titel": "Openen van de zaal op de thuisspeeldagen",
       "datum": "3 oktober 2026",
       "iso_datum": "2026-10-03T00:00:00",
-      "tekst": "Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.",
+      "tekst": "Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal .\n\nWat betekent dit voor jou?\n\n• Controleer Clubtaken voor het rooster: Weet vooraf wanneer je de eerste dienst hebt.\n• Regel de sleutel van te voren: Zorg dat je tijdig weet waar je de sleutel ophaalt en hoe je binnen komt.\n• Wees op tijd: Zorg dat de zaal open is voordat de tegenstander arriveert. Houd hiervoor de tijden aan van Clubtaken.\n\nZorg dat de thuisspeeldag vlekkeloos start en laat niemand voor een gesloten deur staan. Bedankt voor de medewerking!",
       "paragrafen": [
-        "Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal."
+        "Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal .",
+        "Wat betekent dit voor jou?",
+        "• Controleer Clubtaken voor het rooster: Weet vooraf wanneer je de eerste dienst hebt.\n• Regel de sleutel van te voren: Zorg dat je tijdig weet waar je de sleutel ophaalt en hoe je binnen komt.\n• Wees op tijd: Zorg dat de zaal open is voordat de tegenstander arriveert. Houd hiervoor de tijden aan van Clubtaken.",
+        "Zorg dat de thuisspeeldag vlekkeloos start en laat niemand voor een gesloten deur staan. Bedankt voor de medewerking!"
       ],
       "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=12&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg",
+      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg",
       "is_flyer": false
     },
     {
       "titel": "Vacatures!",
       "datum": "2 oktober 2026",
       "iso_datum": "2026-10-02T00:00:00",
-      "tekst": "Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:",
+      "tekst": "Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:\n\n• Secretaris (Bestuursfunctie - gem. 2u per week)\n• Technische Commissie Lid (TC - gem. 4u per maand)\n\nBen je geïnteresseerd. stuur een mailtje naar info@voko-oosterhout.nl",
       "paragrafen": [
-        "Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:"
+        "Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:",
+        "• Secretaris (Bestuursfunctie - gem. 2u per week)\n• Technische Commissie Lid (TC - gem. 4u per maand)",
+        "Ben je geïnteresseerd. stuur een mailtje naar info@voko-oosterhout.nl"
       ],
       "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=11&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/afbeelding_20261002140105671.png",
+      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/afbeelding_20261002140105671.png",
       "is_flyer": true
     }
   ]

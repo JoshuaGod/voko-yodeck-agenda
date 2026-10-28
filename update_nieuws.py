@@ -3,18 +3,16 @@
 VOKO Digital Signage - Nieuws Scraper & Parser
 Haalt de meest recente nieuwsberichten op van de VOKO website.
 Filtert uitsluitend op nieuws van de afgelopen 3 maanden (90 dagen).
-Opent elk nieuwsbericht om de volledige strekking/tekst (incl. opsommingen en functies)
-en hoge resolutie afbeeldingen op te halen.
+Opent elk nieuwsbericht om de volledige strekking/tekst (incl. opsommingen,
+functies en tussenkopjes) en hoge resolutie afbeeldingen op te halen.
 """
 
 import html
 import json
 import logging
-import os
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
-from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
@@ -44,35 +42,6 @@ DUTCH_MONTH_ABBR_MAP = {
     "jan": 1, "feb": 2, "mar": 3, "mrt": 3, "apr": 4, "may": 5, "mei": 5,
     "jun": 6, "jul": 7, "aug": 8, "sep": 9, "oct": 10, "okt": 10, "nov": 11, "dec": 12
 }
-
-
-def get_http_session() -> requests.Session:
-    """Maakt een HTTP-sessie aan met optionele authenticatiecookies."""
-    s = requests.Session()
-    s.headers.update(HEADERS)
-
-    # Optie 1: Lees VOKO_SESSION_COOKIE uit de environment
-    cookie_val = os.getenv("VOKO_SESSION_COOKIE")
-
-    # Optie 2: Lees storage-state.json als die lokaal aanwezig is
-    if not cookie_val:
-        for p in [Path("storage-state.json"), Path("../voko-wedstrijden-check/storage-state.json")]:
-            if p.exists():
-                try:
-                    with open(p, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-                    for c in data.get("cookies", []):
-                        s.cookies.set(c["name"], c["value"], domain=c.get("domain", "www.voko-oosterhout.nl"))
-                    logging.info(f"Sessiecookies geladen uit {p}")
-                    return s
-                except Exception:
-                    pass
-
-    if cookie_val:
-        s.cookies.set("BS_SERV_SID", cookie_val, domain="www.voko-oosterhout.nl")
-        logging.info("Sessiecookie BS_SERV_SID geladen uit environment")
-
-    return s
 
 
 def strip_html_tags(raw_html: str) -> str:
@@ -122,42 +91,75 @@ def parse_date_to_datetime(date_str: str) -> tuple[datetime | None, str]:
     return None, date_str
 
 
-def extract_rich_content_from_soup(detail_soup: BeautifulSoup) -> tuple[list[str], str | None]:
-    """Extraheert alinea's, opsommingen (bullet points) en afbeeldingen uit het artikel."""
-    paragraphs = []
-    image_url = None
+def extract_article_details(detail_soup: BeautifulSoup) -> tuple[list[str], str | None]:
+    """
+    Haalt alle inhoudelijke alinea's, opsommingen en afbeeldingen
+    uit een geopend nieuwsbericht op de VOKO website.
+    """
+    intro_el = detail_soup.find(class_="intro")
+    intro_text = strip_html_tags(intro_el.get_text(separator=" ", strip=True)) if intro_el else ""
 
-    # 1. Intro sectie
-    intro_el = detail_soup.select_one(".intro")
-    if intro_el:
-        intro_text = strip_html_tags(intro_el.get_text(separator="\n", strip=True))
-        if intro_text:
-            paragraphs.append(intro_text)
+    vervolg_el = detail_soup.find(class_="vervolg")
 
-    # 2. Vervolg sectie (inclusief lijsten met <li> en alinea's met <p>)
-    vervolg_el = detail_soup.select_one(".vervolg")
+    raw_paragraphs = []
+    if intro_text:
+        raw_paragraphs.append(intro_text)
+
     if vervolg_el:
         for child in vervolg_el.children:
+            if not child:
+                continue
+
+            # 1. HTML Opsommingen (ul / ol)
             if child.name in ["ul", "ol"]:
-                bullets = [f"• {li.get_text(strip=True)}" for li in child.find_all("li") if li.get_text(strip=True)]
+                bullets = []
+                for li in child.find_all("li"):
+                    txt = li.get_text(separator=" ", strip=True)
+                    if txt:
+                        bullets.append(f"• {txt}")
                 if bullets:
-                    paragraphs.append("\n".join(bullets))
+                    raw_paragraphs.append("\n".join(bullets))
+
+            # 2. Paragrafen (<p>)
             elif child.name == "p":
-                t = child.get_text(strip=True)
-                if t and t not in paragraphs:
-                    paragraphs.append(t)
+                txt = child.get_text(separator=" ", strip=True)
+                # Sla over als het een exacte of nagenoeg identieke herhaling is van de intro
+                if txt and txt != intro_text and not (intro_text and intro_text.startswith(txt[:40])):
+                    raw_paragraphs.append(txt)
+
+            # 3. Tussenkopjes (h2, h3, h4)
             elif child.name in ["h2", "h3", "h4"]:
-                t = child.get_text(strip=True)
+                t = child.get_text(separator=" ", strip=True)
                 if t:
-                    paragraphs.append(f"**{t}**")
+                    raw_paragraphs.append(t)
 
-        # Fallback als vervolg geen nette alinea-tags had
-        if not paragraphs or (intro_el and len(paragraphs) == 1):
-            raw_v = strip_html_tags(vervolg_el.get_text(separator="\n", strip=True))
-            if raw_v and raw_v not in paragraphs:
-                paragraphs.append(raw_v)
+            # 4. Losse tekstregels (zoals bij de vacatures met * bullet points)
+            elif child.name is None:
+                lines = [l.strip() for l in str(child).split("\n") if l.strip()]
+                for l in lines:
+                    l_clean = html.unescape(re.sub(r"<[^>]+>", "", l)).strip()
+                    if l_clean.startswith("*") or l_clean.startswith("-"):
+                        bullet = "• " + l_clean.lstrip("*- ").strip()
+                        raw_paragraphs.append(bullet)
+                    elif len(l_clean) > 5 and l_clean != intro_text:
+                        raw_paragraphs.append(l_clean)
 
-    # 3. Afbeelding
+    # Voeg opeenvolgende losse bullet points samen tot 1 lijst-alinea
+    cleaned_paragraphs = []
+    bullet_group = []
+    for p in raw_paragraphs:
+        if p.startswith("•"):
+            bullet_group.append(p)
+        else:
+            if bullet_group:
+                cleaned_paragraphs.append("\n".join(bullet_group))
+                bullet_group = []
+            cleaned_paragraphs.append(p)
+    if bullet_group:
+        cleaned_paragraphs.append("\n".join(bullet_group))
+
+    # Zoek afbeelding
+    image_url = None
     img_meta = detail_soup.select_one('meta[itemprop="image"]')
     if img_meta and img_meta.get("content"):
         image_url = img_meta.get("content")
@@ -169,29 +171,23 @@ def extract_rich_content_from_soup(detail_soup: BeautifulSoup) -> tuple[list[str
                 src = f"https://www.voko-oosterhout.nl{src}"
             image_url = src
 
-    return paragraphs, image_url
+    return cleaned_paragraphs, image_url
 
 
-def fetch_full_article_content(session: requests.Session, link: str, fallback_desc: str) -> tuple[str, list[str], str | None]:
-    """
-    Opent de webpagina van het nieuwsbericht om de volledige tekst (intro + vervolg)
-    en de eventuele hoofdafbeelding op te halen.
-    """
+def fetch_full_article(link: str, fallback_desc: str) -> tuple[str, list[str], str | None]:
+    """Opent de webpagina van het nieuwsbericht om de volledige inhoud op te halen."""
     if link:
         try:
-            resp = session.get(link, timeout=12)
+            resp = requests.get(link, headers=HEADERS, timeout=12)
             if resp.status_code == 200:
-                # Controleer of we op een inlogmuur zijn gestuit
-                if "ingelogd zijn" not in resp.text.lower():
-                    soup = BeautifulSoup(resp.text, "html.parser")
-                    detail = soup.select_one(".nieuwsbericht-actief, .bericht.nieuws, .nieuws-detail, .default-page-content")
-                    if detail:
-                        paragraphs, img = extract_rich_content_from_soup(detail)
-                        if paragraphs:
-                            full_body = "\n\n".join(paragraphs)
-                            return full_body, paragraphs, img
-                else:
-                    logging.info(f"Artikel {link} vereist inloggen op de VOKO website.")
+                soup = BeautifulSoup(resp.text, "html.parser")
+                detail = soup.select_one(".nieuwsbericht-actief, .bericht.nieuws, .nieuws-detail")
+                if detail:
+                    paragraphs, img = extract_article_details(detail)
+                    if paragraphs:
+                        full_body = "\n\n".join(paragraphs)
+                        return full_body, paragraphs, img
+            logging.warning(f"Artikel {link} bevat geen actief berichtelement.")
         except Exception as e:
             logging.warning(f"Kon artikelpagina {link} niet openen: {e}")
 
@@ -202,7 +198,6 @@ def fetch_full_article_content(session: requests.Session, link: str, fallback_de
 
 
 def update_nieuws():
-    session = get_http_session()
     logging.info("Starten met ophalen van nieuwsberichten...")
 
     # Filter: uitsluitend nieuws van de afgelopen 3 maanden (90 dagen)
@@ -211,7 +206,7 @@ def update_nieuws():
     logging.info(f"Peildatum: {today.strftime('%Y-%m-%d')} | Cutoff (3 maanden): {cutoff_date.strftime('%Y-%m-%d')}")
 
     try:
-        resp = session.get(RSS_URL, timeout=15)
+        resp = requests.get(RSS_URL, headers=HEADERS, timeout=15)
         resp.raise_for_status()
         root = ET.fromstring(resp.content)
     except Exception as e:
@@ -252,7 +247,7 @@ def update_nieuws():
                 rss_image_url = url
 
         # 4. Open het nieuwsbericht op de website voor de volledige inhoud
-        full_text, paragraphs, article_image_url = fetch_full_article_content(session, link, desc_raw)
+        full_text, paragraphs, article_image_url = fetch_full_article(link, desc_raw)
         final_image = article_image_url or rss_image_url
 
         is_flyer = False
@@ -284,9 +279,9 @@ def update_nieuws():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
-    logging.info(f"{len(articles)} actuele nieuwsberichten opgeslagen in {OUTPUT_FILE}:")
+    logging.info(f"{len(articles)} actuele nieuwsberichten van de afgelopen 3 maanden opgeslagen in {OUTPUT_FILE}:")
     for a in articles:
-        logging.info(f" - [{a['datum']}] {a['titel']} ({len(a['paragrafen'])} alinea('s))")
+        logging.info(f" - [{a['datum']}] {a['titel']} ({len(a['paragrafen'])} alinea's/secties)")
 
     return articles
 

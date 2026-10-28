@@ -45,12 +45,18 @@
             <h2 class="news-slide-title">Openen van de zaal op de thuisspeeldagen</h2>
             <div class="news-slide-body">
               <p>Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.</p>
-              <p>Zorg dat je tijdig aanwezig bent zodat de eerste teams en bezoekers direct naar binnen kunnen. Kijk voor alle instructies op de clubsite of vraag een van de bestuursleden.</p>
+              <p style="font-weight: 700; color: #17263c;">Wat betekent dit voor jou?</p>
+              <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 8px; font-weight: 500; color: #1e293b;">
+                <li>• <strong>Controleer Clubtaken:</strong> Weet vooraf wanneer je de eerste dienst hebt.</li>
+                <li>• <strong>Regel de sleutel tijdig:</strong> Zorg dat je weet waar je de sleutel ophaalt.</li>
+                <li>• <strong>Wees op tijd:</strong> Zaal open vóórdat tegenstanders arriveren.</li>
+              </ul>
+              <p style="font-size: 24px; color: #64748b; margin-top: 6px;">Zorg dat de thuisspeeldag vlekkeloos start en niemand voor een dichte deur staat!</p>
             </div>
           </div>
           <div class="news-slide-media">
             <div class="news-slide-media-card">
-              <img src="assets/calendar.png" alt="VOKO Nieuws" class="news-slide-img">
+              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg" alt="VOKO Nieuws" class="news-slide-img">
             </div>
           </div>
         </article>
@@ -63,19 +69,17 @@
             </div>
             <h2 class="news-slide-title">Vacatures!</h2>
             <div class="news-slide-body">
-              <p>Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar versterking voor de volgende posities:</p>
-              <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 10px; font-weight: 600; color: #1e293b;">
-                <li>• Scheidsrechterscoördinator</li>
-                <li>• Kantine- / Bardienstcommissie</li>
-                <li>• Jeugdtrainers & Begeleiders</li>
-                <li>• Toernooiorganisatie</li>
+              <p>Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:</p>
+              <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 12px; font-weight: 600; color: #1e293b; font-size: 32px;">
+                <li>• Secretaris <span style="font-weight: 400; color: #64748b;">(Bestuursfunctie - gem. 2u per week)</span></li>
+                <li>• Technische Commissie Lid <span style="font-weight: 400; color: #64748b;">(TC - gem. 4u per maand)</span></li>
               </ul>
-              <p style="font-size: 24px; color: #64748b; margin-top: 10px;">Interesse? Spreek iemand van het bestuur aan in de kantine of stuur een bericht via voko-oosterhout.nl!</p>
+              <p style="font-size: 26px; color: #dd271b; font-weight: 600; margin-top: 14px;">Ben je geïnteresseerd? Stuur een mailtje naar info@voko-oosterhout.nl of spreek iemand van het bestuur aan!</p>
             </div>
           </div>
           <div class="news-slide-media">
             <div class="news-slide-media-card is-flyer">
-              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/afbeelding_20261002140105671.png" alt="Vacatures VOKO" class="news-slide-img">
+              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/afbeelding_20261002140105671.png" alt="Vacatures VOKO" class="news-slide-img">
             </div>
           </div>
         </article>
@@ -234,13 +238,13 @@
           const cleanText = pText.trim();
 
           // Check of alinea bullet points bevat
-          if (cleanText.includes('•') || cleanText.startsWith('-')) {
+          if (cleanText.includes('•') || cleanText.startsWith('* ') || cleanText.startsWith('- ')) {
             const ul = document.createElement('ul');
             ul.style.listStyle = 'none';
             ul.style.paddingLeft = '0';
             ul.style.display = 'flex';
             ul.style.flexDirection = 'column';
-            ul.style.gap = '8px';
+            ul.style.gap = '10px';
             ul.style.fontWeight = '600';
             ul.style.color = '#1e293b';
 
@@ -248,11 +252,18 @@
               const l = line.trim();
               if (l) {
                 const li = document.createElement('li');
-                li.textContent = l.startsWith('•') ? l : `• ${l.replace(/^-\s*/, '')}`;
+                li.textContent = l.startsWith('•') ? l : `• ${l.replace(/^[\*\-]\s*/, '')}`;
                 ul.appendChild(li);
               }
             });
             bodyDiv.appendChild(ul);
+          } else if (cleanText.endsWith('?') || cleanText.startsWith('Wat betekent')) {
+            const h = document.createElement('p');
+            h.style.fontWeight = '700';
+            h.style.color = '#17263c';
+            h.style.marginTop = '6px';
+            h.textContent = cleanText;
+            bodyDiv.appendChild(h);
           } else {
             const p = document.createElement('p');
             p.textContent = cleanText;
