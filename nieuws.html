@@ -36,7 +36,7 @@
       <!-- 3. Dia-carrousel: 1 volledig nieuwsbericht per dia, 10s rotatie -->
       <main class="news-stage" id="news-stage">
         
-        <!-- Dia 1 (Fallback direct in DOM tegen flikkering) -->
+        <!-- Dia 1: Zaalwacht -->
         <article class="news-slide active">
           <div class="news-slide-content">
             <div class="news-slide-meta">
@@ -50,12 +50,12 @@
           </div>
           <div class="news-slide-media">
             <div class="news-slide-media-card">
-              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg" alt="VOKO Nieuws" class="news-slide-img">
+              <img src="assets/calendar.png" alt="VOKO Nieuws" class="news-slide-img">
             </div>
           </div>
         </article>
 
-        <!-- Dia 2 (Fallback direct in DOM) -->
+        <!-- Dia 2: Vacatures -->
         <article class="news-slide flyer-layout">
           <div class="news-slide-content">
             <div class="news-slide-meta">
@@ -63,8 +63,14 @@
             </div>
             <h2 class="news-slide-title">Vacatures!</h2>
             <div class="news-slide-body">
-              <p>Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar versterking voor diverse commissies en vrijwilligersfuncties.</p>
-              <p>Wil jij een actieve bijdrage leveren aan onze vereniging? Meld je aan via de website of spreek iemand van het bestuur aan in de kantine!</p>
+              <p>Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar versterking voor de volgende posities:</p>
+              <ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 10px; font-weight: 600; color: #1e293b;">
+                <li>• Scheidsrechterscoördinator</li>
+                <li>• Kantine- / Bardienstcommissie</li>
+                <li>• Jeugdtrainers & Begeleiders</li>
+                <li>• Toernooiorganisatie</li>
+              </ul>
+              <p style="font-size: 24px; color: #64748b; margin-top: 10px;">Interesse? Spreek iemand van het bestuur aan in de kantine of stuur een bericht via voko-oosterhout.nl!</p>
             </div>
           </div>
           <div class="news-slide-media">
@@ -105,17 +111,16 @@
     // -------------------------------------------------------------------------
     // 2. Dia-Rotatie Logica: 10 seconden per nieuwsbericht
     // -------------------------------------------------------------------------
-    const SLIDE_DURATION_MS = 10000; // 10 seconden
+    const SLIDE_DURATION_MS = 10000;
     let currentSlideIndex = 0;
     let rotationTimer = null;
-    let currentArticles = [];
 
     function startProgressBar() {
       const bar = document.getElementById('news-progress-bar');
       if (!bar) return;
       bar.style.transition = 'none';
       bar.style.width = '0%';
-      void bar.offsetWidth; // Forceer browser reflow
+      void bar.offsetWidth;
       bar.style.transition = `width ${SLIDE_DURATION_MS}ms linear`;
       bar.style.width = '100%';
     }
@@ -134,7 +139,6 @@
         }
       });
 
-      // Update pagina-teller
       const counterEl = document.getElementById('news-counter');
       if (counterEl) {
         counterEl.textContent = `Nieuws ${currentSlideIndex + 1} van ${slides.length}`;
@@ -146,7 +150,6 @@
     function nextSlide() {
       const slides = document.querySelectorAll('.news-slide');
       if (slides.length <= 1) {
-        // Bij 1 bericht blijft de slide stabiel staan
         startProgressBar();
         return;
       }
@@ -178,7 +181,6 @@
 
         const newFingerprint = JSON.stringify(data.items);
         if (newFingerprint !== currentFingerprint) {
-          currentArticles = data.items;
           currentFingerprint = newFingerprint;
           renderNewsSlides(data.items);
         }
@@ -190,7 +192,7 @@
           statusEl.textContent = `Bijgewerkt: ${timeStr}`;
         }
       } catch (err) {
-        console.warn('Nieuws refresh waarschuwing (bestaande weergave blijft actief):', err);
+        console.warn('Nieuws refresh waarschuwing:', err);
       }
     }
 
@@ -228,12 +230,36 @@
           : (item.tekst ? [item.tekst] : []);
 
         paragraphs.forEach(pText => {
-          if (pText && pText.trim()) {
+          if (!pText || !pText.trim()) return;
+          const cleanText = pText.trim();
+
+          // Check of alinea bullet points bevat
+          if (cleanText.includes('•') || cleanText.startsWith('-')) {
+            const ul = document.createElement('ul');
+            ul.style.listStyle = 'none';
+            ul.style.paddingLeft = '0';
+            ul.style.display = 'flex';
+            ul.style.flexDirection = 'column';
+            ul.style.gap = '8px';
+            ul.style.fontWeight = '600';
+            ul.style.color = '#1e293b';
+
+            cleanText.split('\n').forEach(line => {
+              const l = line.trim();
+              if (l) {
+                const li = document.createElement('li');
+                li.textContent = l.startsWith('•') ? l : `• ${l.replace(/^-\s*/, '')}`;
+                ul.appendChild(li);
+              }
+            });
+            bodyDiv.appendChild(ul);
+          } else {
             const p = document.createElement('p');
-            p.textContent = pText.trim();
+            p.textContent = cleanText;
             bodyDiv.appendChild(p);
           }
         });
+
         contentDiv.appendChild(bodyDiv);
         slide.appendChild(contentDiv);
 
@@ -263,7 +289,6 @@
       restartRotation();
     }
 
-    // Start direct
     restartRotation();
     fetchNieuws();
     setInterval(fetchNieuws, 15 * 60 * 1000);
