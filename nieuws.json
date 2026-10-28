@@ -1,41 +1,31 @@
 {
-  "updated_at": "2026-10-28T13:05:18.367574",
-  "total": 5,
+  "updated_at": "2026-10-28T13:22:45.965329",
+  "filter": "afgelopen 3 maanden",
+  "total": 2,
   "items": [
     {
       "titel": "Openen van de zaal op de thuisspeeldagen",
       "datum": "3 oktober 2026",
-      "omschrijving": "Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.",
+      "iso_datum": "2026-10-03T00:00:00",
+      "tekst": "Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.",
+      "paragrafen": [
+        "Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal."
+      ],
       "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=12&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg"
+      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg",
+      "is_flyer": false
     },
     {
       "titel": "Vacatures!",
       "datum": "2 oktober 2026",
-      "omschrijving": "Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:",
+      "iso_datum": "2026-10-02T00:00:00",
+      "tekst": "Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:",
+      "paragrafen": [
+        "Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar de volgende posities:"
+      ],
       "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=11&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/afbeelding_20261002140105671.png"
-    },
-    {
-      "titel": "VOKO debuteert bij het Tournoi international Lys.",
-      "datum": "1 november 2024",
-      "omschrijving": "Afgelopen weekend reisde een aantal mannen van VOKO HS 5 af naar Frankrijk om deel te nemen aan het Tournoi International Lys. Aan dit toernooi deden 7 teams in totaal mee uit Frankrijk, België en Nederland. Vrijdagmiddag zijn de heren vertrokken richting Frankrijk om zich alvast voor te bereiden op de wedstrijden die op zaterdag en zondag gespeeld zouden worden.",
-      "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=8&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/2024_tournoi_lys_0061_20241101182128553.jpg"
-    },
-    {
-      "titel": "VOKO JC1 is kampioen!",
-      "datum": "28 april 2024",
-      "omschrijving": "VOKO JC1 heeft dit seizoen een prachtige prestatie neergezet door kampioen te worden in de tweede helft van het seizoen. De Jongens en meiden speelden dit seizoen voor het eerst samen en wat was dat wennen. Maar door veel oefenen en samenwerken zijn ze erin geslaagd het kampioenschap veilig te stellen.",
-      "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=6&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/nieuws/nieuwsbericht_website_jc_kampioen_20240428162050283.jpg"
-    },
-    {
-      "titel": "VOKO heeft een nieuwe website",
-      "datum": "20 maart 2024",
-      "omschrijving": "Zoals jullie zien is de website van VOKO in een nieuw jasje gestoken. De afgelopen weken is er hard gewerkt om deze nieuwe website te bouwen en van inhoud te voorzien.",
-      "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=1&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/nieuws/nieuwsbericht_website_20240320213756515.jpg"
+      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/afbeelding_20261002140105671.png",
+      "is_flyer": true
     }
   ]
 }

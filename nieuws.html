@@ -33,88 +33,136 @@
         </div>
       </div>
 
-      <!-- 3. Hoofdcontent: Nieuwsoverzicht links, Uitgelichte foto rechts -->
-      <main class="news-layout">
+      <!-- 3. Dia-carrousel: 1 volledig nieuwsbericht per dia, 10s rotatie -->
+      <main class="news-stage" id="news-stage">
         
-        <!-- Linkerkolom: 3 Nieuwsberichten (1 Uitgelicht + 2 Recent) -->
-        <div class="news-feed-column" id="news-container">
-          <!-- Fallback items worden direct gerenderd om flikkeringen te voorkomen -->
-          <article class="news-card featured">
-            <div class="news-meta">
-              <span class="news-date-badge">3 oktober 2026</span>
+        <!-- Dia 1 (Fallback direct in DOM tegen flikkering) -->
+        <article class="news-slide active">
+          <div class="news-slide-content">
+            <div class="news-slide-meta">
+              <span class="news-slide-badge">3 oktober 2026</span>
             </div>
-            <h2 class="news-card-title">Openen van de zaal op de thuisspeeldagen</h2>
-            <p class="news-card-desc">
-              Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.
-            </p>
-          </article>
-
-          <article class="news-card">
-            <div class="news-meta">
-              <span class="news-date-badge">2 oktober 2026</span>
-            </div>
-            <h2 class="news-card-title">Vacatures!</h2>
-            <p class="news-card-desc">
-              Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar versterking voor diverse commissies.
-            </p>
-          </article>
-
-          <article class="news-card">
-            <div class="news-meta">
-              <span class="news-date-badge">1 november 2024</span>
-            </div>
-            <h2 class="news-card-title">VOKO debuteert bij het Tournoi international Lys</h2>
-            <p class="news-card-desc">
-              Afgelopen weekend reisde een aantal mannen van VOKO HS 5 af naar Frankrijk om deel te nemen aan het jaarlijkse toernooi met 7 teams uit Frankrijk, België en Nederland.
-            </p>
-          </article>
-        </div>
-
-        <!-- Rechterkolom: Uitgelichte foto met bijschrift -->
-        <div class="news-photo-column">
-          <div class="news-image-card">
-            <img id="featured-image" src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg" alt="VOKO Nieuws" class="news-featured-img">
-            <div class="news-image-caption" id="featured-caption">
-              Openen van de zaal op de thuisspeeldagen
+            <h2 class="news-slide-title">Openen van de zaal op de thuisspeeldagen</h2>
+            <div class="news-slide-body">
+              <p>Heb jij de eerste bardienst/zaalwacht van de dag? Dan ben je niet alleen verantwoordelijk voor je dienst, maar ook voor het regelen van de sleutel en het openen van de zaal.</p>
+              <p>Zorg dat je tijdig aanwezig bent zodat de eerste teams en bezoekers direct naar binnen kunnen. Kijk voor alle instructies op de clubsite of vraag een van de bestuursleden.</p>
             </div>
           </div>
-          <div class="news-footer-info">
-            <span>Lees meer op voko-oosterhout.nl</span>
+          <div class="news-slide-media">
+            <div class="news-slide-media-card">
+              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/placeholder_20241213222914264_20250817204004538_20261003232425869.jpg" alt="VOKO Nieuws" class="news-slide-img">
+            </div>
           </div>
-        </div>
+        </article>
+
+        <!-- Dia 2 (Fallback direct in DOM) -->
+        <article class="news-slide flyer-layout">
+          <div class="news-slide-content">
+            <div class="news-slide-meta">
+              <span class="news-slide-badge">2 oktober 2026</span>
+            </div>
+            <h2 class="news-slide-title">Vacatures!</h2>
+            <div class="news-slide-body">
+              <p>Binnen VOKO zijn we altijd op zoek naar mensen die ons kunnen helpen. Concreet zijn we in ieder geval op zoek naar versterking voor diverse commissies en vrijwilligersfuncties.</p>
+              <p>Wil jij een actieve bijdrage leveren aan onze vereniging? Meld je aan via de website of spreek iemand van het bestuur aan in de kantine!</p>
+            </div>
+          </div>
+          <div class="news-slide-media">
+            <div class="news-slide-media-card is-flyer">
+              <img src="https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/afbeelding_20261002140105671.png" alt="Vacatures VOKO" class="news-slide-img">
+            </div>
+          </div>
+        </article>
 
       </main>
 
+      <!-- Pagina-teller en timerbalk onderaan -->
+      <div class="news-counter" id="news-counter">Nieuws 1 van 2</div>
       <div class="signage-status" id="status-indicator">VOKO Digital Signage</div>
+      <div class="news-progress-bar-container">
+        <div class="news-progress-bar" id="news-progress-bar"></div>
+      </div>
 
     </div>
   </div>
 
   <script>
     // -------------------------------------------------------------------------
-    // 1. Automatische Schaling naar elk schermformaat (behoudt vaste 16:9 verhouding)
+    // 1. Automatische Schaling (1080p full-screen weergave)
     // -------------------------------------------------------------------------
     function fitViewport() {
       const canvas = document.getElementById('slide-canvas');
       if (!canvas) return;
       const targetWidth = 1920;
       const targetHeight = 1080;
-      const currentWidth = window.innerWidth;
-      const currentHeight = window.innerHeight;
-
-      const scale = Math.min(currentWidth / targetWidth, currentHeight / targetHeight);
+      const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
       canvas.style.transform = `scale(${scale})`;
     }
-
     window.addEventListener('resize', fitViewport);
     window.addEventListener('DOMContentLoaded', fitViewport);
     fitViewport();
 
     // -------------------------------------------------------------------------
-    // 2. Client-Side Auto-Refresh (elke 15 minuten nieuwe nieuws.json ophalen)
+    // 2. Dia-Rotatie Logica: 10 seconden per nieuwsbericht
     // -------------------------------------------------------------------------
-    const REFRESH_INTERVAL_MS = 15 * 60 * 1000;
-    let currentNewsFingerprint = '';
+    const SLIDE_DURATION_MS = 10000; // 10 seconden
+    let currentSlideIndex = 0;
+    let rotationTimer = null;
+    let currentArticles = [];
+
+    function startProgressBar() {
+      const bar = document.getElementById('news-progress-bar');
+      if (!bar) return;
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      void bar.offsetWidth; // Forceer browser reflow
+      bar.style.transition = `width ${SLIDE_DURATION_MS}ms linear`;
+      bar.style.width = '100%';
+    }
+
+    function showSlide(index) {
+      const slides = document.querySelectorAll('.news-slide');
+      if (slides.length === 0) return;
+
+      currentSlideIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, i) => {
+        if (i === currentSlideIndex) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      // Update pagina-teller
+      const counterEl = document.getElementById('news-counter');
+      if (counterEl) {
+        counterEl.textContent = `Nieuws ${currentSlideIndex + 1} van ${slides.length}`;
+      }
+
+      startProgressBar();
+    }
+
+    function nextSlide() {
+      const slides = document.querySelectorAll('.news-slide');
+      if (slides.length <= 1) {
+        // Bij 1 bericht blijft de slide stabiel staan
+        startProgressBar();
+        return;
+      }
+      showSlide(currentSlideIndex + 1);
+    }
+
+    function restartRotation() {
+      if (rotationTimer) clearInterval(rotationTimer);
+      startProgressBar();
+      rotationTimer = setInterval(nextSlide, SLIDE_DURATION_MS);
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. Client-Side Auto-Refresh (elke 15 min actuele nieuws.json ophalen)
+    // -------------------------------------------------------------------------
+    let currentFingerprint = '';
 
     async function fetchNieuws() {
       try {
@@ -124,21 +172,15 @@
           cache: 'no-store'
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP fout: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`HTTP fout: ${response.status}`);
         const data = await response.json();
-        if (!data || !Array.isArray(data.items)) {
-          throw new Error('Ongeldige JSON structuur ontvangen');
-        }
+        if (!data || !Array.isArray(data.items)) return;
 
-        const items = data.items.slice(0, 3);
-        const newFingerprint = JSON.stringify(items);
-
-        if (newFingerprint !== currentNewsFingerprint) {
-          updateNieuwsDOM(items);
-          currentNewsFingerprint = newFingerprint;
+        const newFingerprint = JSON.stringify(data.items);
+        if (newFingerprint !== currentFingerprint) {
+          currentArticles = data.items;
+          currentFingerprint = newFingerprint;
+          renderNewsSlides(data.items);
         }
 
         const statusEl = document.getElementById('status-indicator');
@@ -148,57 +190,83 @@
           statusEl.textContent = `Bijgewerkt: ${timeStr}`;
         }
       } catch (err) {
-        console.warn('Nieuws refresh waarschuwing:', err);
+        console.warn('Nieuws refresh waarschuwing (bestaande weergave blijft actief):', err);
       }
     }
 
-    function updateNieuwsDOM(items) {
-      const container = document.getElementById('news-container');
-      const imgEl = document.getElementById('featured-image');
-      const capEl = document.getElementById('featured-caption');
-      if (!container || items.length === 0) return;
+    function renderNewsSlides(items) {
+      const stage = document.getElementById('news-stage');
+      if (!stage || items.length === 0) return;
 
-      container.innerHTML = '';
-      items.forEach((item, index) => {
-        const card = document.createElement('article');
-        card.className = index === 0 ? 'news-card featured' : 'news-card';
+      stage.innerHTML = '';
+      items.forEach((item, i) => {
+        const slide = document.createElement('article');
+        slide.className = 'news-slide' + (i === 0 ? ' active' : '') + (item.is_flyer ? ' flyer-layout' : '');
 
-        const meta = document.createElement('div');
-        meta.className = 'news-meta';
+        // Tekst-kolom
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'news-slide-content';
 
-        const dateBadge = document.createElement('span');
-        dateBadge.className = 'news-date-badge';
-        dateBadge.textContent = item.datum || '';
-        meta.appendChild(dateBadge);
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'news-slide-meta';
+        const badge = document.createElement('span');
+        badge.className = 'news-slide-badge';
+        badge.textContent = item.datum || '';
+        metaDiv.appendChild(badge);
+        contentDiv.appendChild(metaDiv);
 
         const title = document.createElement('h2');
-        title.className = 'news-card-title';
+        title.className = 'news-slide-title';
         title.textContent = item.titel || '';
+        contentDiv.appendChild(title);
 
-        const desc = document.createElement('p');
-        desc.className = 'news-card-desc';
-        desc.textContent = item.omschrijving || '';
+        const bodyDiv = document.createElement('div');
+        bodyDiv.className = 'news-slide-body';
 
-        card.appendChild(meta);
-        card.appendChild(title);
-        card.appendChild(desc);
-        container.appendChild(card);
+        const paragraphs = (item.paragrafen && item.paragrafen.length > 0)
+          ? item.paragrafen
+          : (item.tekst ? [item.tekst] : []);
+
+        paragraphs.forEach(pText => {
+          if (pText && pText.trim()) {
+            const p = document.createElement('p');
+            p.textContent = pText.trim();
+            bodyDiv.appendChild(p);
+          }
+        });
+        contentDiv.appendChild(bodyDiv);
+        slide.appendChild(contentDiv);
+
+        // Afbeelding-kolom (indien aanwezig)
+        if (item.afbeelding) {
+          const mediaDiv = document.createElement('div');
+          mediaDiv.className = 'news-slide-media';
+
+          const cardDiv = document.createElement('div');
+          cardDiv.className = 'news-slide-media-card' + (item.is_flyer ? ' is-flyer' : '');
+
+          const img = document.createElement('img');
+          img.className = 'news-slide-img';
+          img.src = item.afbeelding;
+          img.alt = item.titel || '';
+
+          cardDiv.appendChild(img);
+          mediaDiv.appendChild(cardDiv);
+          slide.appendChild(mediaDiv);
+        }
+
+        stage.appendChild(slide);
       });
 
-      // Update uitgelichte foto naar het eerste artikel dat een foto heeft
-      const itemWithPhoto = items.find(it => it.afbeelding) || items[0];
-      if (itemWithPhoto && imgEl) {
-        if (itemWithPhoto.afbeelding) {
-          imgEl.src = itemWithPhoto.afbeelding;
-        }
-        if (capEl) {
-          capEl.textContent = itemWithPhoto.titel || '';
-        }
-      }
+      currentSlideIndex = 0;
+      showSlide(0);
+      restartRotation();
     }
 
+    // Start direct
+    restartRotation();
     fetchNieuws();
-    setInterval(fetchNieuws, REFRESH_INTERVAL_MS);
+    setInterval(fetchNieuws, 15 * 60 * 1000);
   </script>
 
 </body>
