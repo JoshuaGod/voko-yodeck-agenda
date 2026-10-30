@@ -231,14 +231,14 @@
 
             cardsHtml += `
               <div class="stand-team-card ${standenList.length > 1 ? 'is-multi-comp' : ''}">
-                <div class="stand-card-content">
-                  <div class="stand-team-title">${t.team || ''}</div>
+                <div class="stand-team-title-top">${t.team || ''}</div>
+                <div class="stand-card-body">
                   <div class="stand-comp-list">
                     ${blocksHtml}
                   </div>
-                </div>
-                <div class="stand-card-photo-wrap">
-                  <img src="${photoUrl}" alt="${t.team || ''}" class="stand-card-photo ${t.is_placeholder ? 'is-placeholder' : ''}">
+                  <div class="stand-card-photo-wrap">
+                    <img src="${photoUrl}" alt="${t.team || ''}" class="stand-card-photo ${t.is_placeholder ? 'is-placeholder' : ''}">
+                  </div>
                 </div>
               </div>
             `;

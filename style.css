@@ -841,12 +841,11 @@ html, body {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  padding: 20px 24px;
+  padding: 20px 24px 22px 24px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 20px;
   transition: border-color 0.2s ease, transform 0.2s ease;
   min-height: 280px;
 }
@@ -858,6 +857,27 @@ html, body {
 .stand-team-card.is-multi-comp {
   background: linear-gradient(145deg, #ffffff 0%, #fbfcfe 100%);
   border-color: #cbd5e1;
+}
+
+/* Teamnaam als regel bovenaan en gecentreerd in het midden */
+.stand-team-title-top {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: #17263c;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
+  margin-bottom: 16px;
+}
+
+/* Body met daaronder links de standen en rechts de teamfoto verticaal gecentreerd */
+.stand-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
 }
 
 .stand-card-content {
@@ -880,6 +900,9 @@ html, body {
 .stand-comp-list {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
 }
 
 .stand-comp-block {
@@ -898,19 +921,20 @@ html, body {
 .stand-comp-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 2px;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 
+/* GROTE Rang-badge */
 .stand-rank-badge {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  border-radius: 9px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 11px;
   background: #f1f5f9;
   border: 2px solid #cbd5e1;
   color: #1e293b;
-  font-size: 19px;
+  font-size: 23px;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -1046,17 +1070,24 @@ html, body {
 
 /* Extra royale weergave bij slides met 1 rij (Dames) */
 .stand-grid-cards.is-single-row .stand-team-card {
-  min-height: 340px;
+  min-height: 350px;
   padding: 26px 30px;
 }
 
-.stand-grid-cards.is-single-row .stand-team-title {
-  font-size: 34px;
-  margin-bottom: 14px;
+.stand-grid-cards.is-single-row .stand-team-title-top {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.stand-grid-cards.is-single-row .stand-rank-badge {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  font-size: 25px;
 }
 
 .stand-grid-cards.is-single-row .stand-comp-klasse {
-  font-size: 22px;
+  font-size: 23px;
 }
 
 .stand-grid-cards.is-single-row .stand-comp-stats {
@@ -1065,7 +1096,7 @@ html, body {
 
 .stand-grid-cards.is-single-row .stand-card-photo-wrap {
   width: 280px;
-  height: 200px;
+  height: 195px;
   min-width: 280px;
 }
 
