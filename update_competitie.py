@@ -37,6 +37,7 @@ CACHE_DIR.mkdir(exist_ok=True)
 UPLOADS_FILE = SCRIPT_DIR / "uitslagen.json"
 PROGRAMMA_FILE = SCRIPT_DIR / "programma.json"
 STANDEN_FILE = SCRIPT_DIR / "standen.json"
+OPROEP_TEAMFOTO_FILE = SCRIPT_DIR / "oproep_teamfoto.json"
 TEAM_PHOTOS_CACHE = CACHE_DIR / "team_photos.json"
 STAND_XLSX_CACHE = CACHE_DIR / "stand.xlsx"
 STAND_XLSX_URL = "https://api.nevobo.nl/export/vereniging/CKM1R98/stand.xlsx"
@@ -1106,6 +1107,49 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
     }
 
 
+def build_oproep_teamfoto_data(photos_map: dict) -> dict:
+    """
+    Analyseert welke VOKO teams momenteel een echte teamfoto hebben op de website
+    en welke teams nog een placeholder hebben (en dus gezocht worden).
+    """
+    team_categories = [
+        ("Heren", ["VOKO HS 1", "VOKO HS 2", "VOKO HS 3", "VOKO HS 4", "VOKO HS 5"]),
+        ("Dames", ["VOKO DS 1", "VOKO DS 2", "VOKO DS 3"]),
+        ("Jeugd", ["VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2"]),
+        ("Volley Stars (CMV)", ["Volley Stars"])
+    ]
+
+    met_foto = []
+    zonder_foto = []
+    categorieen = {}
+
+    for cat_name, t_list in team_categories:
+        categorieen[cat_name] = {"compleet": [], "gezocht": []}
+        for t in t_list:
+            _, is_ph = get_team_photo(t, photos_map)
+            if not is_ph:
+                met_foto.append(t)
+                categorieen[cat_name]["compleet"].append(t)
+            else:
+                zonder_foto.append(t)
+                categorieen[cat_name]["gezocht"].append(t)
+
+    total_teams = len(met_foto) + len(zonder_foto)
+    percentage = int(round((len(met_foto) / total_teams) * 100)) if total_teams else 0
+
+    return {
+        "updated_at": datetime.now().isoformat(),
+        "email": "communicatie@voko-oosterhout.nl",
+        "totaal_teams": total_teams,
+        "aantal_met_foto": len(met_foto),
+        "aantal_zonder_foto": len(zonder_foto),
+        "percentage_compleet": percentage,
+        "teams_met_foto": met_foto,
+        "teams_zonder_foto": zonder_foto,
+        "categorieen": categorieen
+    }
+
+
 # -----------------------------------------------------------------------------
 # 5. Hoofdroutine update_competitie()
 # -----------------------------------------------------------------------------
@@ -1176,9 +1220,15 @@ def update_competitie():
     with open(STANDEN_FILE, "w", encoding="utf-8") as f:
         json.dump(standen_data, f, ensure_ascii=False, indent=2)
 
+    # Bouw data voor oproep teamfoto's
+    oproep_teamfoto_data = build_oproep_teamfoto_data(photos_map)
+    with open(OPROEP_TEAMFOTO_FILE, "w", encoding="utf-8") as f:
+        json.dump(oproep_teamfoto_data, f, ensure_ascii=False, indent=2)
+
     logging.info(f"Klaar: {len(alle_uitslagen)} uitslagen naar {UPLOADS_FILE.name}")
     logging.info(f"Klaar: {len(alle_programma)} programma-items naar {PROGRAMMA_FILE.name}")
     logging.info(f"Klaar: Standen weggeschreven naar {STANDEN_FILE.name}")
+    logging.info(f"Klaar: {oproep_teamfoto_data['aantal_zonder_foto']} gezochte teams naar {OPROEP_TEAMFOTO_FILE.name}")
 
 
 if __name__ == "__main__":

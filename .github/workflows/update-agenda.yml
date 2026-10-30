@@ -41,5 +41,5 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
-          git add agenda.json nieuws.json uitslagen.json programma.json standen.json cache/team_photos.json cache/stand.xlsx || git add agenda.json
+          git add agenda.json nieuws.json uitslagen.json programma.json standen.json oproep_teamfoto.json cache/team_photos.json cache/stand.xlsx || git add agenda.json
           git diff --staged --quiet || (git commit -m "Automated update: agenda, nieuws, competitie [skip ci]" && git push)

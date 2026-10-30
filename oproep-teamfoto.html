@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VOKO Digital Signage - Oproep Teamfoto's</title>
+  <link rel="stylesheet" href="style.css?v=20261030_1245">
+  <style>
+    /* -------------------------------------------------------------------------
+       Stijlen specifiek voor de Teamfoto Oproep Slide (1920x1080)
+       ------------------------------------------------------------------------- */
+    .oproep-stage {
+      position: absolute;
+      top: 230px;
+      bottom: 50px;
+      left: 80px;
+      right: 80px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.95fr;
+      gap: 36px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .oproep-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 32px 36px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    /* Linker Card: De Oproep & Instructies */
+    .oproep-tag-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      width: fit-content;
+      margin-bottom: 12px;
+    }
+
+    .oproep-main-title {
+      font-size: 38px;
+      font-weight: 800;
+      color: #17263c;
+      line-height: 1.18;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+
+    .oproep-intro-text {
+      font-size: 20px;
+      color: #475569;
+      line-height: 1.45;
+      font-weight: 500;
+      margin-bottom: 18px;
+    }
+
+    /* Tips Box */
+    .oproep-tips-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .oproep-tips-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .oproep-tips-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .oproep-tip-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #334155;
+      line-height: 1.3;
+    }
+
+    .oproep-tip-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* Mail Actie Box & QR Code */
+    .oproep-action-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%);
+      border: 2px solid #fed7aa;
+      border-radius: 16px;
+      padding: 18px 24px;
+    }
+
+    .oproep-qr-wrap {
+      width: 110px;
+      height: 110px;
+      min-width: 110px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .oproep-qr-wrap img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .oproep-action-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .oproep-action-label {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #c2410c;
+    }
+
+    .oproep-email-link {
+      font-size: 26px;
+      font-weight: 800;
+      color: #cb1d12;
+      text-decoration: none;
+      letter-spacing: -0.3px;
+      word-break: break-all;
+    }
+
+    .oproep-action-sub {
+      font-size: 15px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    /* Rechter Card: Wie missen we nog? */
+    .oproep-header-right {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .oproep-right-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #17263c;
+      letter-spacing: -0.3px;
+    }
+
+    .oproep-badge-missing {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #f87171;
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    /* Voortgangsbar */
+    .oproep-progress-wrap {
+      margin-bottom: 20px;
+    }
+
+    .oproep-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .oproep-progress-bar-bg {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .oproep-progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+      border-radius: 6px;
+      transition: width 0.8s ease;
+      width: 13%;
+    }
+
+    /* Categorieën & Pills */
+    .oproep-categories-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .oproep-cat-group {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+
+    .oproep-cat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 800;
+      color: #334155;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .oproep-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .oproep-team-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: #1e293b;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .oproep-team-pill.needed {
+      border-color: #fca5a5;
+      background: #fff5f5;
+      color: #b91c1c;
+    }
+
+    .oproep-team-pill.done {
+      border-color: #86efac;
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .oproep-team-pill-icon {
+      font-size: 16px;
+    }
+
+    /* Al Compleet Sectie */
+    .oproep-completed-box {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed #cbd5e1;
+    }
+
+    .oproep-completed-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #15803d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk met wit VOKO logo -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+      </header>
+
+      <!-- 2. Rode Banner met 'Gezocht: Teamfoto's 2026-2027' -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,158 Q 1100,172 450,190 Q 180,192 0,176 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Gezocht: Teamfoto's 2026-2027</h1>
+        </div>
+      </div>
+
+      <!-- 3. Main Stage: Twee kolommen (Links Oproep, Rechts Live Stand van Zaken) -->
+      <main class="oproep-stage">
+        
+        <!-- Linker Card: De Oproep -->
+        <article class="oproep-card">
+          <div>
+            <div class="oproep-tag-top">
+              <span>📸</span>
+              <span>Help ons compleet te maken</span>
+            </div>
+            <h2 class="oproep-main-title">Staat jouw team nog met een placeholder op dit scherm?</h2>
+            <p class="oproep-intro-text">
+              We willen onze kantine-narrowcasting en de VOKO-website graag vullen met echte, vrolijke teamfoto's van alle senioren-, jeugd- en miniteams! Maak na je volgende wedstrijd of trainingsavond samen even een leuke teamfoto.
+            </p>
+
+            <!-- 3 Snelle Tips -->
+            <div class="oproep-tips-box">
+              <div class="oproep-tips-title">
+                <span>💡</span>
+                <span>3 Tips voor een topfoto:</span>
+              </div>
+              <div class="oproep-tips-list">
+                <div class="oproep-tip-item">
+                  <span class="oproep-tip-icon">🏐</span>
+                  <span><strong>In VOKO-tenue:</strong> Gezellig samen als team op het veld of bij het net.</span>
+                </div>
+                <div class="oproep-tip-item">
+                  <span class="oproep-tip-icon">📐</span>
+                  <span><strong>Liggend formaat:</strong> Horizontaal/landschap vult de schermen het mooist.</span>
+                </div>
+                <div class="oproep-tip-item">
+                  <span class="oproep-tip-icon">✨</span>
+                  <span><strong>Hoge resolutie:</strong> Goed belicht en scherp direct vanuit je telefoon.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actie Box met QR code en e-mailadres -->
+          <div class="oproep-action-row">
+            <div class="oproep-qr-wrap">
+              <img src="assets/qr_teamfoto.svg" alt="Scan QR code om te mailen">
+            </div>
+            <div class="oproep-action-details">
+              <div class="oproep-action-label">Mail jullie teamfoto naar:</div>
+              <a href="mailto:communicatie@voko-oosterhout.nl?subject=Teamfoto%20VOKO" class="oproep-email-link">
+                communicatie@voko-oosterhout.nl
+              </a>
+              <div class="oproep-action-sub">
+                📱 Tip: Scan de QR-code met je smartphone en mail de foto direct vanuit je filmrol!
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Rechter Card: Dynamisch Overzicht -->
+        <article class="oproep-card">
+          <div>
+            <div class="oproep-header-right">
+              <h2 class="oproep-right-title">Wie missen we nog?</h2>
+              <div class="oproep-badge-missing" id="missing-badge">13 teams gezocht</div>
+            </div>
+
+            <!-- Voortgangsbalk -->
+            <div class="oproep-progress-wrap">
+              <div class="oproep-progress-header">
+                <span id="progress-text">2 van de 15 teams compleet</span>
+                <span id="progress-pct">13%</span>
+              </div>
+              <div class="oproep-progress-bar-bg">
+                <div class="oproep-progress-bar-fill" id="progress-bar-fill" style="width: 13%;"></div>
+              </div>
+            </div>
+
+            <!-- Dynamische categorieën met badges -->
+            <div class="oproep-categories-container" id="categories-container">
+              <!-- Wordt dynamisch opgebouwd uit oproep_teamfoto.json -->
+            </div>
+          </div>
+
+          <!-- Reeds compleet ingeleverd -->
+          <div class="oproep-completed-box" id="completed-box">
+            <div class="oproep-completed-title">
+              <span>🎉</span>
+              <span>Al compleet ingeleverd:</span>
+            </div>
+            <div class="oproep-pills-wrap" id="completed-pills">
+              <!-- Dynamisch gevuld -->
+            </div>
+          </div>
+        </article>
+
+      </main>
+
+      <!-- Pagina-teller en status balk onderaan -->
+      <div class="news-counter">Oproep Teamfoto's</div>
+      <div class="signage-status">VOKO Digital Signage • Help ons de schermen compleet te maken</div>
+      <div class="news-progress-bar-container">
+        <div class="news-progress-bar" style="width: 100%;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. Automatische Schaling (1080p full-screen weergave)
+    // -------------------------------------------------------------------------
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+      const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
+      canvas.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+
+    // -------------------------------------------------------------------------
+    // 2. Data inladen en dynamisch renderen
+    // -------------------------------------------------------------------------
+    async function loadOproepData() {
+      try {
+        const resp = await fetch(`oproep_teamfoto.json?t=${Date.now()}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        renderOproep(data);
+      } catch (err) {
+        console.warn('Kon oproep_teamfoto.json niet laden, gebruik fallback:', err);
+      }
+    }
+
+    function renderOproep(data) {
+      if (!data) return;
+
+      const total = data.totaal_teams || 15;
+      const done = data.aantal_met_foto || 0;
+      const needed = data.aantal_zonder_foto || (total - done);
+      const pct = data.percentage_compleet !== undefined ? data.percentage_compleet : Math.round((done / total) * 100);
+
+      // Header counts
+      const missingBadge = document.getElementById('missing-badge');
+      if (missingBadge) missingBadge.textContent = `${needed} ${needed === 1 ? 'team' : 'teams'} gezocht`;
+
+      const progressText = document.getElementById('progress-text');
+      if (progressText) progressText.textContent = `${done} van de ${total} teams compleet`;
+
+      const progressPct = document.getElementById('progress-pct');
+      if (progressPct) progressPct.textContent = `${pct}%`;
+
+      const progressFill = document.getElementById('progress-bar-fill');
+      if (progressFill) progressFill.style.width = `${pct}%`;
+
+      // Categorieën
+      const catContainer = document.getElementById('categories-container');
+      if (catContainer && data.categorieen) {
+        catContainer.innerHTML = '';
+        Object.entries(data.categorieen).forEach(([catName, catData]) => {
+          const neededList = catData.gezocht || [];
+          if (neededList.length === 0) return; // Categorie is 100% compleet!
+
+          const groupEl = document.createElement('div');
+          groupEl.className = 'oproep-cat-group';
+
+          const pillsHtml = neededList.map(t => `
+            <span class="oproep-team-pill needed">
+              <span class="oproep-team-pill-icon">📷</span>
+              <span>${t}</span>
+            </span>
+          `).join('');
+
+          groupEl.innerHTML = `
+            <div class="oproep-cat-header">
+              <span>${catName}</span>
+              <span style="color: #dc2626; font-size: 13px;">${neededList.length} nog nodig</span>
+            </div>
+            <div class="oproep-pills-wrap">
+              ${pillsHtml}
+            </div>
+          `;
+          catContainer.appendChild(groupEl);
+        });
+      }
+
+      // Reeds compleet
+      const completedPills = document.getElementById('completed-pills');
+      const completedBox = document.getElementById('completed-box');
+      if (completedPills && data.teams_met_foto) {
+        if (data.teams_met_foto.length === 0) {
+          if (completedBox) completedBox.style.display = 'none';
+        } else {
+          if (completedBox) completedBox.style.display = 'block';
+          completedPills.innerHTML = data.teams_met_foto.map(t => `
+            <span class="oproep-team-pill done">
+              <span class="oproep-team-pill-icon">✅</span>
+              <span>${t}</span>
+            </span>
+          `).join('');
+        }
+      }
+    }
+
+    // Start laden
+    loadOproepData();
+    // Automatisch periodiek peilen (elke 60s)
+    setInterval(loadOproepData, 60000);
+  </script>
+</body>
+</html>

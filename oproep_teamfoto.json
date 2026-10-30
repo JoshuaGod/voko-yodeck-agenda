@@ -1,0 +1,65 @@
+{
+  "updated_at": "2026-10-30T12:43:46.843874",
+  "email": "communicatie@voko-oosterhout.nl",
+  "totaal_teams": 15,
+  "aantal_met_foto": 2,
+  "aantal_zonder_foto": 13,
+  "percentage_compleet": 13,
+  "teams_met_foto": [
+    "VOKO HS 1",
+    "VOKO HS 5"
+  ],
+  "teams_zonder_foto": [
+    "VOKO HS 2",
+    "VOKO HS 3",
+    "VOKO HS 4",
+    "VOKO DS 1",
+    "VOKO DS 2",
+    "VOKO DS 3",
+    "VOKO MA 1",
+    "VOKO MA 2",
+    "VOKO MB 1",
+    "VOKO MB 2",
+    "VOKO MC 1",
+    "VOKO MC 2",
+    "Volley Stars"
+  ],
+  "categorieen": {
+    "Heren": {
+      "compleet": [
+        "VOKO HS 1",
+        "VOKO HS 5"
+      ],
+      "gezocht": [
+        "VOKO HS 2",
+        "VOKO HS 3",
+        "VOKO HS 4"
+      ]
+    },
+    "Dames": {
+      "compleet": [],
+      "gezocht": [
+        "VOKO DS 1",
+        "VOKO DS 2",
+        "VOKO DS 3"
+      ]
+    },
+    "Jeugd": {
+      "compleet": [],
+      "gezocht": [
+        "VOKO MA 1",
+        "VOKO MA 2",
+        "VOKO MB 1",
+        "VOKO MB 2",
+        "VOKO MC 1",
+        "VOKO MC 2"
+      ]
+    },
+    "Volley Stars (CMV)": {
+      "compleet": [],
+      "gezocht": [
+        "Volley Stars"
+      ]
+    }
+  }
+}
