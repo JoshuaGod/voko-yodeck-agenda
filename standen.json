@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-30T10:49:45.949484",
+  "updated_at": "2026-10-30T11:05:12.627527",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -8,18 +8,18 @@
         {
           "team": "VOKO HS 1",
           "klasse": "Heren Derde divisie B",
-          "positie": 9,
-          "positie_tekst": "9e",
-          "stand_omschrijving": "9e in Heren Derde divisie B",
+          "positie": 8,
+          "positie_tekst": "8e",
+          "stand_omschrijving": "8e in Heren Derde divisie B",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/photo-2026-09-24-18-18-05_20260924185739577269.jpg",
           "is_placeholder": false
         },
         {
           "team": "VOKO HS 2",
           "klasse": "Heren 1e Klasse D",
-          "positie": 9,
-          "positie_tekst": "9e",
-          "stand_omschrijving": "9e in Heren 1e Klasse D",
+          "positie": 7,
+          "positie_tekst": "7e",
+          "stand_omschrijving": "7e in Heren 1e Klasse D",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204030542.jpg",
           "is_placeholder": true
         },
@@ -44,9 +44,9 @@
         {
           "team": "VOKO HS 5",
           "klasse": "Heren 3e Klasse D",
-          "positie": 8,
-          "positie_tekst": "8e",
-          "stand_omschrijving": "8e in Heren 3e Klasse D",
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in Heren 3e Klasse D",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/h5-foto-1-1-van-1_20251008202944717.jpg",
           "is_placeholder": false
         }
@@ -82,8 +82,8 @@
           "positie": 6,
           "positie_tekst": "6e",
           "stand_omschrijving": "6e in 2e Klasse Dames (ORV)",
-          "gespeeld": 4,
-          "punten": 8,
+          "gespeeld": 2,
+          "punten": 1,
           "bron": "ORV Breda",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
           "is_placeholder": true
@@ -97,9 +97,9 @@
         {
           "team": "VOKO MA 1",
           "klasse": "Meiden A 1e Klasse C Eerste helft",
-          "positie": 2,
-          "positie_tekst": "2e",
-          "stand_omschrijving": "2e in Meiden A 1e Klasse C Eerste helft",
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "1e in Meiden A 1e Klasse C Eerste helft",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204049274.jpg",
           "is_placeholder": true
         },
@@ -133,18 +133,18 @@
         {
           "team": "VOKO MC 1",
           "klasse": "C Jeugd 3e Klasse J Eerste helft",
-          "positie": 4,
-          "positie_tekst": "4e",
-          "stand_omschrijving": "4e in C Jeugd 3e Klasse J Eerste helft",
+          "positie": 3,
+          "positie_tekst": "3e",
+          "stand_omschrijving": "3e in C Jeugd 3e Klasse J Eerste helft",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204104739.jpg",
           "is_placeholder": true
         },
         {
           "team": "VOKO MC 2",
           "klasse": "C Jeugd 3e Klasse K Eerste helft",
-          "positie": 5,
-          "positie_tekst": "5e",
-          "stand_omschrijving": "5e in C Jeugd 3e Klasse K Eerste helft",
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in C Jeugd 3e Klasse K Eerste helft",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203958607.jpg",
           "is_placeholder": true
         }
@@ -153,37 +153,59 @@
     "volleystars": {
       "titel": "Volley Stars (Mini's)",
       "slide_index": 4,
-      "ondertitel": "Meest recente speeldag & niveaus",
+      "ondertitel": "Meest recente speelronde CMV • Level 5 & 4 actief",
       "teams": [
         {
-          "team": "VOKO Level 5",
-          "niveau": "Niveau 5 (CMV)",
-          "omschrijving": "Toernooien West-Brabant",
-          "status": "Actief in toernooicircuit",
+          "team": "VOKO L5 2",
+          "klasse": "Niveau 5 (CMV) • 1e toernooipoule",
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "Niveau 5 (CMV) • 1e toernooipoule",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
           "is_placeholder": true
         },
         {
-          "team": "VOKO Level 4",
-          "niveau": "Niveau 4 (CMV)",
-          "omschrijving": "Toernooien West-Brabant",
-          "status": "Actief in toernooicircuit",
+          "team": "VOKO L5 1",
+          "klasse": "Niveau 5 (CMV) • 5e toernooipoule",
+          "positie": 5,
+          "positie_tekst": "5e",
+          "stand_omschrijving": "Niveau 5 (CMV) • 5e toernooipoule",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
           "is_placeholder": true
         },
         {
-          "team": "VOKO Level 3",
-          "niveau": "Niveau 3 (CMV)",
-          "omschrijving": "Toernooien West-Brabant",
-          "status": "Actief in toernooicircuit",
+          "team": "VOKO L4 2",
+          "klasse": "Niveau 4 (CMV) • 1e toernooipoule",
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "Niveau 4 (CMV) • 1e toernooipoule",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
           "is_placeholder": true
         },
         {
-          "team": "VOKO Level 2",
-          "niveau": "Niveau 2 (CMV)",
-          "omschrijving": "Toernooien West-Brabant",
-          "status": "Actief in toernooicircuit",
+          "team": "VOKO L4 3",
+          "klasse": "Niveau 4 (CMV) • 3e toernooipoule",
+          "positie": 3,
+          "positie_tekst": "3e",
+          "stand_omschrijving": "Niveau 4 (CMV) • 3e toernooipoule",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO L4 1",
+          "klasse": "Niveau 4 (CMV) • 5e toernooipoule",
+          "positie": 5,
+          "positie_tekst": "5e",
+          "stand_omschrijving": "Niveau 4 (CMV) • 5e toernooipoule",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO Level 3 & 2",
+          "klasse": "Niveau 3 & 2 • Geen toernooideelname",
+          "positie": 99,
+          "positie_tekst": "-",
+          "stand_omschrijving": "Niveau 3 & 2 • Geen toernooideelname",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
           "is_placeholder": true
         }

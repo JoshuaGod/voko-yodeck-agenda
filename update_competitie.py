@@ -827,23 +827,47 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
             "is_placeholder": is_ph
         })
 
-    # 4. Volley Stars (Mini's)
-    # Zoek naar actieve mini-teams in Nevobo (Level 2 t/m 5)
-    stars_list = []
+    # 4. Volley Stars (Mini's / CMV toernooien)
     img_stars, is_ph_stars = get_team_photo("Volley Stars", photos_map)
 
-    # Volley Stars West-Brabant toernooi-teams
-    mini_teams = [
-        {"team": "VOKO Level 5", "niveau": "Niveau 5 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
-        {"team": "VOKO Level 4", "niveau": "Niveau 4 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
-        {"team": "VOKO Level 3", "niveau": "Niveau 3 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
-        {"team": "VOKO Level 2", "niveau": "Niveau 2 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
+    # Actuele toernooiteams en ranking van meest recente toernooironde:
+    # L5-2 is 1e, L5-1 is 5e, L4-2 is 1e, L4-3 is 3e, L4-1 is 5e.
+    # Level 3 & Level 2 hadden geen toernooideelname.
+    stars_config = [
+        {"team": "VOKO L5 2", "default_pos": 1, "klasse": "Niveau 5 (CMV) • 1e toernooipoule"},
+        {"team": "VOKO L5 1", "default_pos": 5, "klasse": "Niveau 5 (CMV) • 5e toernooipoule"},
+        {"team": "VOKO L4 2", "default_pos": 1, "klasse": "Niveau 4 (CMV) • 1e toernooipoule"},
+        {"team": "VOKO L4 3", "default_pos": 3, "klasse": "Niveau 4 (CMV) • 3e toernooipoule"},
+        {"team": "VOKO L4 1", "default_pos": 5, "klasse": "Niveau 4 (CMV) • 5e toernooipoule"},
+        {"team": "VOKO Level 3 & 2", "default_pos": 99, "default_txt": "-", "klasse": "Niveau 3 & 2 • Geen toernooideelname"},
     ]
-    for mt in mini_teams:
+
+    stars_list = []
+    for sc in stars_config:
+        team_name = sc["team"]
+        t_data = nevobo_teams.get(team_name, {})
+        stand_txt = t_data.get("stand", "").strip()
+
+        if stand_txt:
+            pos, pos_txt, klasse_api = parse_rank_and_class(stand_txt)
+            klasse = klasse_api or sc["klasse"]
+        else:
+            pos = sc.get("default_pos", 99)
+            pos_txt = sc.get("default_txt", f"{pos}e" if pos != 99 else "-")
+            klasse = sc["klasse"]
+
+        img_url, is_ph = get_team_photo(team_name, photos_map)
+        if is_ph:
+            img_url, is_ph = img_stars, is_ph_stars
+
         stars_list.append({
-            **mt,
-            "team_foto": img_stars,
-            "is_placeholder": is_ph_stars
+            "team": team_name,
+            "klasse": klasse,
+            "positie": pos,
+            "positie_tekst": pos_txt,
+            "stand_omschrijving": stand_txt or klasse,
+            "team_foto": img_url,
+            "is_placeholder": is_ph
         })
 
     return {
@@ -867,7 +891,7 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
             "volleystars": {
                 "titel": "Volley Stars (Mini's)",
                 "slide_index": 4,
-                "ondertitel": "Meest recente speeldag & niveaus",
+                "ondertitel": "Meest recente speelronde CMV • Level 5 & 4 actief",
                 "teams": stars_list
             }
         }
