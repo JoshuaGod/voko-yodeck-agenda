@@ -5,8 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>VOKO Digital Signage - Oproep Teamfoto's</title>
-  <link rel="stylesheet" href="style.css?v=20261030_1245">
+  <link rel="stylesheet" href="style.css?v=20261030_1300">
   <style>
+    /* -------------------------------------------------------------------------
+       Zelfstandige Viewport Schaling (1920x1080 canvas behoudt altijd verhouding)
+       ------------------------------------------------------------------------- */
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #0b0f19;
+      font-family: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    #viewport-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #slide-canvas {
+      width: 1920px;
+      height: 1080px;
+      min-width: 1920px;
+      min-height: 1080px;
+      max-width: 1920px;
+      max-height: 1080px;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+    }
+
     /* -------------------------------------------------------------------------
        Stijlen specifiek voor de Teamfoto Oproep Slide (1920x1080)
        ------------------------------------------------------------------------- */
@@ -27,12 +68,13 @@
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 18px;
-      padding: 32px 36px;
+      padding: 30px 34px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     /* Linker Card: De Oproep & Instructies */
@@ -185,7 +227,7 @@
     }
 
     .oproep-right-title {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 800;
       color: #17263c;
       letter-spacing: -0.3px;
@@ -197,13 +239,13 @@
       border: 1px solid #f87171;
       padding: 6px 16px;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
     }
 
     /* Voortgangsbar */
     .oproep-progress-wrap {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .oproep-progress-header {
@@ -236,7 +278,7 @@
     .oproep-categories-container {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
       flex: 1;
       overflow: hidden;
     }
@@ -245,19 +287,19 @@
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 10px 14px;
     }
 
     .oproep-cat-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       color: #334155;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .oproep-pills-wrap {
@@ -272,7 +314,7 @@
       gap: 6px;
       padding: 5px 12px;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       background: #ffffff;
       border: 1.5px solid #cbd5e1;
@@ -293,7 +335,7 @@
     }
 
     .oproep-team-pill-icon {
-      font-size: 16px;
+      font-size: 15px;
     }
 
     /* Al Compleet Sectie */
@@ -418,7 +460,7 @@
 
             <!-- Dynamische categorieën met badges -->
             <div class="oproep-categories-container" id="categories-container">
-              <!-- Wordt dynamisch opgebouwd uit oproep_teamfoto.json -->
+              <!-- Wordt dynamisch opgebouwd -->
             </div>
           </div>
 
@@ -448,18 +490,61 @@
 
   <script>
     // -------------------------------------------------------------------------
-    // 1. Automatische Schaling (1080p full-screen weergave)
+    // 0. Fallback data zodat de slide ALTIJD direct en foutloos renderbaar is
+    // -------------------------------------------------------------------------
+    const INITIAL_OPROEP_DATA = {
+      "totaal_teams": 15,
+      "aantal_met_foto": 2,
+      "aantal_zonder_foto": 13,
+      "percentage_compleet": 13,
+      "teams_met_foto": [
+        "VOKO HS 1",
+        "VOKO HS 5"
+      ],
+      "teams_zonder_foto": [
+        "VOKO HS 2", "VOKO HS 3", "VOKO HS 4",
+        "VOKO DS 1", "VOKO DS 2", "VOKO DS 3",
+        "VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2",
+        "Volley Stars"
+      ],
+      "categorieen": {
+        "Heren": {
+          "compleet": ["VOKO HS 1", "VOKO HS 5"],
+          "gezocht": ["VOKO HS 2", "VOKO HS 3", "VOKO HS 4"]
+        },
+        "Dames": {
+          "compleet": [],
+          "gezocht": ["VOKO DS 1", "VOKO DS 2", "VOKO DS 3"]
+        },
+        "Jeugd": {
+          "compleet": [],
+          "gezocht": ["VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2"]
+        },
+        "Volley Stars (CMV)": {
+          "compleet": [],
+          "gezocht": ["Volley Stars"]
+        }
+      }
+    };
+
+    // -------------------------------------------------------------------------
+    // 1. Automatische Schaling (1080p canvas past precies in elk venster)
     // -------------------------------------------------------------------------
     function fitViewport() {
       const canvas = document.getElementById('slide-canvas');
       if (!canvas) return;
       const targetWidth = 1920;
       const targetHeight = 1080;
-      const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
+      const currentWidth = window.innerWidth;
+      const currentHeight = window.innerHeight;
+      const scale = Math.min(currentWidth / targetWidth, currentHeight / targetHeight);
       canvas.style.transform = `scale(${scale})`;
     }
+
     window.addEventListener('resize', fitViewport);
     window.addEventListener('DOMContentLoaded', fitViewport);
+    window.addEventListener('load', fitViewport);
+    fitViewport();
 
     // -------------------------------------------------------------------------
     // 2. Data inladen en dynamisch renderen
@@ -471,7 +556,7 @@
         const data = await resp.json();
         renderOproep(data);
       } catch (err) {
-        console.warn('Kon oproep_teamfoto.json niet laden, gebruik fallback:', err);
+        console.warn('Kon oproep_teamfoto.json niet live laden (mogelijk lokaal bestand), fallback actief:', err);
       }
     }
 
@@ -479,7 +564,7 @@
       if (!data) return;
 
       const total = data.totaal_teams || 15;
-      const done = data.aantal_met_foto || 0;
+      const done = data.aantal_met_foto !== undefined ? data.aantal_met_foto : 0;
       const needed = data.aantal_zonder_foto !== undefined ? data.aantal_zonder_foto : (total - done);
       const pct = data.percentage_compleet !== undefined ? data.percentage_compleet : Math.round((done / total) * 100);
 
@@ -617,26 +702,12 @@
         }
       }
     }
-      const completedPills = document.getElementById('completed-pills');
-      const completedBox = document.getElementById('completed-box');
-      if (completedPills && data.teams_met_foto) {
-        if (data.teams_met_foto.length === 0) {
-          if (completedBox) completedBox.style.display = 'none';
-        } else {
-          if (completedBox) completedBox.style.display = 'block';
-          completedPills.innerHTML = data.teams_met_foto.map(t => `
-            <span class="oproep-team-pill done">
-              <span class="oproep-team-pill-icon">✅</span>
-              <span>${t}</span>
-            </span>
-          `).join('');
-        }
-      }
-    }
 
-    // Start laden
+    // Direct eerste render met betrouwbare fallback data
+    renderOproep(INITIAL_OPROEP_DATA);
+
+    // Haal actuele data op via fetch (en herhaal elke 60 seconden)
     loadOproepData();
-    // Automatisch periodiek peilen (elke 60s)
     setInterval(loadOproepData, 60000);
   </script>
 </body>
