@@ -480,54 +480,143 @@
 
       const total = data.totaal_teams || 15;
       const done = data.aantal_met_foto || 0;
-      const needed = data.aantal_zonder_foto || (total - done);
+      const needed = data.aantal_zonder_foto !== undefined ? data.aantal_zonder_foto : (total - done);
       const pct = data.percentage_compleet !== undefined ? data.percentage_compleet : Math.round((done / total) * 100);
 
-      // Header counts
+      const bannerTitle = document.querySelector('.banner-title');
+      const tagTop = document.querySelector('.oproep-tag-top');
+      const mainTitle = document.querySelector('.oproep-main-title');
+      const introText = document.querySelector('.oproep-intro-text');
+      const rightTitle = document.querySelector('.oproep-right-title');
       const missingBadge = document.getElementById('missing-badge');
-      if (missingBadge) missingBadge.textContent = `${needed} ${needed === 1 ? 'team' : 'teams'} gezocht`;
-
       const progressText = document.getElementById('progress-text');
-      if (progressText) progressText.textContent = `${done} van de ${total} teams compleet`;
-
       const progressPct = document.getElementById('progress-pct');
-      if (progressPct) progressPct.textContent = `${pct}%`;
-
       const progressFill = document.getElementById('progress-bar-fill');
-      if (progressFill) progressFill.style.width = `${pct}%`;
-
-      // Categorieën
       const catContainer = document.getElementById('categories-container');
-      if (catContainer && data.categorieen) {
-        catContainer.innerHTML = '';
-        Object.entries(data.categorieen).forEach(([catName, catData]) => {
-          const neededList = catData.gezocht || [];
-          if (neededList.length === 0) return; // Categorie is 100% compleet!
+      const completedPills = document.getElementById('completed-pills');
+      const completedBox = document.getElementById('completed-box');
+      const completedTitle = document.querySelector('.oproep-completed-title');
 
-          const groupEl = document.createElement('div');
-          groupEl.className = 'oproep-cat-group';
+      if (needed === 0) {
+        // ---------------------------------------------------------------------
+        // Stand: Alle teams hebben een foto! (100% compleet)
+        // Automatische transformatie naar "Staan jullie nog tip top op je teamfoto?"
+        // ---------------------------------------------------------------------
+        if (bannerTitle) bannerTitle.textContent = "Staan jullie nog tip top op je teamfoto?";
 
-          const pillsHtml = neededList.map(t => `
-            <span class="oproep-team-pill needed">
-              <span class="oproep-team-pill-icon">📷</span>
+        if (tagTop) {
+          tagTop.innerHTML = '<span>🎉</span><span>100% Compleet!</span>';
+          tagTop.style.background = '#f0fdf4';
+          tagTop.style.borderColor = '#86efac';
+          tagTop.style.color = '#15803d';
+        }
+
+        if (mainTitle) mainTitle.textContent = "Staan jullie nog tip top op je teamfoto?";
+
+        if (introText) {
+          introText.textContent = "Geweldig nieuws: alle teams van VOKO hebben inmiddels een officiële teamfoto! Maar staan jullie er nog tip top op? Zijn er nieuwe spelers bijgekomen, een nieuwe coach, of zijn jullie toe aan een frisse actiefoto? Zo niet, stuur dan gerust een nieuwe foto naar communicatie@voko-oosterhout.nl!";
+        }
+
+        if (rightTitle) rightTitle.textContent = "Alle teams in beeld! 📸";
+
+        if (missingBadge) {
+          missingBadge.textContent = "100% Compleet! 🎉";
+          missingBadge.style.background = "#dcfce7";
+          missingBadge.style.color = "#166534";
+          missingBadge.style.borderColor = "#86efac";
+        }
+
+        if (progressText) progressText.textContent = `Alle ${total} teams compleet`;
+        if (progressPct) progressPct.textContent = "100%";
+        if (progressFill) {
+          progressFill.style.width = "100%";
+          progressFill.style.background = "linear-gradient(90deg, #22c55e 0%, #16a34a 100%)";
+        }
+
+        if (catContainer) {
+          catContainer.innerHTML = `
+            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 20px 24px; color: #166534; font-size: 18px; line-height: 1.45; font-weight: 600;">
+              <div style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Dank aan alle VOKO teams! 🏐</div>
+              Ieder team staat nu netjes op de narrowcasting en de website. Wil je toch iets actualiseren of heb je een nog leukere foto van je team? Mail het ons gerust!
+            </div>
+          `;
+        }
+
+        if (completedTitle) completedTitle.innerHTML = '<span>🏐</span><span>Alle teams voorzien van foto:</span>';
+        if (completedBox) completedBox.style.display = 'block';
+        if (completedPills && data.teams_met_foto) {
+          completedPills.innerHTML = data.teams_met_foto.map(t => `
+            <span class="oproep-team-pill done">
+              <span class="oproep-team-pill-icon">✅</span>
               <span>${t}</span>
             </span>
           `).join('');
+        }
+      } else {
+        // ---------------------------------------------------------------------
+        // Stand: Er ontbreken nog teamfoto's (oproep-modus)
+        // ---------------------------------------------------------------------
+        if (bannerTitle) bannerTitle.textContent = "Gezocht: Teamfoto's 2026-2027";
+        if (mainTitle) mainTitle.textContent = "Staat jouw team nog met een placeholder op dit scherm?";
+        if (rightTitle) rightTitle.textContent = "Wie missen we nog?";
 
-          groupEl.innerHTML = `
-            <div class="oproep-cat-header">
-              <span>${catName}</span>
-              <span style="color: #dc2626; font-size: 13px;">${neededList.length} nog nodig</span>
-            </div>
-            <div class="oproep-pills-wrap">
-              ${pillsHtml}
-            </div>
-          `;
-          catContainer.appendChild(groupEl);
-        });
+        if (missingBadge) {
+          missingBadge.textContent = `${needed} ${needed === 1 ? 'team' : 'teams'} gezocht`;
+          missingBadge.style.background = "#fee2e2";
+          missingBadge.style.color = "#991b1b";
+          missingBadge.style.borderColor = "#f87171";
+        }
+
+        if (progressText) progressText.textContent = `${done} van de ${total} teams compleet`;
+        if (progressPct) progressPct.textContent = `${pct}%`;
+        if (progressFill) progressFill.style.width = `${pct}%`;
+
+        // Categorieën met gezochte teams
+        if (catContainer && data.categorieen) {
+          catContainer.innerHTML = '';
+          Object.entries(data.categorieen).forEach(([catName, catData]) => {
+            const neededList = catData.gezocht || [];
+            if (neededList.length === 0) return;
+
+            const groupEl = document.createElement('div');
+            groupEl.className = 'oproep-cat-group';
+
+            const pillsHtml = neededList.map(t => `
+              <span class="oproep-team-pill needed">
+                <span class="oproep-team-pill-icon">📷</span>
+                <span>${t}</span>
+              </span>
+            `).join('');
+
+            groupEl.innerHTML = `
+              <div class="oproep-cat-header">
+                <span>${catName}</span>
+                <span style="color: #dc2626; font-size: 13px;">${neededList.length} nog nodig</span>
+              </div>
+              <div class="oproep-pills-wrap">
+                ${pillsHtml}
+              </div>
+            `;
+            catContainer.appendChild(groupEl);
+          });
+        }
+
+        // Reeds compleet ingeleverde teams
+        if (completedPills && data.teams_met_foto) {
+          if (data.teams_met_foto.length === 0) {
+            if (completedBox) completedBox.style.display = 'none';
+          } else {
+            if (completedBox) completedBox.style.display = 'block';
+            completedPills.innerHTML = data.teams_met_foto.map(t => `
+              <span class="oproep-team-pill done">
+                <span class="oproep-team-pill-icon">✅</span>
+                <span>${t}</span>
+              </span>
+            `).join('');
+          }
+        }
       }
-
-      // Reeds compleet
+    }
       const completedPills = document.getElementById('completed-pills');
       const completedBox = document.getElementById('completed-box');
       if (completedPills && data.teams_met_foto) {
