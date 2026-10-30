@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-30T11:29:14.606138",
+  "updated_at": "2026-10-30T11:32:39.954906",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -179,7 +179,7 @@
     "volleystars": {
       "titel": "Volley Stars (Mini's)",
       "slide_index": 4,
-      "ondertitel": "Meest recente speelronde CMV • Level 5 & 4 actief",
+      "ondertitel": "Meest recente speelronde CMV • 5 teams actief",
       "teams": [
         {
           "team": "VOKO L5 2",
@@ -233,15 +233,6 @@
           "stand_omschrijving": "5e in VS WB Level 4 - 2e Kl - 1e toernooi",
           "gespeeld": 4,
           "punten": 2,
-          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
-          "is_placeholder": true
-        },
-        {
-          "team": "VOKO Level 3 & 2",
-          "klasse": "Niveau 3 & 2 • Geen toernooideelname",
-          "positie": 99,
-          "positie_tekst": "-",
-          "stand_omschrijving": "Niveau 3 & 2 • Geen toernooideelname",
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
           "is_placeholder": true
         }

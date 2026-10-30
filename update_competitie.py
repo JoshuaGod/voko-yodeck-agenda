@@ -952,43 +952,55 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
         })
 
     # 4. Volley Stars (Mini's / CMV toernooien)
+    # Zoek dynamisch alle toernooiteams uit stand.xlsx (L2 t/m L5 of CMV)
     img_stars, is_ph_stars = get_team_photo("Volley Stars", photos_map)
-    stars_order = [
-        ("VOKO L5 2", "Niveau 5 (CMV) • 1e toernooipoule"),
-        ("VOKO L5 1", "Niveau 5 (CMV) • 5e toernooipoule"),
-        ("VOKO L4 2", "Niveau 4 (CMV) • 1e toernooipoule"),
-        ("VOKO L4 3", "Niveau 4 (CMV) • 3e toernooipoule"),
-        ("VOKO L4 1", "Niveau 4 (CMV) • 5e toernooipoule"),
-        ("VOKO Level 3 & 2", "Niveau 3 & 2 • Geen toernooideelname")
-    ]
-
     stars_list = []
-    for team_name, def_klasse in stars_order:
-        if team_name == "VOKO Level 3 & 2":
-            stars_list.append({
-                "team": team_name,
-                "klasse": def_klasse,
-                "positie": 99,
-                "positie_tekst": "-",
-                "stand_omschrijving": def_klasse,
-                "team_foto": img_stars,
-                "is_placeholder": is_ph_stars
-            })
-        else:
-            pos, pos_txt, klasse, stand_txt, gespeeld, punten = get_team_stand_info(team_name, def_klasse)
+
+    stars_teams_found = []
+    for team_name, t_info in xlsx_standings.items():
+        if re.search(r"\bL[2-5]\b", team_name, flags=re.IGNORECASE) or "level" in team_name.lower():
+            stars_teams_found.append((team_name, t_info))
+
+    if stars_teams_found:
+        # Sorteer dynamisch: hoogste niveau eerst (Level 5 -> Level 2), daarna op behaalde positie (1e, 2e, etc.)
+        def stars_sort_key(item):
+            tname, tinfo = item
+            m_lvl = re.search(r"L([2-5])", tname, flags=re.IGNORECASE)
+            lvl = int(m_lvl.group(1)) if m_lvl else 0
+            rank = tinfo.get("positie", 99)
+            return (-lvl, rank)
+
+        stars_teams_found.sort(key=stars_sort_key)
+
+        for team_name, t_info in stars_teams_found:
             img_url, is_ph = get_team_photo(team_name, photos_map)
             if is_ph:
                 img_url, is_ph = img_stars, is_ph_stars
+
             stars_list.append({
                 "team": team_name,
-                "klasse": klasse or def_klasse,
-                "positie": pos,
-                "positie_tekst": pos_txt,
-                "stand_omschrijving": stand_txt,
-                "gespeeld": gespeeld,
-                "punten": punten,
+                "klasse": t_info.get("klasse", "Niveau CMV"),
+                "positie": t_info.get("positie", 99),
+                "positie_tekst": t_info.get("positie_tekst", "-"),
+                "stand_omschrijving": t_info.get("stand_omschrijving", ""),
+                "gespeeld": t_info.get("gespeeld", 0),
+                "punten": t_info.get("punten", 0),
                 "team_foto": img_url,
                 "is_placeholder": is_ph
+            })
+    else:
+        # Fallback indien stand.xlsx (nog) geen toernooigegevens bevat
+        for fallback_team in ["VOKO L5 2", "VOKO L5 1", "VOKO L4 2", "VOKO L4 3", "VOKO L4 1"]:
+            stars_list.append({
+                "team": fallback_team,
+                "klasse": "CMV Toernooien",
+                "positie": 99,
+                "positie_tekst": "-",
+                "stand_omschrijving": "Toernooien West-Brabant",
+                "gespeeld": 0,
+                "punten": 0,
+                "team_foto": img_stars,
+                "is_placeholder": is_ph_stars
             })
 
     return {
@@ -1012,7 +1024,7 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
             "volleystars": {
                 "titel": "Volley Stars (Mini's)",
                 "slide_index": 4,
-                "ondertitel": "Meest recente speelronde CMV • Level 5 & 4 actief",
+                "ondertitel": f"Meest recente speelronde CMV • {len(stars_list)} teams actief",
                 "teams": stars_list
             }
         }
