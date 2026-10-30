@@ -177,10 +177,11 @@ def get_team_photo(team_name: str, photos_map: dict) -> tuple[str, bool]:
 # -----------------------------------------------------------------------------
 # 2. Nevobo API & Poule-indelingen
 # -----------------------------------------------------------------------------
-def fetch_and_parse_stand_xlsx() -> dict[str, dict]:
+def fetch_and_parse_stand_xlsx() -> dict[str, list[dict]]:
     """
     Haalt de officiële stand.xlsx op van Nevobo en parseert deze.
-    Bevat 100% actuele standen voor alle Nevobo teams (inclusief toernooien Volley Stars).
+    Bevat 100% actuele standen voor alle Nevobo teams, inclusief beker en meerdere competitiehelften.
+    Geeft een mapping terug: team_naam -> list van standen-dicts.
     """
     xlsx_bytes = None
     try:
@@ -204,7 +205,7 @@ def fetch_and_parse_stand_xlsx() -> dict[str, dict]:
     if not xlsx_bytes:
         return {}
 
-    standings = {}
+    standings: dict[str, list[dict]] = {}
     try:
         with zipfile.ZipFile(io.BytesIO(xlsx_bytes), "r") as z:
             shared_strings = []
@@ -232,7 +233,7 @@ def fetch_and_parse_stand_xlsx() -> dict[str, dict]:
                     row_vals.append(val)
 
                 # Header van poule: [Teamnaam, Poule-omschrijving]
-                if len(row_vals) == 2 and any(k in row_vals[1].lower() for k in ["competitie", "toernooi", "beker"]):
+                if len(row_vals) == 2 and any(k in row_vals[1].lower() for k in ["competitie", "toernooi", "beker", "stars"]):
                     current_team_header = row_vals[0].strip()
                     current_poule_desc = row_vals[1].strip()
                     continue
@@ -244,20 +245,59 @@ def fetch_and_parse_stand_xlsx() -> dict[str, dict]:
 
                     # Check of het een VOKO team is
                     if "voko" in team_naam.lower():
-                        clean_klasse = re.sub(r"^[A-Za-z0-9\-\s]+,\s*", "", current_poule_desc).strip()
-                        is_beker = "beker" in current_poule_desc.lower()
+                        clean_poule = re.sub(r"^[A-Za-z0-9\-\s]+,\s*", "", current_poule_desc).strip()
+                        poule_lower = current_poule_desc.lower()
 
-                        if team_naam not in standings or not is_beker:
-                            standings[team_naam] = {
-                                "team": team_naam,
-                                "positie": rank,
-                                "positie_tekst": f"{rank}e",
-                                "klasse": clean_klasse or current_poule_desc,
-                                "stand_omschrijving": f"{rank}e in {clean_klasse}",
-                                "gespeeld": int(row_vals[2]) if len(row_vals) > 2 and row_vals[2].isdigit() else 0,
-                                "punten": int(row_vals[3]) if len(row_vals) > 3 and row_vals[3].isdigit() else 0,
-                            }
-        logging.info(f"{len(standings)} actuele standen geparsed uit stand.xlsx.")
+                        if "beker" in poule_lower:
+                            type_str = "beker"
+                            label = "Beker"
+                            disp_klasse = re.sub(r"1e Ronde\s*", "", clean_poule).strip()
+                        elif "eerste helft" in poule_lower:
+                            type_str = "1e_helft"
+                            label = "1e helft"
+                            disp_klasse = re.sub(r"\s*Eerste helft.*$", "", clean_poule, flags=re.IGNORECASE).strip()
+                        elif "tweede helft" in poule_lower:
+                            type_str = "2e_helft"
+                            label = "2e helft"
+                            disp_klasse = re.sub(r"\s*Tweede helft.*$", "", clean_poule, flags=re.IGNORECASE).strip()
+                        elif "toernooi" in poule_lower or "stars" in poule_lower:
+                            type_str = "toernooi"
+                            label = "Toernooi"
+                            disp_klasse = clean_poule
+                        else:
+                            type_str = "competitie"
+                            label = "Competitie"
+                            disp_klasse = clean_poule
+
+                        gespeeld = int(row_vals[2]) if len(row_vals) > 2 and row_vals[2].isdigit() else 0
+                        punten = int(row_vals[3]) if len(row_vals) > 3 and row_vals[3].isdigit() else 0
+
+                        stand_entry = {
+                            "type": type_str,
+                            "label": label,
+                            "klasse": clean_poule,
+                            "display_klasse": disp_klasse or clean_poule,
+                            "positie": rank,
+                            "positie_tekst": f"{rank}e",
+                            "gespeeld": gespeeld,
+                            "punten": punten,
+                            "stand_omschrijving": f"{rank}e in {disp_klasse or clean_poule}"
+                        }
+
+                        if team_naam not in standings:
+                            standings[team_naam] = []
+
+                        # Dedupliceer indien dezelfde klasse al voor dit team geregistreerd staat
+                        if not any(item["klasse"] == clean_poule for item in standings[team_naam]):
+                            standings[team_naam].append(stand_entry)
+
+        # Sorteer per team: competitie / 1e helft / 2e helft eerst, daarna toernooi, daarna beker
+        order_priority = {"competitie": 1, "1e_helft": 2, "2e_helft": 3, "toernooi": 4, "beker": 5}
+        for t_name, entries in standings.items():
+            entries.sort(key=lambda x: order_priority.get(x.get("type", "competitie"), 99))
+
+        total_entries = sum(len(v) for v in standings.values())
+        logging.info(f"{total_entries} actuele standen geparsed voor {len(standings)} teams uit stand.xlsx.")
     except Exception as e:
         logging.warning(f"Fout bij parsen stand.xlsx: {e}")
 
@@ -837,13 +877,14 @@ def fetch_orv_dames3(today: date) -> tuple[list[dict], list[dict], dict | None]:
 # -----------------------------------------------------------------------------
 # 4. Standen structureren (4 categorieën)
 # -----------------------------------------------------------------------------
-def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: dict, xlsx_standings: dict) -> dict:
+def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: dict, xlsx_standings: dict[str, list[dict]]) -> dict:
     """
     Bouwt de 4 categorieën van standen.json op basis van de officiële Nevobo stand.xlsx:
     Slide 1: Heren (HS 1 t/m HS 5)
     Slide 2: Dames (DS 1, DS 2 & DS 3 ORV)
     Slide 3: Jeugd (MA 1, MA 2, MB 1, MB 2, MC 1, MC 2)
-    Slide 4: Volley Stars (L5-2, L5-1, L4-2, L4-3, L4-1, Level 3 & 2)
+    Slide 4: Volley Stars (CMV toernooien)
+    Ondersteunt meerdere standen per team (bijv. Competitie + Beker, of 1e helft + 2e helft).
     """
     def parse_rank_and_class(stand_txt: str) -> tuple[int, str, str]:
         m = re.search(r"(\d+)[e|ste]?\s+in\s+(.+)", stand_txt, flags=re.IGNORECASE)
@@ -853,22 +894,25 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
             return rank, f"{rank}e", klasse
         return 99, "-", stand_txt
 
-    def get_team_stand_info(team_name: str, fallback_klasse: str) -> tuple[int, str, str, str, int, int]:
-        t_xlsx = xlsx_standings.get(team_name)
-        if t_xlsx:
-            return (
-                t_xlsx["positie"],
-                t_xlsx["positie_tekst"],
-                t_xlsx["klasse"],
-                t_xlsx["stand_omschrijving"],
-                t_xlsx.get("gespeeld", 0),
-                t_xlsx.get("punten", 0)
-            )
+    def get_team_standen_list(team_name: str, fallback_klasse: str) -> list[dict]:
+        entries = xlsx_standings.get(team_name)
+        if entries and len(entries) > 0:
+            return entries
         # Fallback op nevobo_teams (API / referentie)
         t_data = nevobo_teams.get(team_name, {})
         stand_txt = t_data.get("stand", "")
         pos, pos_txt, klasse = parse_rank_and_class(stand_txt) if stand_txt else (99, "-", fallback_klasse)
-        return pos, pos_txt, klasse or fallback_klasse, stand_txt or f"{pos_txt} in {fallback_klasse}", 0, 0
+        return [{
+            "type": "competitie",
+            "label": "Competitie",
+            "klasse": klasse or fallback_klasse,
+            "display_klasse": klasse or fallback_klasse,
+            "positie": pos,
+            "positie_tekst": pos_txt,
+            "gespeeld": 0,
+            "punten": 0,
+            "stand_omschrijving": stand_txt or f"{pos_txt} in {fallback_klasse}"
+        }]
 
     # 1. Heren
     heren_order = [
@@ -880,16 +924,18 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
     ]
     heren_list = []
     for team_name, def_klasse in heren_order:
-        pos, pos_txt, klasse, stand_txt, gespeeld, punten = get_team_stand_info(team_name, def_klasse)
+        st_list = get_team_standen_list(team_name, def_klasse)
+        primary = st_list[0]
         img_url, is_ph = get_team_photo(team_name, photos_map)
         heren_list.append({
             "team": team_name,
-            "klasse": klasse,
-            "positie": pos,
-            "positie_tekst": pos_txt,
-            "stand_omschrijving": stand_txt,
-            "gespeeld": gespeeld,
-            "punten": punten,
+            "klasse": primary.get("display_klasse", primary.get("klasse", def_klasse)),
+            "positie": primary.get("positie", 99),
+            "positie_tekst": primary.get("positie_tekst", "-"),
+            "stand_omschrijving": primary.get("stand_omschrijving", ""),
+            "gespeeld": primary.get("gespeeld", 0),
+            "punten": primary.get("punten", 0),
+            "standen": st_list,
             "team_foto": img_url,
             "is_placeholder": is_ph
         })
@@ -902,25 +948,38 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
     ]
     dames_list = []
     for team_name, def_klasse in dames_order:
+        img_url, is_ph = get_team_photo(team_name, photos_map)
         if team_name == "VOKO DS 3":
             if ds3_stand:
-                img_url, is_ph = get_team_photo(team_name, photos_map)
+                ds3_standen_list = [{
+                    "type": "competitie",
+                    "label": "ORV",
+                    "klasse": "ORV 2e Klasse Dames",
+                    "display_klasse": "2e Klasse Dames",
+                    "positie": ds3_stand.get("positie", 99),
+                    "positie_tekst": ds3_stand.get("positie_tekst", "-"),
+                    "gespeeld": ds3_stand.get("gespeeld", 0),
+                    "punten": ds3_stand.get("punten", 0),
+                    "stand_omschrijving": ds3_stand.get("stand_omschrijving", "")
+                }]
                 dames_list.append({
                     **ds3_stand,
+                    "standen": ds3_standen_list,
                     "team_foto": img_url,
                     "is_placeholder": is_ph
                 })
         else:
-            pos, pos_txt, klasse, stand_txt, gespeeld, punten = get_team_stand_info(team_name, def_klasse)
-            img_url, is_ph = get_team_photo(team_name, photos_map)
+            st_list = get_team_standen_list(team_name, def_klasse)
+            primary = st_list[0]
             dames_list.append({
                 "team": team_name,
-                "klasse": klasse,
-                "positie": pos,
-                "positie_tekst": pos_txt,
-                "stand_omschrijving": stand_txt,
-                "gespeeld": gespeeld,
-                "punten": punten,
+                "klasse": primary.get("display_klasse", primary.get("klasse", def_klasse)),
+                "positie": primary.get("positie", 99),
+                "positie_tekst": primary.get("positie_tekst", "-"),
+                "stand_omschrijving": primary.get("stand_omschrijving", ""),
+                "gespeeld": primary.get("gespeeld", 0),
+                "punten": primary.get("punten", 0),
+                "standen": st_list,
                 "team_foto": img_url,
                 "is_placeholder": is_ph,
                 "bron": "Nevobo"
@@ -937,16 +996,18 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
     ]
     jeugd_list = []
     for team_name, def_klasse in jeugd_order:
-        pos, pos_txt, klasse, stand_txt, gespeeld, punten = get_team_stand_info(team_name, def_klasse)
+        st_list = get_team_standen_list(team_name, def_klasse)
+        primary = st_list[0]
         img_url, is_ph = get_team_photo(team_name, photos_map)
         jeugd_list.append({
             "team": team_name,
-            "klasse": klasse,
-            "positie": pos,
-            "positie_tekst": pos_txt,
-            "stand_omschrijving": stand_txt,
-            "gespeeld": gespeeld,
-            "punten": punten,
+            "klasse": primary.get("display_klasse", primary.get("klasse", def_klasse)),
+            "positie": primary.get("positie", 99),
+            "positie_tekst": primary.get("positie_tekst", "-"),
+            "stand_omschrijving": primary.get("stand_omschrijving", ""),
+            "gespeeld": primary.get("gespeeld", 0),
+            "punten": primary.get("punten", 0),
+            "standen": st_list,
             "team_foto": img_url,
             "is_placeholder": is_ph
         })
@@ -957,40 +1018,53 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
     stars_list = []
 
     stars_teams_found = []
-    for team_name, t_info in xlsx_standings.items():
+    for team_name, st_list in xlsx_standings.items():
         if re.search(r"\bL[2-5]\b", team_name, flags=re.IGNORECASE) or "level" in team_name.lower():
-            stars_teams_found.append((team_name, t_info))
+            stars_teams_found.append((team_name, st_list))
 
     if stars_teams_found:
         # Sorteer dynamisch: hoogste niveau eerst (Level 5 -> Level 2), daarna op behaalde positie (1e, 2e, etc.)
         def stars_sort_key(item):
-            tname, tinfo = item
+            tname, st_entries = item
             m_lvl = re.search(r"L([2-5])", tname, flags=re.IGNORECASE)
             lvl = int(m_lvl.group(1)) if m_lvl else 0
-            rank = tinfo.get("positie", 99)
+            rank = st_entries[0].get("positie", 99) if st_entries else 99
             return (-lvl, rank)
 
         stars_teams_found.sort(key=stars_sort_key)
 
-        for team_name, t_info in stars_teams_found:
+        for team_name, st_list in stars_teams_found:
+            primary = st_list[0]
             img_url, is_ph = get_team_photo(team_name, photos_map)
             if is_ph:
                 img_url, is_ph = img_stars, is_ph_stars
 
             stars_list.append({
                 "team": team_name,
-                "klasse": t_info.get("klasse", "Niveau CMV"),
-                "positie": t_info.get("positie", 99),
-                "positie_tekst": t_info.get("positie_tekst", "-"),
-                "stand_omschrijving": t_info.get("stand_omschrijving", ""),
-                "gespeeld": t_info.get("gespeeld", 0),
-                "punten": t_info.get("punten", 0),
+                "klasse": primary.get("display_klasse", primary.get("klasse", "Niveau CMV")),
+                "positie": primary.get("positie", 99),
+                "positie_tekst": primary.get("positie_tekst", "-"),
+                "stand_omschrijving": primary.get("stand_omschrijving", ""),
+                "gespeeld": primary.get("gespeeld", 0),
+                "punten": primary.get("punten", 0),
+                "standen": st_list,
                 "team_foto": img_url,
                 "is_placeholder": is_ph
             })
     else:
         # Fallback indien stand.xlsx (nog) geen toernooigegevens bevat
         for fallback_team in ["VOKO L5 2", "VOKO L5 1", "VOKO L4 2", "VOKO L4 3", "VOKO L4 1"]:
+            fallback_st = [{
+                "type": "toernooi",
+                "label": "Toernooi",
+                "klasse": "CMV Toernooien",
+                "display_klasse": "CMV Toernooien",
+                "positie": 99,
+                "positie_tekst": "-",
+                "gespeeld": 0,
+                "punten": 0,
+                "stand_omschrijving": "Toernooien West-Brabant"
+            }]
             stars_list.append({
                 "team": fallback_team,
                 "klasse": "CMV Toernooien",
@@ -999,6 +1073,7 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
                 "stand_omschrijving": "Toernooien West-Brabant",
                 "gespeeld": 0,
                 "punten": 0,
+                "standen": fallback_st,
                 "team_foto": img_stars,
                 "is_placeholder": is_ph_stars
             })

@@ -183,24 +183,57 @@
 
           let cardsHtml = '';
           chunkTeams.forEach(t => {
-            const rank = parseInt(t.positie, 10);
-            let rankClass = '';
-            if (rank === 1) rankClass = 'rank-1';
-            else if (rank === 2) rankClass = 'rank-2';
-            else if (rank === 3) rankClass = 'rank-3';
-
-            const rankDisplay = t.positie_tekst || (t.niveau ? '⭐' : '-');
             const photoUrl = t.team_foto || 'https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg';
+            const standenList = (t.standen && Array.isArray(t.standen) && t.standen.length > 0)
+              ? t.standen
+              : [{
+                  positie: t.positie,
+                  positie_tekst: t.positie_tekst || (t.niveau ? '⭐' : '-'),
+                  display_klasse: t.klasse || t.niveau || '',
+                  label: 'Competitie',
+                  type: 'competitie',
+                  gespeeld: t.gespeeld || 0,
+                  punten: t.punten || 0
+                }];
 
-            cardsHtml += `
-              <div class="stand-team-card">
-                <div class="stand-card-left">
-                  <div class="stand-rank-circle ${rankClass}">
+            let subRowsHtml = '';
+            standenList.forEach(s => {
+              const rank = parseInt(s.positie, 10);
+              let rankClass = '';
+              if (rank === 1) rankClass = 'rank-1';
+              else if (rank === 2) rankClass = 'rank-2';
+              else if (rank === 3) rankClass = 'rank-3';
+
+              const rankDisplay = s.positie_tekst || (s.niveau ? '⭐' : '-');
+              const typeClass = (s.type || 'competitie').toLowerCase().replace(/\s+/g, '_');
+              const typeLabel = s.label || 'Competitie';
+              const klasseName = s.display_klasse || s.klasse || '';
+              const statsText = (s.gespeeld > 0 || s.punten > 0)
+                ? `${s.gespeeld} gesp • ${s.punten} pt`
+                : (s.stand_omschrijving || '');
+
+              subRowsHtml += `
+                <div class="stand-comp-row">
+                  <div class="stand-rank-badge ${rankClass}">
                     ${rankDisplay}
                   </div>
-                  <div class="stand-team-details">
-                    <div class="stand-team-title">${t.team || ''}</div>
-                    <div class="stand-team-klasse">${t.klasse || t.niveau || ''}</div>
+                  <div class="stand-comp-info">
+                    <div class="stand-comp-line1">
+                      <span class="stand-type-pill ${typeClass}">${typeLabel}</span>
+                      <span class="stand-comp-name" title="${klasseName}">${klasseName}</span>
+                    </div>
+                    ${statsText ? `<div class="stand-comp-stats">${statsText}</div>` : ''}
+                  </div>
+                </div>
+              `;
+            });
+
+            cardsHtml += `
+              <div class="stand-team-card ${standenList.length > 1 ? 'is-multi-comp' : ''}">
+                <div class="stand-card-content">
+                  <div class="stand-team-title">${t.team || ''}</div>
+                  <div class="stand-comp-list">
+                    ${subRowsHtml}
                   </div>
                 </div>
                 <div class="stand-card-photo-wrap">

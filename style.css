@@ -833,20 +833,162 @@ html, body {
 .stand-team-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 22px 28px;
+  border-radius: 14px;
+  padding: 16px 22px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   transition: border-color 0.2s ease;
+  min-height: 155px;
 }
 
 .stand-team-card:hover {
   border-color: #cbd5e1;
 }
 
+.stand-team-card.is-multi-comp {
+  background: linear-gradient(135deg, #ffffff 0%, #fbfcfe 100%);
+  border-color: #cbd5e1;
+}
+
+.stand-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.stand-team-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #17263c;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
+}
+
+.stand-comp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stand-comp-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stand-rank-badge {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stand-rank-badge.rank-1,
+.stand-rank-circle.rank-1 {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+.stand-rank-badge.rank-2,
+.stand-rank-circle.rank-2 {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #334155;
+}
+
+.stand-rank-badge.rank-3,
+.stand-rank-circle.rank-3 {
+  background: #ffedd5;
+  border-color: #fb923c;
+  color: #c2410c;
+}
+
+.stand-comp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.stand-comp-line1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.stand-type-pill {
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stand-type-pill.competitie {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+}
+
+.stand-type-pill.beker {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  color: #7e22ce;
+}
+
+.stand-type-pill.1e_helft {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.stand-type-pill.2e_helft {
+  background: #fdf4ff;
+  border: 1px solid #f5d0fe;
+  color: #a21caf;
+}
+
+.stand-type-pill.toernooi {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+}
+
+.stand-comp-name {
+  font-size: 19px;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stand-comp-stats {
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Fallback stijlen voor oude templates */
 .stand-card-left {
   display: flex;
   align-items: center;
@@ -867,35 +1009,10 @@ html, body {
   justify-content: center;
 }
 
-.stand-rank-circle.rank-1 {
-  background: #fef3c7;
-  border-color: #f59e0b;
-  color: #b45309;
-}
-
-.stand-rank-circle.rank-2 {
-  background: #f1f5f9;
-  border-color: #94a3b8;
-  color: #334155;
-}
-
-.stand-rank-circle.rank-3 {
-  background: #ffedd5;
-  border-color: #fb923c;
-  color: #c2410c;
-}
-
 .stand-team-details {
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.stand-team-title {
-  font-size: 34px;
-  font-weight: 700;
-  color: #17263c;
-  line-height: 1.15;
 }
 
 .stand-team-klasse {
@@ -907,12 +1024,12 @@ html, body {
 
 /* Teamfoto in Standen Kaart */
 .stand-card-photo-wrap {
-  width: 210px;
+  width: 190px;
   height: 120px;
-  min-width: 210px;
+  min-width: 190px;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   border: 2px solid #e2e8f0;
   background: #f1f5f9;
   display: flex;
