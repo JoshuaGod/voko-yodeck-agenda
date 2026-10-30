@@ -181,6 +181,7 @@
           const pageSuffix = numChunks > 1 ? ` (${chunkIdx + 1}/${numChunks})` : '';
           slide.setAttribute('data-category-name', `${cat.titel || key}${pageSuffix}`);
 
+          const isSingleRow = chunkTeams.length <= 3;
           let cardsHtml = '';
           chunkTeams.forEach(t => {
             const photoUrl = t.team_foto || 'https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg';
@@ -196,8 +197,8 @@
                   punten: t.punten || 0
                 }];
 
-            let subRowsHtml = '';
-            standenList.forEach(s => {
+            let blocksHtml = '';
+            standenList.forEach((s, idx) => {
               const rank = parseInt(s.positie, 10);
               let rankClass = '';
               if (rank === 1) rankClass = 'rank-1';
@@ -209,21 +210,21 @@
               const typeLabel = s.label || 'Competitie';
               const klasseName = s.display_klasse || s.klasse || '';
               const statsText = (s.gespeeld > 0 || s.punten > 0)
-                ? `${s.gespeeld} gesp • ${s.punten} pt`
+                ? `${s.gespeeld} gespeeld • ${s.punten} punten`
                 : (s.stand_omschrijving || '');
 
-              subRowsHtml += `
-                <div class="stand-comp-row">
-                  <div class="stand-rank-badge ${rankClass}">
-                    ${rankDisplay}
-                  </div>
-                  <div class="stand-comp-info">
-                    <div class="stand-comp-line1">
-                      <span class="stand-type-pill ${typeClass}">${typeLabel}</span>
-                      <span class="stand-comp-name" title="${klasseName}">${klasseName}</span>
+              const isSecond = idx > 0 ? 'is-second-comp' : '';
+
+              blocksHtml += `
+                <div class="stand-comp-block ${isSecond}">
+                  <div class="stand-comp-header">
+                    <div class="stand-rank-badge ${rankClass}">
+                      ${rankDisplay}
                     </div>
-                    ${statsText ? `<div class="stand-comp-stats">${statsText}</div>` : ''}
+                    <span class="stand-type-pill ${typeClass}">${typeLabel}</span>
                   </div>
+                  <div class="stand-comp-klasse">${klasseName}</div>
+                  ${statsText ? `<div class="stand-comp-stats">${statsText}</div>` : ''}
                 </div>
               `;
             });
@@ -233,7 +234,7 @@
                 <div class="stand-card-content">
                   <div class="stand-team-title">${t.team || ''}</div>
                   <div class="stand-comp-list">
-                    ${subRowsHtml}
+                    ${blocksHtml}
                   </div>
                 </div>
                 <div class="stand-card-photo-wrap">
@@ -251,7 +252,7 @@
               </h2>
               ${cat.ondertitel ? `<div style="font-size: 22px; color: #64748b; font-weight: 600;">${cat.ondertitel}</div>` : ''}
             </div>
-            <div class="stand-grid-cards">
+            <div class="stand-grid-cards ${isSingleRow ? 'is-single-row' : ''}">
               ${cardsHtml}
             </div>
           `;

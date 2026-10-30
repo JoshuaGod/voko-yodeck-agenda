@@ -825,23 +825,30 @@ html, body {
 
 .stand-grid-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 20px;
   flex: 1;
+}
+
+/* Voor slides met <= 3 teams (zoals Dames): gecentreerd in 1 rij met extra grote kaarten en foto's */
+.stand-grid-cards.is-single-row {
+  grid-template-rows: minmax(360px, 420px);
+  align-content: center;
 }
 
 .stand-team-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 16px 22px;
+  border-radius: 16px;
+  padding: 20px 24px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  transition: border-color 0.2s ease;
-  min-height: 155px;
+  gap: 20px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  min-height: 280px;
 }
 
 .stand-team-card:hover {
@@ -849,47 +856,61 @@ html, body {
 }
 
 .stand-team-card.is-multi-comp {
-  background: linear-gradient(135deg, #ffffff 0%, #fbfcfe 100%);
+  background: linear-gradient(145deg, #ffffff 0%, #fbfcfe 100%);
   border-color: #cbd5e1;
 }
 
 .stand-card-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: center;
   flex: 1;
   min-width: 0;
 }
 
 .stand-team-title {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 800;
   color: #17263c;
   line-height: 1.15;
   letter-spacing: -0.3px;
+  margin-bottom: 10px;
 }
 
 .stand-comp-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
-.stand-comp-row {
+.stand-comp-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Duidelijke scheiding en spatie tussen verschillende competities */
+.stand-comp-block.is-second-comp {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 2px dashed #e2e8f0;
+}
+
+.stand-comp-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 2px;
 }
 
 .stand-rank-badge {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 9px;
   background: #f1f5f9;
   border: 2px solid #cbd5e1;
   color: #1e293b;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -917,30 +938,14 @@ html, body {
   color: #c2410c;
 }
 
-.stand-comp-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.stand-comp-line1 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
 .stand-type-pill {
-  padding: 3px 8px;
-  border-radius: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .stand-type-pill.competitie {
@@ -973,19 +978,19 @@ html, body {
   color: #c2410c;
 }
 
-.stand-comp-name {
-  font-size: 19px;
-  font-weight: 600;
-  color: #334155;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.stand-comp-klasse {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.25;
+  word-break: break-word;
 }
 
 .stand-comp-stats {
   font-size: 15px;
   font-weight: 600;
   color: #64748b;
+  line-height: 1.2;
 }
 
 /* Fallback stijlen voor oude templates */
@@ -1022,20 +1027,46 @@ html, body {
   line-height: 1.25;
 }
 
-/* Teamfoto in Standen Kaart */
+/* Grote teamfoto in Standen Kaart */
 .stand-card-photo-wrap {
-  width: 190px;
-  height: 120px;
-  min-width: 190px;
-  border-radius: 10px;
+  width: 250px;
+  height: 175px;
+  min-width: 250px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   border: 2px solid #e2e8f0;
   background: #f1f5f9;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  flex-shrink: 0;
+}
+
+/* Extra royale weergave bij slides met 1 rij (Dames) */
+.stand-grid-cards.is-single-row .stand-team-card {
+  min-height: 340px;
+  padding: 26px 30px;
+}
+
+.stand-grid-cards.is-single-row .stand-team-title {
+  font-size: 34px;
+  margin-bottom: 14px;
+}
+
+.stand-grid-cards.is-single-row .stand-comp-klasse {
+  font-size: 22px;
+}
+
+.stand-grid-cards.is-single-row .stand-comp-stats {
+  font-size: 17px;
+}
+
+.stand-grid-cards.is-single-row .stand-card-photo-wrap {
+  width: 280px;
+  height: 200px;
+  min-width: 280px;
 }
 
 .stand-card-photo {
