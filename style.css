@@ -838,71 +838,74 @@ html, body {
 }
 
 .stand-team-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 20px 24px 22px 24px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-  min-height: 280px;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 22px 26px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: border-color 0.2s ease, transform 0.2s ease !important;
+  min-height: 290px !important;
+  box-sizing: border-box !important;
 }
 
 .stand-team-card:hover {
-  border-color: #cbd5e1;
+  border-color: #cbd5e1 !important;
 }
 
 .stand-team-card.is-multi-comp {
-  background: linear-gradient(145deg, #ffffff 0%, #fbfcfe 100%);
-  border-color: #cbd5e1;
+  background: linear-gradient(145deg, #ffffff 0%, #fbfcfe 100%) !important;
+  border-color: #cbd5e1 !important;
 }
 
-/* Teamnaam als regel bovenaan en gecentreerd in het midden */
+/* 1. Bovenaan over de volle breedte: Teamnaam gecentreerd */
+.stand-team-header-row {
+  width: 100% !important;
+  text-align: center !important;
+  margin-bottom: 16px !important;
+}
+
 .stand-team-title-top {
-  text-align: center;
-  font-size: 32px;
-  font-weight: 800;
-  color: #17263c;
-  line-height: 1.15;
-  letter-spacing: -0.3px;
-  margin-bottom: 16px;
+  text-align: center !important;
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  color: #17263c !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.3px !important;
+  margin: 0 !important;
 }
 
-/* Body met daaronder links de standen en rechts de teamfoto verticaal gecentreerd */
+/* 2. Onderste gedeelte: Horizontale splitsing (links Standen, rechts Foto) */
+.stand-card-lower-body,
 .stand-card-body {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex: 1;
-  min-height: 0;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  flex: 1 !important;
+  min-height: 0 !important;
 }
 
-.stand-card-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex: 1;
-  min-width: 0;
-}
-
-.stand-team-title {
-  font-size: 30px;
-  font-weight: 800;
-  color: #17263c;
-  line-height: 1.15;
-  letter-spacing: -0.3px;
-  margin-bottom: 10px;
-}
-
+/* Linkerkolom: Standen */
+.stand-comp-column,
 .stand-comp-list {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  justify-content: center;
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+/* Rechterkolom: Foto */
+.stand-photo-column {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
 }
 
 .stand-comp-block {

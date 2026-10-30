@@ -5,7 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>VOKO Digital Signage - Standen & Ranking</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261030_1235">
+  <style>
+    /* Directe stijlen om browser-cache overschrijvingen te garanderen */
+    .stand-team-card {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 16px !important;
+      padding: 22px 26px !important;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04) !important;
+      min-height: 280px !important;
+      box-sizing: border-box !important;
+    }
+    .stand-team-header-row {
+      width: 100% !important;
+      text-align: center !important;
+      margin-bottom: 16px !important;
+    }
+    .stand-team-title-top {
+      text-align: center !important;
+      font-size: 32px !important;
+      font-weight: 800 !important;
+      color: #17263c !important;
+      line-height: 1.15 !important;
+      letter-spacing: -0.3px !important;
+      margin: 0 !important;
+    }
+    .stand-card-lower-body {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 20px !important;
+      flex: 1 !important;
+      min-height: 0 !important;
+    }
+    .stand-comp-column {
+      flex: 1 !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+    }
+    .stand-photo-column {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+    }
+    .stand-card-photo-wrap {
+      width: 250px !important;
+      height: 175px !important;
+      min-width: 250px !important;
+      border-radius: 12px !important;
+      overflow: hidden !important;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+      border: 2px solid #e2e8f0 !important;
+      background: #f1f5f9 !important;
+      position: relative !important;
+    }
+    .stand-grid-cards.is-single-row .stand-team-card {
+      min-height: 350px !important;
+      padding: 26px 30px !important;
+    }
+    .stand-grid-cards.is-single-row .stand-team-title-top {
+      font-size: 36px !important;
+      margin-bottom: 20px !important;
+    }
+    .stand-grid-cards.is-single-row .stand-card-photo-wrap {
+      width: 280px !important;
+      height: 195px !important;
+      min-width: 280px !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -231,13 +307,17 @@
 
             cardsHtml += `
               <div class="stand-team-card ${standenList.length > 1 ? 'is-multi-comp' : ''}">
-                <div class="stand-team-title-top">${t.team || ''}</div>
-                <div class="stand-card-body">
-                  <div class="stand-comp-list">
+                <div class="stand-team-header-row">
+                  <div class="stand-team-title-top">${t.team || ''}</div>
+                </div>
+                <div class="stand-card-lower-body">
+                  <div class="stand-comp-column">
                     ${blocksHtml}
                   </div>
-                  <div class="stand-card-photo-wrap">
-                    <img src="${photoUrl}" alt="${t.team || ''}" class="stand-card-photo ${t.is_placeholder ? 'is-placeholder' : ''}">
+                  <div class="stand-photo-column">
+                    <div class="stand-card-photo-wrap">
+                      <img src="${photoUrl}" alt="${t.team || ''}" class="stand-card-photo ${t.is_placeholder ? 'is-placeholder' : ''}">
+                    </div>
                   </div>
                 </div>
               </div>
