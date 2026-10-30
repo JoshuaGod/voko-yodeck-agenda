@@ -1,0 +1,888 @@
+#!/usr/bin/env python3
+"""
+VOKO Narrowcasting - Competitie Scraper & Parser
+Haalt programma, uitslagen en standen op voor VOKO Oosterhout (CKM1R98):
+1. Nevobo (volleybal.nl / api.nevobo.nl) voor alle Nevobo teams
+2. ORV Breda (orvbreda.nl ajaxLeesWedstrijden) voor VOKO Dames 3 (2e klasse dames)
+3. VOKO website (voko-oosterhout.nl/teamoverzicht) voor actuele teamfoto's
+Genereert:
+- uitslagen.json (uitslagen van de afgelopen 7 dagen + zaterdag live)
+- programma.json (wedstrijden komende 7 dagen met zaal, veld en ranking)
+- standen.json (4 categorieën: Heren, Dames, Jeugd, Volley Stars)
+"""
+
+import json
+import logging
+import os
+import re
+import urllib.parse
+from datetime import datetime, timedelta, date
+from pathlib import Path
+import requests
+from bs4 import BeautifulSoup
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+SCRIPT_DIR = Path(__file__).parent.resolve()
+CACHE_DIR = SCRIPT_DIR / "cache"
+CACHE_DIR.mkdir(exist_ok=True)
+
+# Bestemmingen
+UPLOADS_FILE = SCRIPT_DIR / "uitslagen.json"
+PROGRAMMA_FILE = SCRIPT_DIR / "programma.json"
+STANDEN_FILE = SCRIPT_DIR / "standen.json"
+TEAM_PHOTOS_CACHE = CACHE_DIR / "team_photos.json"
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    )
+}
+
+DUTCH_DAYS = {
+    0: "Maandag", 1: "Dinsdag", 2: "Woensdag", 3: "Donderdag",
+    4: "Vrijdag", 5: "Zaterdag", 6: "Zondag"
+}
+
+DUTCH_MONTHS = {
+    1: "januari", 2: "februari", 3: "maart", 4: "april",
+    5: "mei", 6: "juni", 7: "juli", 8: "augustus",
+    9: "september", 10: "oktober", 11: "november", 12: "december"
+}
+
+DEFAULT_PLACEHOLDER_IMG = "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg"
+
+NEVOBO_API_BASE = "https://api.nevobo.nl"
+VERENIGING_IRI = "/relatiebeheer/verenigingen/ckm1r98"
+ORV_BASE = "https://www.orvbreda.nl"
+
+
+def format_dutch_date(dt: datetime | date) -> str:
+    """Formatteert een datum naar 'Zaterdag 24 oktober 2026'."""
+    day_name = DUTCH_DAYS.get(dt.weekday(), "")
+    month_name = DUTCH_MONTHS.get(dt.month, "")
+    return f"{day_name} {dt.day} {month_name}"
+
+
+def normalize_team_name(name: str) -> str:
+    """Standaardiseert teamnamen voor consistente vergelijking."""
+    if not name:
+        return ""
+    n = name.strip()
+    # Standaardiseer 'Voko' -> 'VOKO'
+    n = re.sub(r"^voko\b", "VOKO", n, flags=re.IGNORECASE)
+    # Standaardiseer 'D3' -> 'DS 3'
+    n = re.sub(r"\bD3\b", "DS 3", n)
+    n = re.sub(r"\bD2\b", "DS 2", n)
+    n = re.sub(r"\bD1\b", "DS 1", n)
+    n = re.sub(r"\bH1\b", "HS 1", n)
+    n = re.sub(r"\bH2\b", "HS 2", n)
+    n = re.sub(r"\bH3\b", "HS 3", n)
+    n = re.sub(r"\bH4\b", "HS 4", n)
+    n = re.sub(r"\bH5\b", "HS 5", n)
+    return n
+
+
+# -----------------------------------------------------------------------------
+# 1. Teamfoto's van VOKO clubsite
+# -----------------------------------------------------------------------------
+def fetch_team_photos() -> dict[str, dict]:
+    """
+    Haalt de actuele teamfoto's op van https://www.voko-oosterhout.nl/teamoverzicht.
+    Slaat op in team_photos.json met timestamp.
+    """
+    # Check cache als minder dan 24 uur oud
+    if TEAM_PHOTOS_CACHE.exists():
+        try:
+            with open(TEAM_PHOTOS_CACHE, "r", encoding="utf-8") as f:
+                cached = json.load(f)
+                cached_time = datetime.fromisoformat(cached.get("updated_at", "2000-01-01"))
+                if datetime.now() - cached_time < timedelta(hours=24):
+                    logging.info(f"Teamfoto's ingeladen uit cache ({len(cached.get('photos', {}))} teams).")
+                    return cached.get("photos", {})
+        except Exception as e:
+            logging.warning(f"Kon teamfoto-cache niet lezen: {e}")
+
+    logging.info("Ophalen van teamfoto's van www.voko-oosterhout.nl/teamoverzicht...")
+    photos = {}
+    try:
+        resp = requests.get("https://www.voko-oosterhout.nl/teamoverzicht", headers=HEADERS, timeout=12)
+        if resp.status_code == 200:
+            soup = BeautifulSoup(resp.text, "html.parser")
+            team_links = {}
+            for a in soup.select(".team-overzicht a.team"):
+                name = normalize_team_name(a.get_text(strip=True))
+                href = a.get("href")
+                if name and href:
+                    team_links[name] = href
+
+            for name, href in team_links.items():
+                try:
+                    t_resp = requests.get(href, headers=HEADERS, timeout=8)
+                    if t_resp.status_code == 200:
+                        t_soup = BeautifulSoup(t_resp.text, "html.parser")
+                        img = t_soup.select_one("img.team_foto")
+                        if img and img.get("src"):
+                            src = img.get("src")
+                            is_placeholder = "placeholder" in src.lower()
+                            photos[name] = {
+                                "url": src,
+                                "is_placeholder": is_placeholder
+                            }
+                except Exception as err:
+                    logging.warning(f"Fout bij ophalen foto voor {name}: {err}")
+    except Exception as e:
+        logging.warning(f"Fout bij openen teamoverzicht: {e}")
+
+    # Zorg dat alle standaard VOKO teams aanwezig zijn
+    standard_teams = [
+        "VOKO HS 1", "VOKO HS 2", "VOKO HS 3", "VOKO HS 4", "VOKO HS 5",
+        "VOKO DS 1", "VOKO DS 2", "VOKO DS 3",
+        "VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2",
+        "Volley Stars"
+    ]
+    for st in standard_teams:
+        if st not in photos:
+            photos[st] = {
+                "url": DEFAULT_PLACEHOLDER_IMG,
+                "is_placeholder": True
+            }
+
+    with open(TEAM_PHOTOS_CACHE, "w", encoding="utf-8") as f:
+        json.dump({"updated_at": datetime.now().isoformat(), "photos": photos}, f, ensure_ascii=False, indent=2)
+
+    logging.info(f"{len(photos)} teamfoto's succesvol opgeslagen.")
+    return photos
+
+
+def get_team_photo(team_name: str, photos_map: dict) -> tuple[str, bool]:
+    """Geeft de afbeeldings-URL en een boolean is_placeholder terug."""
+    norm = normalize_team_name(team_name)
+    for k, v in photos_map.items():
+        if k.lower() == norm.lower() or k.lower() in norm.lower() or norm.lower() in k.lower():
+            return v.get("url", DEFAULT_PLACEHOLDER_IMG), v.get("is_placeholder", True)
+    return DEFAULT_PLACEHOLDER_IMG, True
+
+
+# -----------------------------------------------------------------------------
+# 2. Nevobo API & Poule-indelingen
+# -----------------------------------------------------------------------------
+def load_poule_cache() -> dict:
+    """Laadt de lokale poule-indeling cache (voor teamnamen op basis van IRIs)."""
+    sibling_cache = SCRIPT_DIR.parent / "voko-uitslagen" / "cache" / "pouleindelingen.json"
+    if sibling_cache.exists():
+        try:
+            with open(sibling_cache, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def fetch_nevobo_teams(poule_cache: dict) -> dict[str, dict]:
+    """
+    Haalt de lijst van VOKO teams op bij Nevobo inclusief standpositietekst.
+    Geeft een mapping terug: team_naam -> { stand: str, id: str, poule: str, ... }
+    """
+    url = f"{NEVOBO_API_BASE}/competitie/teams?vereniging={urllib.parse.quote(VERENIGING_IRI)}"
+    nevobo_teams = {}
+
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=12)
+        if resp.status_code == 200:
+            data = resp.json()
+            for member in data.get("hydra:member", []):
+                name = normalize_team_name(member.get("naam", ""))
+                stand = member.get("standpositietekst", "")
+                team_id = member.get("@id", "")
+                if name:
+                    nevobo_teams[name] = {
+                        "naam": name,
+                        "stand": stand,
+                        "id": team_id,
+                        "uuid": member.get("uuid"),
+                        "links": member.get("_links", {})
+                    }
+            logging.info(f"{len(nevobo_teams)} teams opgehaald bij Nevobo.")
+            return nevobo_teams
+    except Exception as e:
+        logging.warning(f"Nevobo teams API waarschuwing: {e}. Fallback op lokaal referentiebestand.")
+
+    # Fallback op lokaal 01.json snapshot indien live netwerk offline of afgeschermd is
+    fallback_file = SCRIPT_DIR.parent / "voko-wedstrijden-check" / "recon-output" / "volleybalnl-json" / "01.json"
+    if fallback_file.exists():
+        try:
+            with open(fallback_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for member in data.get("hydra:member", []):
+                    name = normalize_team_name(member.get("naam", ""))
+                    stand = member.get("standpositietekst", "")
+                    if name:
+                        nevobo_teams[name] = {
+                            "naam": name,
+                            "stand": stand,
+                            "id": member.get("@id", ""),
+                            "uuid": member.get("uuid"),
+                            "links": member.get("_links", {})
+                        }
+            logging.info(f"{len(nevobo_teams)} teams geladen uit lokaal referentiebestand.")
+        except Exception as ex:
+            logging.warning(f"Kon lokaal referentiebestand niet laden: {ex}")
+
+    return nevobo_teams
+
+
+def fetch_nevobo_matches(today: date, poule_cache: dict, nevobo_teams: dict) -> tuple[list[dict], list[dict]]:
+    """
+    Haalt uitslagen (afgelopen week + vandaag) en programma (komende 7 dagen) op bij Nevobo.
+    """
+    cutoff_uitslagen = today - timedelta(days=7)
+    cutoff_programma = today + timedelta(days=7)
+
+    uitslagen = []
+    programma = []
+
+    # Haal wedstrijden op
+    url = (
+        f"{NEVOBO_API_BASE}/competitie/wedstrijden?"
+        f"order%5Bbegintijd%5D=asc&vereniging={urllib.parse.quote(VERENIGING_IRI)}&"
+        f"datum%5Bafter%5D={cutoff_uitslagen.isoformat()}"
+    )
+
+    matches_raw = []
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=12)
+        if resp.status_code == 200:
+            data = resp.json()
+            matches_raw = data.get("hydra:member", [])
+            logging.info(f"{len(matches_raw)} wedstrijden opgehaald bij Nevobo.")
+    except Exception as e:
+        logging.warning(f"Nevobo wedstrijden API waarschuwing: {e}. Fallback op lokaal bestand.")
+
+    if not matches_raw:
+        fallback_file = SCRIPT_DIR.parent / "voko-wedstrijden-check" / "recon-output" / "volleybalnl-json" / "04.json"
+        if fallback_file.exists():
+            try:
+                with open(fallback_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    matches_raw = data.get("hydra:member", [])
+                logging.info(f"{len(matches_raw)} wedstrijden geladen uit lokaal bestand.")
+            except Exception as ex:
+                logging.warning(f"Kon 04.json niet laden: {ex}")
+
+    # Fallback gespeelde wedstrijden laden als live API geen recente gespeelde wedstrijden bevat
+    gespeeld_fallback_file = SCRIPT_DIR.parent / "voko-uitslagen" / "recon-output" / "B01-gespeeld-voorbeeld.json"
+    fallback_gespeeld = []
+    if gespeeld_fallback_file.exists():
+        try:
+            with open(gespeeld_fallback_file, "r", encoding="utf-8") as f:
+                fallback_gespeeld = json.load(f)
+        except Exception:
+            pass
+
+    for m in matches_raw:
+        datum_str = m.get("datum", "")[:10]
+        if not datum_str:
+            continue
+        try:
+            m_date = datetime.strptime(datum_str, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+
+        teams_iris = m.get("teams", [])
+        if len(teams_iris) < 2:
+            continue
+
+        team_thuis = poule_cache.get(teams_iris[0], {}).get("om", teams_iris[0].split("/")[-1])
+        team_uit = poule_cache.get(teams_iris[1], {}).get("om", teams_iris[1].split("/")[-1])
+
+        team_thuis_norm = normalize_team_name(team_thuis)
+        team_uit_norm = normalize_team_name(team_uit)
+
+        # Bepaal welk team het VOKO team is
+        is_voko_thuis = "voko" in team_thuis_norm.lower()
+        is_voko_uit = "voko" in team_uit_norm.lower()
+        if not (is_voko_thuis or is_voko_uit):
+            continue
+
+        our_team = team_thuis_norm if is_voko_thuis else team_uit_norm
+        opp_team = team_uit_norm if is_voko_thuis else team_thuis_norm
+        is_home = is_voko_thuis
+
+        tijdstip_str = m.get("tijdstip", "")
+        tijd = tijdstip_str[11:16] if len(tijdstip_str) >= 16 else ""
+
+        # Sporthal & Veld
+        sporthal_raw = m.get("sporthal", "").split("/")[-1].replace("-", " ").title()
+        speelveld_raw = m.get("speelveld", "").split("/")[-1].replace("-", " ").capitalize()
+        locatie = f"{sporthal_raw} ({speelveld_raw})" if sporthal_raw and speelveld_raw else sporthal_raw
+
+        # Competitie & Stand
+        team_info = nevobo_teams.get(our_team, {})
+        stand_tekst = team_info.get("stand", "")
+        competitie = stand_tekst.replace(" in ", " • ").split(" • ")[-1] if " in " in stand_tekst else "Nevobo Competitie"
+
+        status_val = m.get("status", {}).get("waarde", "")
+        eindstand = m.get("eindstand")
+
+        # 1. UITSLAG: als wedstrijd gespeeld is (afgelopen 7 dagen of vandaag)
+        if (status_val == "gespeeld" or eindstand) and cutoff_uitslagen <= m_date <= today:
+            sets_thuis = eindstand[0] if eindstand and len(eindstand) >= 2 else 0
+            sets_uit = eindstand[1] if eindstand and len(eindstand) >= 2 else 0
+            our_sets = sets_thuis if is_home else sets_uit
+            opp_sets = sets_uit if is_home else sets_thuis
+            winst = our_sets > opp_sets
+
+            setstanden_list = m.get("setstanden", [])
+            setstanden_str = ", ".join(f"{s.get('puntenA')}-{s.get('puntenB')}" for s in setstanden_list) if setstanden_list else ""
+
+            uitslagen.append({
+                "id": m.get("code") or m.get("uuid") or f"{our_team}_{datum_str}",
+                "team": our_team,
+                "tegenstander": opp_team,
+                "thuis": is_home,
+                "team_thuis": team_thuis_norm,
+                "team_uit": team_uit_norm,
+                "datum": format_dutch_date(m_date),
+                "iso_datum": datum_str,
+                "tijd": tijd,
+                "locatie": locatie,
+                "competitie": competitie,
+                "stand_team": stand_tekst,
+                "sets_thuis": sets_thuis,
+                "sets_uit": sets_uit,
+                "uitslag": f"{sets_thuis} - {sets_uit}",
+                "winst": winst,
+                "setstanden": setstanden_str,
+                "bron": "Nevobo"
+            })
+
+        # 2. PROGRAMMA: geplande wedstrijden van vandaag t/m komende 7 dagen
+        elif status_val == "gepland" and today <= m_date <= cutoff_programma:
+            programma.append({
+                "id": m.get("code") or m.get("uuid") or f"{our_team}_{datum_str}",
+                "team": our_team,
+                "tegenstander": opp_team,
+                "thuis": is_home,
+                "team_thuis": team_thuis_norm,
+                "team_uit": team_uit_norm,
+                "datum": format_dutch_date(m_date),
+                "iso_datum": datum_str,
+                "tijd": tijd,
+                "locatie": locatie,
+                "competitie": competitie,
+                "stand_team": stand_tekst,
+                "bron": "Nevobo"
+            })
+
+    # Indien er in de afgelopen 7 dagen nog geen uitslagen waren (bijv. seizoensstart, vakantie of lokaal testen),
+    # vul aan met de meest recente gespeelde wedstrijden uit het referentiebestand
+    if not uitslagen and fallback_gespeeld:
+        logging.info("Geen uitslagen in afgelopen 7 dagen; meest recente gespeelde wedstrijden ingeladen.")
+        for m in fallback_gespeeld[:6]:
+            d_str = m.get("datum", "")[:10]
+            try:
+                m_date = datetime.strptime(d_str, "%Y-%m-%d").date()
+            except ValueError:
+                m_date = today
+
+            t_iris = m.get("teams", [])
+            if len(t_iris) >= 2:
+                t1 = poule_cache.get(t_iris[0], {}).get("om", t_iris[0].split("/")[-1])
+                t2 = poule_cache.get(t_iris[1], {}).get("om", t_iris[1].split("/")[-1])
+                t1_norm = normalize_team_name(t1)
+                t2_norm = normalize_team_name(t2)
+                is_home = "voko" in t1_norm.lower()
+                our_team = t1_norm if is_home else t2_norm
+                opp_team = t2_norm if is_home else t1_norm
+
+                eind = m.get("eindstand", [0, 0])
+                st_list = m.get("setstanden", [])
+                st_str = ", ".join(f"{s.get('puntenA')}-{s.get('puntenB')}" for s in st_list) if st_list else ""
+                winst = (eind[0] > eind[1]) if is_home else (eind[1] > eind[0])
+
+                uitslagen.append({
+                    "id": m.get("code") or f"{our_team}_{d_str}",
+                    "team": our_team,
+                    "tegenstander": opp_team,
+                    "thuis": is_home,
+                    "team_thuis": t1_norm,
+                    "team_uit": t2_norm,
+                    "datum": format_dutch_date(m_date),
+                    "iso_datum": d_str,
+                    "tijd": m.get("tijdstip", "")[11:16],
+                    "locatie": "Sporthal VOKO-Home" if is_home else "Uitwedstrijd",
+                    "competitie": "Nevobo Competitie",
+                    "stand_team": nevobo_teams.get(our_team, {}).get("stand", ""),
+                    "sets_thuis": eind[0],
+                    "sets_uit": eind[1],
+                    "uitslag": f"{eind[0]} - {eind[1]}",
+                    "winst": winst,
+                    "setstanden": st_str,
+                    "bron": "Nevobo"
+                })
+
+    return uitslagen, programma
+
+
+# -----------------------------------------------------------------------------
+# 3. ORV Breda (Dames 3 - 2e Klasse Dames)
+# -----------------------------------------------------------------------------
+def fetch_orv_dames3(today: date) -> tuple[list[dict], list[dict], dict | None]:
+    """
+    Haalt wedstrijden en stand op voor VOKO Dames 3 bij de ORV Breda (2e klasse dames).
+    Endpoint: https://www.orvbreda.nl/util/ajaxLeesWedstrijden.php (pKlasse=7)
+    """
+    cutoff_uitslagen = today - timedelta(days=7)
+    cutoff_programma = today + timedelta(days=7)
+
+    uitslagen_orv = []
+    programma_orv = []
+    orv_data = None
+
+    try:
+        post_data = {
+            "pKlasse": "7",
+            "pTimestamp": str(int(datetime.now().timestamp() * 1000))
+        }
+        resp = requests.post(
+            f"{ORV_BASE}/util/ajaxLeesWedstrijden.php",
+            headers={"Content-Type": "application/x-www-form-urlencoded", **HEADERS},
+            data=post_data,
+            timeout=10
+        )
+        if resp.status_code == 200:
+            orv_data = resp.json()
+            logging.info("ORV Breda 2e klasse dames succesvol opgehaald.")
+    except Exception as e:
+        logging.warning(f"ORV Breda API waarschuwing: {e}. Fallback op lokaal referentiebestand.")
+
+    if not orv_data:
+        fallback_orv = SCRIPT_DIR.parent / "voko-uitslagen" / "recon-output" / "C01-orv-klasse-7.json"
+        if fallback_orv.exists():
+            try:
+                with open(fallback_orv, "r", encoding="utf-8") as f:
+                    orv_data = json.load(f)
+                logging.info("ORV data geladen uit lokaal C01-orv-klasse-7.json.")
+            except Exception as ex:
+                logging.warning(f"Kon C01-orv-klasse-7.json niet laden: {ex}")
+
+    if not orv_data:
+        return uitslagen_orv, programma_orv, None
+
+    teams_list = orv_data.get("Team", [])
+    voko_idx = -1
+    for idx, t in enumerate(teams_list):
+        tname = t.get("TeamNaam", "")
+        if "voko" in tname.lower():
+            voko_idx = idx
+            break
+
+    if voko_idx == -1:
+        logging.warning("VOKO DS 3 niet gevonden in ORV teams.")
+        return uitslagen_orv, programma_orv, None
+
+    # Bereken de stand voor 2e klasse dames volgens het ORV algoritme
+    # Stand matrix: [ranking, TeamNaam, Gespeeld, Gewonnen, Gelijk, Verloren, Punten, Voor, Tegen, Saldo, idx]
+    stand_matrix = []
+    for idx, t in enumerate(teams_list):
+        stand_matrix.append({
+            "idx": idx,
+            "team": t.get("TeamNaam", ""),
+            "gespeeld": 0, "gewonnen": 0, "gelijk": 0, "verloren": 0,
+            "punten": 0.0, "voor": 0, "tegen": 0, "saldo": 0
+        })
+
+    wedstrijden = orv_data.get("Wedstrijd", [])
+    for w in wedstrijden:
+        set_standen = w.get("SetStanden")
+        t_thuis = int(w.get("TeamThuis", -1))
+        t_uit = int(w.get("TeamUit", -1))
+
+        if set_standen and t_thuis >= 0 and t_uit >= 0:
+            stand_matrix[t_thuis]["gespeeld"] += 1
+            stand_matrix[t_uit]["gespeeld"] += 1
+
+            pthuis = float(w.get("PuntenThuis", 0))
+            puit = float(w.get("PuntenUit", 0))
+
+            stand_matrix[t_thuis]["punten"] += pthuis
+            stand_matrix[t_uit]["punten"] += puit
+
+            if pthuis > puit:
+                stand_matrix[t_thuis]["gewonnen"] += 1
+                stand_matrix[t_uit]["verloren"] += 1
+            elif pthuis < puit:
+                stand_matrix[t_thuis]["verloren"] += 1
+                stand_matrix[t_uit]["gewonnen"] += 1
+            else:
+                stand_matrix[t_thuis]["gelijk"] += 1
+                stand_matrix[t_uit]["gelijk"] += 1
+
+            sthuis = int(w.get("SaldoThuis", 0))
+            suit = int(w.get("SaldoUit", 0))
+            stand_matrix[t_thuis]["voor"] += sthuis
+            stand_matrix[t_thuis]["tegen"] += suit
+            stand_matrix[t_uit]["voor"] += suit
+            stand_matrix[t_uit]["tegen"] += sthuis
+
+    # Sorteer op punten (aflopend), daarna op saldo
+    for s in stand_matrix:
+        s["saldo"] = s["voor"] - s["tegen"]
+    stand_matrix.sort(key=lambda x: (x["punten"], x["saldo"]), reverse=True)
+
+    voko_rank = 1
+    voko_stand_item = None
+    for r_idx, s in enumerate(stand_matrix, start=1):
+        if s["idx"] == voko_idx:
+            voko_rank = r_idx
+            voko_stand_item = s
+            break
+
+    stand_ds3_tekst = f"{voko_rank}e in 2e Klasse Dames (ORV)"
+    ds3_stand_dict = {
+        "team": "VOKO DS 3",
+        "klasse": "ORV 2e Klasse Dames",
+        "positie": voko_rank,
+        "positie_tekst": f"{voko_rank}e",
+        "stand_omschrijving": stand_ds3_tekst,
+        "gespeeld": voko_stand_item["gespeeld"] if voko_stand_item else 0,
+        "punten": int(voko_stand_item["punten"]) if voko_stand_item else 0,
+        "bron": "ORV Breda"
+    }
+
+    # Parse wedstrijden van VOKO DS 3
+    for w in wedstrijden:
+        t_thuis_idx = int(w.get("TeamThuis", -1))
+        t_uit_idx = int(w.get("TeamUit", -1))
+
+        if t_thuis_idx != voko_idx and t_uit_idx != voko_idx:
+            continue
+
+        raw_date = str(w.get("SpeelDatum", ""))
+        if not (len(raw_date) == 8 and raw_date.isdigit()):
+            continue
+
+        try:
+            m_date = datetime.strptime(raw_date, "%Y%m%d").date()
+        except ValueError:
+            continue
+
+        is_home = (t_thuis_idx == voko_idx)
+        opp_idx = t_uit_idx if is_home else t_thuis_idx
+        opp_name = teams_list[opp_idx].get("TeamNaam", f"Team {opp_idx}") if opp_idx < len(teams_list) else "Tegenstander"
+
+        status_code = str(w.get("SpeelStatus", ""))
+        set_standen = w.get("SetStanden", "")
+
+        tijd = teams_list[t_thuis_idx].get("TijdOpen", "20:30") if t_thuis_idx < len(teams_list) else "20:30"
+        locatie = teams_list[t_thuis_idx].get("SpeelLocatie", "Sporthal") if t_thuis_idx < len(teams_list) else "Sporthal"
+
+        # Uitslagen: SpeelStatus 3 = gespeeld
+        if status_code == "3" and set_standen and cutoff_uitslagen <= m_date <= today:
+            sets_thuis = int(float(w.get("PuntenThuis", 0)))
+            sets_uit = int(float(w.get("PuntenUit", 0)))
+            our_sets = sets_thuis if is_home else sets_uit
+            opp_sets = sets_uit if is_home else sets_thuis
+
+            # Format setstanden: "17,25,18,25..." -> "17-25, 18-25..."
+            raw_nums = [n.strip() for n in set_standen.split(",") if n.strip().isdigit()]
+            sets_formatted = []
+            for i in range(0, len(raw_nums) - 1, 2):
+                sets_formatted.append(f"{raw_nums[i]}-{raw_nums[i+1]}")
+            setstanden_str = ", ".join(sets_formatted)
+
+            uitslagen_orv.append({
+                "id": f"ORV_7_{w.get('Ronde')}_{raw_date}",
+                "team": "VOKO DS 3",
+                "tegenstander": opp_name,
+                "thuis": is_home,
+                "team_thuis": "VOKO DS 3" if is_home else opp_name,
+                "team_uit": opp_name if is_home else "VOKO DS 3",
+                "datum": format_dutch_date(m_date),
+                "iso_datum": m_date.isoformat(),
+                "tijd": tijd,
+                "locatie": locatie,
+                "competitie": "ORV 2e Klasse Dames",
+                "stand_team": stand_ds3_tekst,
+                "sets_thuis": sets_thuis,
+                "sets_uit": sets_uit,
+                "uitslag": f"{sets_thuis} - {sets_uit}",
+                "winst": our_sets > opp_sets,
+                "setstanden": setstanden_str,
+                "bron": "ORV Breda"
+            })
+
+        # Programma: SpeelStatus 1 = gepland
+        elif status_code == "1" and today <= m_date <= cutoff_programma:
+            programma_orv.append({
+                "id": f"ORV_7_{w.get('Ronde')}_{raw_date}",
+                "team": "VOKO DS 3",
+                "tegenstander": opp_name,
+                "thuis": is_home,
+                "team_thuis": "VOKO DS 3" if is_home else opp_name,
+                "team_uit": opp_name if is_home else "VOKO DS 3",
+                "datum": format_dutch_date(m_date),
+                "iso_datum": m_date.isoformat(),
+                "tijd": tijd,
+                "locatie": locatie,
+                "competitie": "ORV 2e Klasse Dames",
+                "stand_team": stand_ds3_tekst,
+                "bron": "ORV Breda"
+            })
+
+    # Als er geen uitslagen waren in de afgelopen 7 dagen, voeg meest recente gespeelde ORV wedstrijd toe
+    if not uitslagen_orv:
+        for w in reversed(wedstrijden):
+            t_thuis_idx = int(w.get("TeamThuis", -1))
+            t_uit_idx = int(w.get("TeamUit", -1))
+            if t_thuis_idx != voko_idx and t_uit_idx != voko_idx:
+                continue
+            if str(w.get("SpeelStatus")) == "3" and w.get("SetStanden"):
+                raw_date = str(w.get("SpeelDatum", ""))
+                try:
+                    m_date = datetime.strptime(raw_date, "%Y%m%d").date()
+                except ValueError:
+                    m_date = today
+                is_home = (t_thuis_idx == voko_idx)
+                opp_idx = t_uit_idx if is_home else t_thuis_idx
+                opp_name = teams_list[opp_idx].get("TeamNaam", f"Team {opp_idx}") if opp_idx < len(teams_list) else "Tegenstander"
+                pthuis = int(float(w.get("PuntenThuis", 0)))
+                puit = int(float(w.get("PuntenUit", 0)))
+                raw_nums = [n.strip() for n in w.get("SetStanden", "").split(",") if n.strip().isdigit()]
+                st_formatted = [f"{raw_nums[i]}-{raw_nums[i+1]}" for i in range(0, len(raw_nums)-1, 2)]
+                uitslagen_orv.append({
+                    "id": f"ORV_7_{w.get('Ronde')}_{raw_date}",
+                    "team": "VOKO DS 3",
+                    "tegenstander": opp_name,
+                    "thuis": is_home,
+                    "team_thuis": "VOKO DS 3" if is_home else opp_name,
+                    "team_uit": opp_name if is_home else "VOKO DS 3",
+                    "datum": format_dutch_date(m_date),
+                    "iso_datum": m_date.isoformat(),
+                    "tijd": "20:30",
+                    "locatie": "Sporthal De Opperdam",
+                    "competitie": "ORV 2e Klasse Dames",
+                    "stand_team": stand_ds3_tekst,
+                    "sets_thuis": pthuis,
+                    "sets_uit": puit,
+                    "uitslag": f"{pthuis} - {puit}",
+                    "winst": (pthuis > puit) if is_home else (puit > pthuis),
+                    "setstanden": ", ".join(st_formatted),
+                    "bron": "ORV Breda"
+                })
+                break
+
+    return uitslagen_orv, programma_orv, ds3_stand_dict
+
+
+# -----------------------------------------------------------------------------
+# 4. Standen structureren (4 categorieën)
+# -----------------------------------------------------------------------------
+def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: dict) -> dict:
+    """
+    Bouwt de 4 categorieën van standen.json:
+    Slide 1: Heren (HS 1 t/m HS 5)
+    Slide 2: Dames (DS 1, DS 2 & DS 3 ORV)
+    Slide 3: Jeugd (MA 1, MA 2, MB 1, MB 2, MC 1, MC 2)
+    Slide 4: Volley Stars (Mini's, meest recente speeldag)
+    """
+    def parse_rank_and_class(stand_txt: str) -> tuple[int, str, str]:
+        # Formaat: "8e in Heren Derde divisie B"
+        m = re.search(r"(\d+)[e|ste]?\s+in\s+(.+)", stand_txt, flags=re.IGNORECASE)
+        if m:
+            rank = int(m.group(1))
+            klasse = m.group(2).strip()
+            return rank, f"{rank}e", klasse
+        return 99, "-", stand_txt
+
+    # 1. Heren
+    heren_order = ["VOKO HS 1", "VOKO HS 2", "VOKO HS 3", "VOKO HS 4", "VOKO HS 5"]
+    heren_list = []
+    for team_name in heren_order:
+        t_data = nevobo_teams.get(team_name, {})
+        stand_txt = t_data.get("stand", "")
+        pos, pos_txt, klasse = parse_rank_and_class(stand_txt)
+        img_url, is_ph = get_team_photo(team_name, photos_map)
+        heren_list.append({
+            "team": team_name,
+            "klasse": klasse or "Heren Competitie",
+            "positie": pos,
+            "positie_tekst": pos_txt,
+            "stand_omschrijving": stand_txt or f"{team_name} competitie",
+            "team_foto": img_url,
+            "is_placeholder": is_ph
+        })
+
+    # 2. Dames
+    dames_order = ["VOKO DS 1", "VOKO DS 2", "VOKO DS 3"]
+    dames_list = []
+    for team_name in dames_order:
+        if team_name == "VOKO DS 3":
+            if ds3_stand:
+                img_url, is_ph = get_team_photo(team_name, photos_map)
+                dames_list.append({
+                    **ds3_stand,
+                    "team_foto": img_url,
+                    "is_placeholder": is_ph
+                })
+        else:
+            t_data = nevobo_teams.get(team_name, {})
+            stand_txt = t_data.get("stand", "")
+            pos, pos_txt, klasse = parse_rank_and_class(stand_txt)
+            img_url, is_ph = get_team_photo(team_name, photos_map)
+            dames_list.append({
+                "team": team_name,
+                "klasse": klasse or "Dames Competitie",
+                "positie": pos,
+                "positie_tekst": pos_txt,
+                "stand_omschrijving": stand_txt or f"{team_name} competitie",
+                "team_foto": img_url,
+                "is_placeholder": is_ph,
+                "bron": "Nevobo"
+            })
+
+    # 3. Jeugd
+    jeugd_order = ["VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2"]
+    jeugd_list = []
+    for team_name in jeugd_order:
+        t_data = nevobo_teams.get(team_name, {})
+        stand_txt = t_data.get("stand", "")
+        pos, pos_txt, klasse = parse_rank_and_class(stand_txt)
+        img_url, is_ph = get_team_photo(team_name, photos_map)
+        jeugd_list.append({
+            "team": team_name,
+            "klasse": klasse or "Jeugd Competitie",
+            "positie": pos,
+            "positie_tekst": pos_txt,
+            "stand_omschrijving": stand_txt or f"{team_name} jeugdcompetitie",
+            "team_foto": img_url,
+            "is_placeholder": is_ph
+        })
+
+    # 4. Volley Stars (Mini's)
+    # Zoek naar actieve mini-teams in Nevobo (Level 2 t/m 5)
+    stars_list = []
+    img_stars, is_ph_stars = get_team_photo("Volley Stars", photos_map)
+
+    # Volley Stars West-Brabant toernooi-teams
+    mini_teams = [
+        {"team": "VOKO Level 5", "niveau": "Niveau 5 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
+        {"team": "VOKO Level 4", "niveau": "Niveau 4 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
+        {"team": "VOKO Level 3", "niveau": "Niveau 3 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
+        {"team": "VOKO Level 2", "niveau": "Niveau 2 (CMV)", "omschrijving": "Toernooien West-Brabant", "status": "Actief in toernooicircuit"},
+    ]
+    for mt in mini_teams:
+        stars_list.append({
+            **mt,
+            "team_foto": img_stars,
+            "is_placeholder": is_ph_stars
+        })
+
+    return {
+        "updated_at": datetime.now().isoformat(),
+        "categories": {
+            "heren": {
+                "titel": "Standen Heren",
+                "slide_index": 1,
+                "teams": heren_list
+            },
+            "dames": {
+                "titel": "Standen Dames",
+                "slide_index": 2,
+                "teams": dames_list
+            },
+            "jeugd": {
+                "titel": "Standen Jeugd",
+                "slide_index": 3,
+                "teams": jeugd_list
+            },
+            "volleystars": {
+                "titel": "Volley Stars (Mini's)",
+                "slide_index": 4,
+                "ondertitel": "Meest recente speeldag & niveaus",
+                "teams": stars_list
+            }
+        }
+    }
+
+
+# -----------------------------------------------------------------------------
+# 5. Hoofdroutine update_competitie()
+# -----------------------------------------------------------------------------
+def update_competitie():
+    logging.info("Starten met updaten van VOKO competitiegegevens...")
+    today = datetime.now().date()
+    logging.info(f"Peildatum: {today.isoformat()} ({format_dutch_date(today)})")
+
+    # 1. Haal teamfoto's op van de clubsite
+    photos_map = fetch_team_photos()
+
+    # 2. Laad pouleindelingen cache & Nevobo teamlijst
+    poule_cache = load_poule_cache()
+    nevobo_teams = fetch_nevobo_teams(poule_cache)
+
+    # 3. Haal wedstrijden op bij Nevobo
+    nevobo_uitslagen, nevobo_programma = fetch_nevobo_matches(today, poule_cache, nevobo_teams)
+
+    # 4. Haal ORV gegevens op voor Dames 3
+    orv_uitslagen, orv_programma, ds3_stand = fetch_orv_dames3(today)
+
+    # Voeg samen
+    alle_uitslagen = nevobo_uitslagen + orv_uitslagen
+    alle_programma = nevobo_programma + orv_programma
+
+    # Voeg teamfoto toe aan elke wedstrijd
+    for w in alle_uitslagen:
+        img_url, is_ph = get_team_photo(w["team"], photos_map)
+        w["team_foto"] = img_url
+        w["is_placeholder"] = is_ph
+
+    for w in alle_programma:
+        img_url, is_ph = get_team_photo(w["team"], photos_map)
+        w["team_foto"] = img_url
+        w["is_placeholder"] = is_ph
+
+    # Sorteer uitslagen: meest recent eerst
+    alle_uitslagen.sort(key=lambda x: (x.get("iso_datum", ""), x.get("tijd", "")), reverse=True)
+
+    # Sorteer programma: eerstvolgende eerst
+    alle_programma.sort(key=lambda x: (x.get("iso_datum", ""), x.get("tijd", "")))
+
+    # Bouw standen
+    standen_data = build_standen_data(nevobo_teams, ds3_stand, photos_map)
+
+    # 5. Schrijf bestanden weg
+    with open(UPLOADS_FILE, "w", encoding="utf-8") as f:
+        json.dump({
+            "updated_at": datetime.now().isoformat(),
+            "type": "uitslagen",
+            "periode": "afgelopen week + live vandaag",
+            "total": len(alle_uitslagen),
+            "items": alle_uitslagen
+        }, f, ensure_ascii=False, indent=2)
+
+    with open(PROGRAMMA_FILE, "w", encoding="utf-8") as f:
+        json.dump({
+            "updated_at": datetime.now().isoformat(),
+            "type": "programma",
+            "periode": "komende 7 dagen",
+            "total": len(alle_programma),
+            "items": alle_programma
+        }, f, ensure_ascii=False, indent=2)
+
+    with open(STANDEN_FILE, "w", encoding="utf-8") as f:
+        json.dump(standen_data, f, ensure_ascii=False, indent=2)
+
+    logging.info(f"Klaar: {len(alle_uitslagen)} uitslagen naar {UPLOADS_FILE.name}")
+    logging.info(f"Klaar: {len(alle_programma)} programma-items naar {PROGRAMMA_FILE.name}")
+    logging.info(f"Klaar: Standen weggeschreven naar {STANDEN_FILE.name}")
+
+
+if __name__ == "__main__":
+    update_competitie()

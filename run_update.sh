@@ -26,4 +26,9 @@ if [ -f "$SCRIPT_DIR/update_nieuws.py" ]; then
     "$PYTHON_BIN" "$SCRIPT_DIR/update_nieuws.py" >> update_agenda.log 2>&1
 fi
 
-echo "$(date '+%Y-%m-%d %H:%M:%S') - Beide updates voltooid" >> update_agenda.log
+# 3. Update Competitie (Uitslagen, Programma, Standen)
+if [ -f "$SCRIPT_DIR/update_competitie.py" ]; then
+    "$PYTHON_BIN" "$SCRIPT_DIR/update_competitie.py" >> update_agenda.log 2>&1
+fi
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') - Alle narrowcasting updates voltooid" >> update_agenda.log

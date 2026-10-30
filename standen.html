@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VOKO Digital Signage - Standen & Ranking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk met wit VOKO logo -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+      </header>
+
+      <!-- 2. Rode Banner met 'Standen & Ranking:' -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,158 Q 1100,172 450,190 Q 180,192 0,176 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Standen & Ranking:</h1>
+        </div>
+      </div>
+
+      <!-- 3. Standen Stage (4 Slides: Heren, Dames, Jeugd, Volley Stars) -->
+      <main class="stand-stage" id="stand-stage">
+        <!-- Wordt dynamisch gevuld via standen.json -->
+      </main>
+
+      <!-- Pagina-teller en progress bar onderaan -->
+      <div class="news-counter" id="stand-counter">Categorie 1 van 4</div>
+      <div class="signage-status" id="status-indicator">VOKO Digital Signage • Standen (40s cyclus)</div>
+      <div class="news-progress-bar-container">
+        <div class="news-progress-bar" id="stand-progress-bar"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. Automatische Schaling (1080p full-screen weergave)
+    // -------------------------------------------------------------------------
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+      const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
+      canvas.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+    fitViewport();
+
+    // -------------------------------------------------------------------------
+    // 2. Dia-Rotatie Logica: 4 slides van exact 10 seconden (40s totaal)
+    // -------------------------------------------------------------------------
+    const SLIDE_DURATION_MS = 10000;
+    let currentSlideIndex = 0;
+    let rotationTimer = null;
+
+    function startProgressBar() {
+      const bar = document.getElementById('stand-progress-bar');
+      if (!bar) return;
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      void bar.offsetWidth;
+      bar.style.transition = `width ${SLIDE_DURATION_MS}ms linear`;
+      bar.style.width = '100%';
+    }
+
+    function showSlide(index) {
+      const slides = document.querySelectorAll('.stand-slide');
+      if (slides.length === 0) return;
+
+      currentSlideIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, i) => {
+        if (i === currentSlideIndex) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      const activeSlide = slides[currentSlideIndex];
+      const categoryName = activeSlide ? activeSlide.getAttribute('data-category-name') : '';
+
+      const counterEl = document.getElementById('stand-counter');
+      if (counterEl) {
+        counterEl.textContent = `Categorie ${currentSlideIndex + 1} van ${slides.length} • ${categoryName} (10s)`;
+      }
+
+      startProgressBar();
+    }
+
+    function nextSlide() {
+      const slides = document.querySelectorAll('.stand-slide');
+      if (slides.length <= 1) {
+        startProgressBar();
+        return;
+      }
+      showSlide(currentSlideIndex + 1);
+    }
+
+    function restartRotation() {
+      if (rotationTimer) clearInterval(rotationTimer);
+      startProgressBar();
+      rotationTimer = setInterval(nextSlide, SLIDE_DURATION_MS);
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. Client-Side Auto-Refresh (fetcht standen.json elke 15 min)
+    // -------------------------------------------------------------------------
+    let currentFingerprint = '';
+
+    async function fetchStanden() {
+      try {
+        const cacheBuster = Date.now();
+        const response = await fetch(`standen.json?v=${cacheBuster}`, {
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+
+        if (!response.ok) throw new Error(`HTTP fout: ${response.status}`);
+        const data = await response.json();
+        if (!data || !data.categories) return;
+
+        const newFingerprint = JSON.stringify(data.categories);
+        if (newFingerprint !== currentFingerprint) {
+          currentFingerprint = newFingerprint;
+          renderStandenSlides(data.categories);
+        }
+
+        const statusEl = document.getElementById('status-indicator');
+        if (statusEl) {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+          statusEl.textContent = `Bijgewerkt: ${timeStr} • Standen & Ranking (40s)`;
+        }
+      } catch (err) {
+        console.warn('Standen refresh waarschuwing:', err);
+      }
+    }
+
+    function renderStandenSlides(categories) {
+      const stage = document.getElementById('stand-stage');
+      if (!stage) return;
+      stage.innerHTML = '';
+
+      const catKeys = ['heren', 'dames', 'jeugd', 'volleystars'];
+
+      catKeys.forEach((key, i) => {
+        const cat = categories[key];
+        if (!cat) return;
+
+        const slide = document.createElement('article');
+        slide.className = 'stand-slide' + (i === 0 ? ' active' : '');
+        slide.setAttribute('data-category-name', cat.titel || key);
+
+        let cardsHtml = '';
+        (cat.teams || []).forEach(t => {
+          const rank = parseInt(t.positie, 10);
+          let rankClass = '';
+          if (rank === 1) rankClass = 'rank-1';
+          else if (rank === 2) rankClass = 'rank-2';
+          else if (rank === 3) rankClass = 'rank-3';
+
+          const rankDisplay = t.positie_tekst || (t.niveau ? '⭐' : '-');
+          const sourceTag = t.bron ? `<span class="stand-source-note">${t.bron}</span>` : '';
+
+          cardsHtml += `
+            <div class="stand-team-card">
+              <div class="stand-card-left">
+                <div class="stand-rank-circle ${rankClass}">
+                  ${rankDisplay}
+                </div>
+                <div class="stand-team-details">
+                  <div class="stand-team-title">${t.team || ''}</div>
+                  <div class="stand-team-klasse">${t.klasse || t.niveau || ''}</div>
+                </div>
+              </div>
+              <div class="stand-card-right">
+                <span class="stand-pos-tag">${t.stand_omschrijving || t.omschrijving || t.status || 'Actief'}</span>
+                ${sourceTag}
+              </div>
+            </div>
+          `;
+        });
+
+        slide.innerHTML = `
+          <div class="stand-header-bar">
+            <h2 class="stand-category-title">
+              <span>${cat.titel || ''}</span>
+              <span class="stand-category-tag">Seizoen 2026-2027</span>
+            </h2>
+            ${cat.ondertitel ? `<div style="font-size: 22px; color: #64748b; font-weight: 600;">${cat.ondertitel}</div>` : ''}
+          </div>
+          <div class="stand-grid-cards">
+            ${cardsHtml}
+          </div>
+        `;
+
+        stage.appendChild(slide);
+      });
+
+      currentSlideIndex = 0;
+      showSlide(0);
+      restartRotation();
+    }
+
+    fetchStanden();
+    setInterval(fetchStanden, 15 * 60 * 1000);
+  </script>
+
+</body>
+</html>

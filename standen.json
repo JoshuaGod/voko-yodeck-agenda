@@ -1,0 +1,193 @@
+{
+  "updated_at": "2026-10-30T10:00:35.759075",
+  "categories": {
+    "heren": {
+      "titel": "Standen Heren",
+      "slide_index": 1,
+      "teams": [
+        {
+          "team": "VOKO HS 1",
+          "klasse": "Heren Derde divisie B",
+          "positie": 8,
+          "positie_tekst": "8e",
+          "stand_omschrijving": "8e in Heren Derde divisie B",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/photo-2026-09-24-18-18-05_20260924185739577269.jpg",
+          "is_placeholder": false
+        },
+        {
+          "team": "VOKO HS 2",
+          "klasse": "Heren 1e Klasse D",
+          "positie": 7,
+          "positie_tekst": "7e",
+          "stand_omschrijving": "7e in Heren 1e Klasse D",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204030542.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO HS 3",
+          "klasse": "Heren 2e Klasse D",
+          "positie": 7,
+          "positie_tekst": "7e",
+          "stand_omschrijving": "7e in Heren 2e Klasse D",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204034137.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO HS 4",
+          "klasse": "Heren 3e Klasse C",
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in Heren 3e Klasse C",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204039331.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO HS 5",
+          "klasse": "Heren 3e Klasse D",
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in Heren 3e Klasse D",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/h5-foto-1-1-van-1_20251008202944717.jpg",
+          "is_placeholder": false
+        }
+      ]
+    },
+    "dames": {
+      "titel": "Standen Dames",
+      "slide_index": 2,
+      "teams": [
+        {
+          "team": "VOKO DS 1",
+          "klasse": "Dames Derde divisie B",
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "1e in Dames Derde divisie B",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
+          "is_placeholder": true,
+          "bron": "Nevobo"
+        },
+        {
+          "team": "VOKO DS 2",
+          "klasse": "Dames 3e Klasse G",
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "1e in Dames 3e Klasse G",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204014728.jpg",
+          "is_placeholder": true,
+          "bron": "Nevobo"
+        },
+        {
+          "team": "VOKO DS 3",
+          "klasse": "ORV 2e Klasse Dames",
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in 2e Klasse Dames (ORV)",
+          "gespeeld": 2,
+          "punten": 1,
+          "bron": "ORV Breda",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
+          "is_placeholder": true
+        }
+      ]
+    },
+    "jeugd": {
+      "titel": "Standen Jeugd",
+      "slide_index": 3,
+      "teams": [
+        {
+          "team": "VOKO MA 1",
+          "klasse": "Meiden A 1e Klasse C Eerste helft",
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "1e in Meiden A 1e Klasse C Eerste helft",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204049274.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO MA 2",
+          "klasse": "Meiden A 1e Klasse D Eerste helft",
+          "positie": 2,
+          "positie_tekst": "2e",
+          "stand_omschrijving": "2e in Meiden A 1e Klasse D Eerste helft",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO MB 1",
+          "klasse": "Meiden B 1e Klasse D Eerste helft",
+          "positie": 5,
+          "positie_tekst": "5e",
+          "stand_omschrijving": "5e in Meiden B 1e Klasse D Eerste helft",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204054485.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO MB 2",
+          "klasse": "Meiden B 3e Klasse E Eerste helft",
+          "positie": 3,
+          "positie_tekst": "3e",
+          "stand_omschrijving": "3e in Meiden B 3e Klasse E Eerste helft",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204059145.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO MC 1",
+          "klasse": "C Jeugd 3e Klasse J Eerste helft",
+          "positie": 3,
+          "positie_tekst": "3e",
+          "stand_omschrijving": "3e in C Jeugd 3e Klasse J Eerste helft",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204104739.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO MC 2",
+          "klasse": "C Jeugd 3e Klasse K Eerste helft",
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in C Jeugd 3e Klasse K Eerste helft",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203958607.jpg",
+          "is_placeholder": true
+        }
+      ]
+    },
+    "volleystars": {
+      "titel": "Volley Stars (Mini's)",
+      "slide_index": 4,
+      "ondertitel": "Meest recente speeldag & niveaus",
+      "teams": [
+        {
+          "team": "VOKO Level 5",
+          "niveau": "Niveau 5 (CMV)",
+          "omschrijving": "Toernooien West-Brabant",
+          "status": "Actief in toernooicircuit",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO Level 4",
+          "niveau": "Niveau 4 (CMV)",
+          "omschrijving": "Toernooien West-Brabant",
+          "status": "Actief in toernooicircuit",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO Level 3",
+          "niveau": "Niveau 3 (CMV)",
+          "omschrijving": "Toernooien West-Brabant",
+          "status": "Actief in toernooicircuit",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
+          "is_placeholder": true
+        },
+        {
+          "team": "VOKO Level 2",
+          "niveau": "Niveau 2 (CMV)",
+          "omschrijving": "Toernooien West-Brabant",
+          "status": "Actief in toernooicircuit",
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
+          "is_placeholder": true
+        }
+      ]
+    }
+  }
+}

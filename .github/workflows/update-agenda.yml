@@ -1,9 +1,15 @@
-name: Update VOKO Narrowcasting (Agenda & Nieuws)
+name: Update VOKO Narrowcasting (Agenda, Nieuws & Competitie)
 
 on:
   schedule:
-    # Draait elke 6 uur (om 00:00, 06:00, 12:00 en 18:00 UTC)
-    - cron: '0 */6 * * *'
+    # 1. Maandag t/m Donderdag om 23:00 uur Nederlandse tijd (22:00 UTC)
+    - cron: '0 22 * * 1-4'
+    # 2. Vrijdagavond om 21:00, 22:00, 23:00 en 24:00 (20:00, 21:00, 22:00, 23:00 UTC)
+    - cron: '0 20,21,22,23 * * 5'
+    # 3. Zaterdag de hele dag elk uur van 11:00 t/m 22:00 (10:00 t/m 21:00 UTC)
+    - cron: '0 10-21 * * 6'
+    # 4. Zondag om 23:00 uur (22:00 UTC)
+    - cron: '0 22 * * 0'
   workflow_dispatch: # Handmatig starten mogelijk via GitHub UI
 
 permissions:
@@ -25,14 +31,15 @@ jobs:
         run: |
           pip install requests beautifulsoup4
 
-      - name: Run scrapers (Agenda & Nieuws)
+      - name: Run scrapers (Agenda, Nieuws & Competitie)
         run: |
           python update_agenda.py
           if [ -f "update_nieuws.py" ]; then python update_nieuws.py; fi
+          if [ -f "update_competitie.py" ]; then python update_competitie.py; fi
 
       - name: Commit en push updates indien gewijzigd
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
-          git add agenda.json nieuws.json || git add agenda.json
-          git diff --staged --quiet || (git commit -m "Automated update: agenda.json & nieuws.json [skip ci]" && git push)
+          git add agenda.json nieuws.json uitslagen.json programma.json standen.json cache/team_photos.json || git add agenda.json
+          git diff --staged --quiet || (git commit -m "Automated update: agenda, nieuws, competitie [skip ci]" && git push)

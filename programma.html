@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VOKO Digital Signage - Programma Komende Week</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk met wit VOKO logo -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+      </header>
+
+      <!-- 2. Rode Banner met 'Programma komende week:' -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,158 Q 1100,172 450,190 Q 180,192 0,176 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Programma komende week:</h1>
+        </div>
+      </div>
+
+      <!-- 3. Wedstrijden Stage (1 wedstrijd per slide) -->
+      <main class="comp-stage" id="comp-stage">
+        <!-- Wordt dynamisch gevuld via programma.json -->
+      </main>
+
+      <!-- Pagina-teller en progress bar onderaan -->
+      <div class="news-counter" id="comp-counter">Wedstrijd 1 van ...</div>
+      <div class="signage-status" id="status-indicator">VOKO Digital Signage • Programma</div>
+      <div class="news-progress-bar-container">
+        <div class="news-progress-bar" id="comp-progress-bar"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. Automatische Schaling (1080p full-screen weergave)
+    // -------------------------------------------------------------------------
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+      const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
+      canvas.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+    fitViewport();
+
+    // -------------------------------------------------------------------------
+    // 2. Dia-Rotatie Logica: 45 seconden totaal voor het programma
+    // -------------------------------------------------------------------------
+    const TOTAL_CYCLE_MS = 45000;
+    let currentSlideIndex = 0;
+    let rotationTimer = null;
+    let currentItems = [];
+    let slideDurationMs = 7000;
+
+    function startProgressBar(duration) {
+      const bar = document.getElementById('comp-progress-bar');
+      if (!bar) return;
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      void bar.offsetWidth;
+      bar.style.transition = `width ${duration}ms linear`;
+      bar.style.width = '100%';
+    }
+
+    function showSlide(index) {
+      const slides = document.querySelectorAll('.comp-slide');
+      if (slides.length === 0) return;
+
+      currentSlideIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, i) => {
+        if (i === currentSlideIndex) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      const counterEl = document.getElementById('comp-counter');
+      if (counterEl) {
+        counterEl.textContent = `Wedstrijd ${currentSlideIndex + 1} van ${slides.length} • 45s cyclus`;
+      }
+
+      startProgressBar(slideDurationMs);
+    }
+
+    function nextSlide() {
+      const slides = document.querySelectorAll('.comp-slide');
+      if (slides.length <= 1) {
+        startProgressBar(TOTAL_CYCLE_MS);
+        return;
+      }
+      showSlide(currentSlideIndex + 1);
+    }
+
+    function restartRotation() {
+      if (rotationTimer) clearInterval(rotationTimer);
+      const slides = document.querySelectorAll('.comp-slide');
+      if (slides.length === 0) return;
+
+      // Bereken dynamische tijdsduur per slide zodat de hele cyclus exact 45 sec duurt
+      slideDurationMs = Math.max(4000, Math.floor(TOTAL_CYCLE_MS / slides.length));
+      startProgressBar(slideDurationMs);
+      rotationTimer = setInterval(nextSlide, slideDurationMs);
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. Client-Side Auto-Refresh (fetcht programma.json elke 15 min)
+    // -------------------------------------------------------------------------
+    let currentFingerprint = '';
+
+    async function fetchProgramma() {
+      try {
+        const cacheBuster = Date.now();
+        const response = await fetch(`programma.json?v=${cacheBuster}`, {
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+
+        if (!response.ok) throw new Error(`HTTP fout: ${response.status}`);
+        const data = await response.json();
+        if (!data || !Array.isArray(data.items)) return;
+
+        const newFingerprint = JSON.stringify(data.items);
+        if (newFingerprint !== currentFingerprint) {
+          currentFingerprint = newFingerprint;
+          currentItems = data.items;
+          renderProgrammaSlides(data.items);
+        }
+
+        const statusEl = document.getElementById('status-indicator');
+        if (statusEl) {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+          statusEl.textContent = `Bijgewerkt: ${timeStr} • ${data.items.length} wedstrijden komende week`;
+        }
+      } catch (err) {
+        console.warn('Programma refresh waarschuwing:', err);
+      }
+    }
+
+    function renderProgrammaSlides(items) {
+      const stage = document.getElementById('comp-stage');
+      if (!stage) return;
+      stage.innerHTML = '';
+
+      if (items.length === 0) {
+        stage.innerHTML = `
+          <div class="comp-slide active" style="align-items: center; justify-content: center;">
+            <div class="comp-match-card" style="text-align: center; max-width: 800px;">
+              <h2 style="font-size: 40px; color: #17263c; margin-bottom: 12px;">Geen wedstrijden komende week</h2>
+              <p style="font-size: 26px; color: #64748b;">Er staan de komende 7 dagen geen wedstrijden gepland.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach((item, i) => {
+        const slide = document.createElement('article');
+        slide.className = 'comp-slide' + (i === 0 ? ' active' : '');
+
+        slide.innerHTML = `
+          <div class="comp-content">
+            <div class="comp-meta-row">
+              <span class="comp-badge-date">${item.datum || ''} ${item.tijd ? '• ' + item.tijd : ''}</span>
+              <span class="comp-badge-league">${item.competitie || 'Competitie'}</span>
+              ${item.thuis ? '<span class="comp-badge-league" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd; font-weight: 700;">🏠 Thuiswedstrijd</span>' : '<span class="comp-badge-league">🚌 Uitwedstrijd</span>'}
+            </div>
+
+            <div class="comp-match-card">
+              <div class="match-teams-row">
+                <!-- Thuisteam -->
+                <div class="match-team team-home">
+                  <span class="match-team-label">Thuis</span>
+                  <div class="match-team-name ${item.thuis ? 'is-voko' : ''}">${item.team_thuis || ''}</div>
+                </div>
+
+                <!-- VS Badge met tijd -->
+                <div class="match-vs-container">
+                  <div class="match-vs-circle">VS</div>
+                  <div class="match-time-tag">${item.tijd || 'T.b.a.'}</div>
+                </div>
+
+                <!-- Uitteam -->
+                <div class="match-team team-away">
+                  <span class="match-team-label">Uit</span>
+                  <div class="match-team-name ${!item.thuis ? 'is-voko' : ''}">${item.team_uit || ''}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer context -->
+            <div class="comp-footer-cards">
+              <div class="comp-info-card">
+                <span class="comp-info-icon">📍</span>
+                <div class="comp-info-text">
+                  <span class="comp-info-title">Sporthal & Veld</span>
+                  <span class="comp-info-val">${item.locatie || 'Sporthal'}</span>
+                </div>
+              </div>
+              <div class="comp-info-card">
+                <span class="comp-info-icon">🏆</span>
+                <div class="comp-info-text">
+                  <span class="comp-info-title">Stand & Niveau ${item.team || 'VOKO'}</span>
+                  <span class="comp-info-val">${item.stand_team || item.competitie || 'Competitie'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rechterkolom: Team Media Card -->
+          <div class="comp-media-wrapper">
+            <div class="comp-team-card">
+              <div class="comp-team-img-wrap">
+                <img src="${item.team_foto || ''}" alt="${item.team || ''}" class="comp-team-img">
+                <div class="comp-team-badge-overlay">${item.team || 'VOKO'}</div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        stage.appendChild(slide);
+      });
+
+      currentSlideIndex = 0;
+      showSlide(0);
+      restartRotation();
+    }
+
+    fetchProgramma();
+    setInterval(fetchProgramma, 15 * 60 * 1000);
+  </script>
+
+</body>
+</html>

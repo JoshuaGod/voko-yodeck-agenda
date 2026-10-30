@@ -410,3 +410,519 @@ html, body {
   font-weight: 500;
   pointer-events: none;
 }
+
+/* --------------------------------------------------------------------------
+   5. Competitie Slide Stijlen (uitslagen.html & programma.html)
+   1 Wedstrijd per slide, 45 seconden cyclus, met VOKO teamfoto
+   -------------------------------------------------------------------------- */
+.comp-stage {
+  position: absolute;
+  top: 250px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px 85px 60px 85px;
+  overflow: hidden;
+}
+
+.comp-slide {
+  position: absolute;
+  top: 30px;
+  left: 85px;
+  right: 85px;
+  bottom: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 60px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(40px);
+  transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.comp-slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.comp-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.comp-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.comp-badge-date {
+  background: #fef2f2;
+  color: #dd271b;
+  border: 1px solid #fecaca;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.comp-badge-league {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.comp-badge-live {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  animation: pulseLive 2s infinite ease-in-out;
+}
+
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
+/* Matchup & Score Card */
+.comp-match-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 36px 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin: 16px 0;
+}
+
+.match-teams-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.match-team {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.match-team.team-away {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.match-team-label {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.match-team-name {
+  font-size: 42px;
+  font-weight: 700;
+  color: #17263c;
+  line-height: 1.15;
+}
+
+.match-team-name.is-voko {
+  color: #dd271b;
+}
+
+/* Score Weergave (Uitslagen) */
+.match-score-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+}
+
+.match-score-board {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #0f172a;
+  padding: 12px 32px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.score-digit {
+  font-size: 64px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  min-width: 44px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-digit.is-winner {
+  color: #4ade80;
+}
+
+.score-divider {
+  font-size: 44px;
+  font-weight: 300;
+  color: #64748b;
+  margin-top: -4px;
+}
+
+.match-outcome-pill {
+  margin-top: 10px;
+  padding: 4px 14px;
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.match-outcome-pill.winst {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.match-outcome-pill.verlies {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Match Programma VS Center */
+.match-vs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+}
+
+.match-vs-circle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 1px;
+}
+
+.match-time-tag {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 8px;
+}
+
+/* Setstanden balk */
+.match-setstanden-bar {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 16px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 22px;
+  color: #475569;
+}
+
+.setstanden-label {
+  font-weight: 700;
+  color: #1e293b;
+  text-transform: uppercase;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.setstanden-scores {
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: 0.5px;
+}
+
+/* Locatie & Ranking context onderaan de slide */
+.comp-footer-cards {
+  display: flex;
+  gap: 20px;
+}
+
+.comp-info-card {
+  flex: 1;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.comp-info-icon {
+  font-size: 32px;
+}
+
+.comp-info-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.comp-info-title {
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+.comp-info-val {
+  font-size: 22px;
+  font-weight: 600;
+  color: #17263c;
+}
+
+/* Rechterkolom: Team Media Card */
+.comp-media-wrapper {
+  width: 580px;
+  min-width: 580px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.comp-team-card {
+  width: 100%;
+  height: 640px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.comp-team-img-wrap {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  background: #f1f5f9;
+  position: relative;
+}
+
+.comp-team-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.comp-team-badge-overlay {
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Standen Slide Stijlen (standen.html - 4 slides van 10s = 40s totaal)
+   -------------------------------------------------------------------------- */
+.stand-stage {
+  position: absolute;
+  top: 250px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px 85px 60px 85px;
+  overflow: hidden;
+}
+
+.stand-slide {
+  position: absolute;
+  top: 30px;
+  left: 85px;
+  right: 85px;
+  bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(40px);
+  transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.stand-slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.stand-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.stand-category-title {
+  font-size: 38px;
+  font-weight: 700;
+  color: #17263c;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stand-category-tag {
+  background: #dd271b;
+  color: #ffffff;
+  padding: 6px 18px;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.stand-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+  gap: 20px;
+  flex: 1;
+}
+
+.stand-team-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px 28px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  transition: border-color 0.2s ease;
+}
+
+.stand-team-card:hover {
+  border-color: #cbd5e1;
+}
+
+.stand-card-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.stand-rank-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 26px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stand-rank-circle.rank-1 {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+.stand-rank-circle.rank-2 {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #334155;
+}
+
+.stand-rank-circle.rank-3 {
+  background: #ffedd5;
+  border-color: #fb923c;
+  color: #c2410c;
+}
+
+.stand-team-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stand-team-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #17263c;
+}
+
+.stand-team-klasse {
+  font-size: 20px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.stand-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.stand-pos-tag {
+  background: #fef2f2;
+  color: #dd271b;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #fecaca;
+  white-space: nowrap;
+}
+
+.stand-source-note {
+  font-size: 15px;
+  color: #94a3b8;
+  font-weight: 500;
+}
