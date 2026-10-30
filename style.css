@@ -888,41 +888,47 @@ html, body {
 .stand-team-details {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .stand-team-title {
-  font-size: 30px;
+  font-size: 34px;
   font-weight: 700;
   color: #17263c;
+  line-height: 1.15;
 }
 
 .stand-team-klasse {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 500;
   color: #64748b;
+  line-height: 1.25;
 }
 
-.stand-card-right {
+/* Teamfoto in Standen Kaart */
+.stand-card-photo-wrap {
+  width: 210px;
+  height: 120px;
+  min-width: 210px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e2e8f0;
+  background: #f1f5f9;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-.stand-pos-tag {
-  background: #fef2f2;
-  color: #dd271b;
-  font-size: 20px;
-  font-weight: 700;
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: 1px solid #fecaca;
-  white-space: nowrap;
+.stand-card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.stand-source-note {
-  font-size: 15px;
-  color: #94a3b8;
-  font-weight: 500;
+.stand-card-photo.is-placeholder {
+  object-fit: cover;
+  opacity: 0.92;
 }

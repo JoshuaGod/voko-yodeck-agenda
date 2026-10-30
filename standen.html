@@ -179,7 +179,7 @@
           else if (rank === 3) rankClass = 'rank-3';
 
           const rankDisplay = t.positie_tekst || (t.niveau ? '⭐' : '-');
-          const sourceTag = t.bron ? `<span class="stand-source-note">${t.bron}</span>` : '';
+          const photoUrl = t.team_foto || 'https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg';
 
           cardsHtml += `
             <div class="stand-team-card">
@@ -192,9 +192,8 @@
                   <div class="stand-team-klasse">${t.klasse || t.niveau || ''}</div>
                 </div>
               </div>
-              <div class="stand-card-right">
-                <span class="stand-pos-tag">${t.stand_omschrijving || t.omschrijving || t.status || 'Actief'}</span>
-                ${sourceTag}
+              <div class="stand-card-photo-wrap">
+                <img src="${photoUrl}" alt="${t.team || ''}" class="stand-card-photo ${t.is_placeholder ? 'is-placeholder' : ''}">
               </div>
             </div>
           `;
