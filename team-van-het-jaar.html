@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tussenstand: Team van het jaar 2026/2027 - VOKO Digital Signage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800&display=swap" rel="stylesheet">
+<style>
+  /* Official VOKO Barlow Font Matching Digital Signage Stijlen */
+  @font-face {
+    font-family: 'Barlow';
+    font-style: normal;
+    font-weight: 400;
+    src: url('assets/fonts/barlow-400-normal-17ef8a.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Barlow';
+    font-style: normal;
+    font-weight: 600;
+    src: url('assets/fonts/barlow-600-normal-7abf44.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Barlow';
+    font-style: normal;
+    font-weight: 700;
+    src: url('assets/fonts/barlow-700-normal-4a2043.woff2') format('woff2');
+  }
+
+  @page {
+    size: 1920px 1080px;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #0b0f19;
+    font-family: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #17263c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Fixed 1920x1080 Canvas with Viewport Scaler */
+  #viewport-scaler {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #slide-canvas {
+    width: 1920px;
+    height: 1080px;
+    min-width: 1920px;
+    min-height: 1080px;
+    max-width: 1920px;
+    max-height: 1080px;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 1. Bovenbalk: Donkergrijze gradient strook met wit VOKO logo */
+  .top-bar {
+    width: 100%;
+    height: 68px;
+    background: linear-gradient(90deg, #384654 0%, #2e3c49 55%, #25333f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 85px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .top-bar .voko-logo {
+    height: 40px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .top-bar .page-badge {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    opacity: 0.95;
+    letter-spacing: 1px;
+  }
+
+  /* 2. Rode Banner: VOKO Rood met subtiele golfcurve aan de onderkant */
+  .red-banner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 148px;
+    z-index: 5;
+  }
+
+  .banner-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 148px;
+    display: block;
+    pointer-events: none;
+  }
+
+  .banner-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 24px 85px 0 85px;
+    display: flex;
+    align-items: flex-start;
+    z-index: 2;
+  }
+
+  .banner-title {
+    color: #ffffff;
+    font-size: 60px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+  }
+
+  /* 3. Hoofd Content Area: Split 1220px Grafiek / 1fr Winnaars Spotlight */
+  .content-area {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1220px 1fr;
+    padding: 10px 75px 30px 75px;
+    gap: 35px;
+    position: relative;
+    z-index: 6;
+  }
+
+  /* Linker Kolom: Chart */
+  .chart-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .legend-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+    padding-top: 4px;
+    margin-bottom: 2px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #17263c;
+  }
+
+  .legend-box {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+  }
+
+  .box-doel { background-color: #0e4b75; }
+  .box-punten { background-color: #00a3e0; }
+
+  .legend-diamond {
+    width: 18px;
+    height: 18px;
+    background-color: #d32323;
+    transform: rotate(45deg);
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 0 0 1.5px #d32323;
+  }
+
+  /* Rechter Kolom: Bokaal & Top 5 Podium Spotlight */
+  .spotlight-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px 10px 10px;
+  }
+
+  .trophy-wrapper {
+    width: 100%;
+    height: 410px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Top 5 Podium Kaart */
+  .podium-card {
+    width: 100%;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 22px 28px;
+    box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.08);
+  }
+
+  .podium-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+
+  .podium-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0e4b75;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .podium-badge {
+    background: #e42819;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .podium-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 19px;
+  }
+
+  .podium-team {
+    font-weight: 700;
+    color: #17263c;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .medal-icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .podium-score {
+    font-weight: 800;
+    color: #0e4b75;
+    background: #edf2f7;
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 17px;
+    letter-spacing: -0.2px;
+  }
+
+  .podium-score.top1 {
+    background: #fef3c7;
+    color: #92400E;
+    border: 1.5px solid #fde68a;
+  }
+
+  .podium-score.top2 {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1.5px solid #bae6fd;
+  }
+
+  .podium-footer {
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
+    margin-top: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+</style>
+</head>
+<body>
+
+<div id="viewport-scaler">
+  <div id="slide-canvas">
+    
+    <!-- 1. Bovenbalk met wit VOKO logo -->
+    <header class="top-bar">
+      <img src="assets/voko_wit.png" class="voko-logo" alt="VOKO Logo">
+      <div class="page-badge">1</div>
+    </header>
+
+    <!-- 2. Rode Banner met VOKO golf-curve -->
+    <div class="red-banner-wrapper">
+      <svg class="banner-svg" viewBox="0 0 1920 148" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e42819" />
+            <stop offset="100%" stop-color="#cb1d12" />
+          </linearGradient>
+        </defs>
+        <path d="M 0,0 L 1920,0 L 1920,118 Q 1100,132 450,146 Q 180,148 0,134 Z" fill="url(#vokoRedGrad)" />
+      </svg>
+      <div class="banner-content">
+        <h1 class="banner-title">Tussenstand: Team van het jaar 2026/2027</h1>
+      </div>
+    </div>
+
+    <!-- 3. Hoofd Content -->
+    <main class="content-area">
+      <!-- Linker kolom: De Combo Grafiek -->
+      <section class="chart-section">
+        <!-- Legenda -->
+        <div class="legend-bar">
+          <div class="legend-item">
+            <div class="legend-box box-doel"></div>
+            <span>Doel</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-box box-punten"></div>
+            <span>Punten</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-diamond"></div>
+            <span>Team van het jaar</span>
+          </div>
+        </div>
+
+        <!-- SVG Grafiek -->
+        <svg width="1200" height="680" viewBox="0 0 1200 680">
+          <!-- Gridlijnen -->
+          <line x1="85" y1="520" x2="1170" y2="520" stroke="#d5dde5" stroke-width="2.5"  />
+<line x1="85" y1="443.33333333333337" x2="1170" y2="443.33333333333337" stroke="#d5dde5" stroke-width="1.2" stroke-dasharray="3,3" />
+<line x1="85" y1="366.6666666666667" x2="1170" y2="366.6666666666667" stroke="#d5dde5" stroke-width="1.2" stroke-dasharray="3,3" />
+<line x1="85" y1="290" x2="1170" y2="290" stroke="#d5dde5" stroke-width="1.2" stroke-dasharray="3,3" />
+<line x1="85" y1="213.33333333333337" x2="1170" y2="213.33333333333337" stroke="#d5dde5" stroke-width="1.2" stroke-dasharray="3,3" />
+<line x1="85" y1="136.66666666666663" x2="1170" y2="136.66666666666663" stroke="#d5dde5" stroke-width="1.2" stroke-dasharray="3,3" />
+<line x1="85" y1="60" x2="1170" y2="60" stroke="#d5dde5" stroke-width="1.2" stroke-dasharray="3,3" />
+
+          <!-- Y-as labels -->
+          <text x="67" y="526" text-anchor="end" font-family="'Barlow', sans-serif" font-size="20" font-weight="700" fill="#2b3846">0</text>
+<text x="67" y="449.33333333333337" text-anchor="end" font-family="'Barlow', sans-serif" font-size="20" font-weight="700" fill="#2b3846">100</text>
+<text x="67" y="372.6666666666667" text-anchor="end" font-family="'Barlow', sans-serif" font-size="20" font-weight="700" fill="#2b3846">200</text>
+<text x="67" y="296" text-anchor="end" font-family="'Barlow', sans-serif" font-size="20" font-weight="700" fill="#2b3846">300</text>
+<text x="67" y="219.33333333333337" text-anchor="end" font-family="'Barlow', sans-serif" font-size="20" font-weight="700" fill="#2b3846">400</text>
+<text x="67" y="142.66666666666663" text-anchor="end" font-family="'Barlow', sans-serif" font-size="20" font-weight="700" fill="#2b3846">500</text>
+<text x="67" y="66" text-anchor="end" font-family="'Barlow', sans-serif" font-size="20" font-weight="700" fill="#2b3846">600</text>
+
+          <!-- Doel & Punten Balken -->
+          
+    <!-- VOKO DS 1 -->
+    <rect x="98.16666666666666" y="115.19999999999999" width="46" height="404.8" fill="#0e4b75" rx="4" />
+    <rect x="98.16666666666666" y="326.8" width="46" height="193.2" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO DS 2 -->
+    <rect x="170.49999999999997" y="278.5" width="46" height="241.5" fill="#0e4b75" rx="4" />
+    <rect x="170.49999999999997" y="408.06666666666666" width="46" height="111.93333333333334" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO DS 3 -->
+    <rect x="242.83333333333331" y="390.43333333333334" width="46" height="129.56666666666666" fill="#0e4b75" rx="4" />
+    <rect x="242.83333333333331" y="473.23333333333335" width="46" height="46.766666666666666" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO HS 1 -->
+    <rect x="315.1666666666667" y="190.33333333333331" width="46" height="329.6666666666667" fill="#0e4b75" rx="4" />
+    <rect x="315.1666666666667" y="286.9333333333333" width="46" height="233.0666666666667" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO HS 2 -->
+    <rect x="387.5" y="207.2" width="46" height="312.8" fill="#0e4b75" rx="4" />
+    <rect x="387.5" y="365.9" width="46" height="154.10000000000002" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO HS 3 -->
+    <rect x="459.8333333333333" y="391.2" width="46" height="128.8" fill="#0e4b75" rx="4" />
+    <rect x="459.8333333333333" y="492.4" width="46" height="27.599999999999998" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO HS 4 -->
+    <rect x="532.1666666666666" y="372.79999999999995" width="46" height="147.20000000000002" fill="#0e4b75" rx="4" />
+    <rect x="532.1666666666666" y="428" width="46" height="92" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO HS 5 -->
+    <rect x="604.4999999999999" y="354.4" width="46" height="165.6" fill="#0e4b75" rx="4" />
+    <rect x="604.4999999999999" y="485.5" width="46" height="34.5" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO MA 1 -->
+    <rect x="676.8333333333333" y="366.6666666666667" width="46" height="153.33333333333331" fill="#0e4b75" rx="4" />
+    <rect x="676.8333333333333" y="483.96666666666664" width="46" height="36.03333333333334" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO MA 2 -->
+    <rect x="749.1666666666666" y="385.8333333333333" width="46" height="134.16666666666669" fill="#0e4b75" rx="4" />
+    <rect x="749.1666666666666" y="495.46666666666664" width="46" height="24.533333333333335" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO MB 1 -->
+    <rect x="821.4999999999999" y="403.46666666666664" width="46" height="116.53333333333335" fill="#0e4b75" rx="4" />
+    <rect x="821.4999999999999" y="496.23333333333335" width="46" height="23.766666666666666" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO MB 2 -->
+    <rect x="893.8333333333333" y="345.2" width="46" height="174.8" fill="#0e4b75" rx="4" />
+    <rect x="893.8333333333333" y="494.7" width="46" height="25.3" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO MC 1 -->
+    <rect x="966.1666666666666" y="446.4" width="46" height="73.60000000000001" fill="#0e4b75" rx="4" />
+    <rect x="966.1666666666666" y="482.43333333333334" width="46" height="37.56666666666666" fill="#00a3e0" rx="4" />
+  
+    <!-- VOKO MC 2 -->
+    <rect x="1038.5" y="428" width="46" height="92" fill="#0e4b75" rx="4" />
+    <rect x="1038.5" y="506.96666666666664" width="46" height="13.033333333333333" fill="#00a3e0" rx="4" />
+  
+    <!-- Volley Stars -->
+    <rect x="1110.8333333333333" y="142.8" width="46" height="377.2" fill="#0e4b75" rx="4" />
+    <rect x="1110.8333333333333" y="277.73333333333335" width="46" height="242.26666666666665" fill="#00a3e0" rx="4" />
+  
+          <!-- Ruit-markers met percentages -->
+          
+    <g transform="translate(121.16666666666666, 405.9016)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">48%</text>
+    </g>
+  
+    <g transform="translate(193.49999999999997, 409.2504)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">46%</text>
+    </g>
+  
+    <g transform="translate(265.8333333333333, 433.6488)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">36%</text>
+    </g>
+  
+    <g transform="translate(338.1666666666667, 350.88559999999995)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">71%</text>
+    </g>
+  
+    <g transform="translate(410.5, 402.07439999999997)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">49%</text>
+    </g>
+  
+    <g transform="translate(482.8333333333333, 468.8112)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">21%</text>
+    </g>
+  
+    <g transform="translate(555.1666666666666, 370.5)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">63%</text>
+    </g>
+  
+    <g transform="translate(627.4999999999999, 470.2464)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">21%</text>
+    </g>
+  
+    <g transform="translate(699.8333333333333, 463.788)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">24%</text>
+    </g>
+  
+    <g transform="translate(772.1666666666666, 476.2264)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">18%</text>
+    </g>
+  
+    <g transform="translate(844.4999999999999, 471.2032)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">20%</text>
+    </g>
+  
+    <g transform="translate(916.8333333333333, 485.31600000000003)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">15%</text>
+    </g>
+  
+    <g transform="translate(989.1666666666666, 398.008)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">51%</text>
+    </g>
+  
+    <g transform="translate(1061.5, 486.0336)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">14%</text>
+    </g>
+  
+    <g transform="translate(1133.8333333333333, 366.43359999999996)">
+      <path d="M 0 -13 L 13 0 L 0 13 L -13 0 Z" fill="#d32323" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.22))" />
+      <rect x="-30" y="-38" width="60" height="22" rx="4" fill="#ffffff" stroke="#d32323" stroke-width="1.5" />
+      <text x="0" y="-22" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="15" font-weight="800" fill="#d32323">64%</text>
+    </g>
+  
+          <!-- X-as Team Labels -->
+          
+    <g transform="translate(121.16666666666666, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO DS 1</text>
+    </g>
+  
+    <g transform="translate(193.49999999999997, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO DS 2</text>
+    </g>
+  
+    <g transform="translate(265.8333333333333, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO DS 3</text>
+    </g>
+  
+    <g transform="translate(338.1666666666667, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="800" fill="#0e4b75">VOKO HS 1</text>
+    </g>
+  
+    <g transform="translate(410.5, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO HS 2</text>
+    </g>
+  
+    <g transform="translate(482.8333333333333, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO HS 3</text>
+    </g>
+  
+    <g transform="translate(555.1666666666666, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="800" fill="#0e4b75">VOKO HS 4</text>
+    </g>
+  
+    <g transform="translate(627.4999999999999, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO HS 5</text>
+    </g>
+  
+    <g transform="translate(699.8333333333333, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO MA 1</text>
+    </g>
+  
+    <g transform="translate(772.1666666666666, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO MA 2</text>
+    </g>
+  
+    <g transform="translate(844.4999999999999, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO MB 1</text>
+    </g>
+  
+    <g transform="translate(916.8333333333333, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO MB 2</text>
+    </g>
+  
+    <g transform="translate(989.1666666666666, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO MC 1</text>
+    </g>
+  
+    <g transform="translate(1061.5, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="600" fill="#1e293b">VOKO MC 2</text>
+    </g>
+  
+    <g transform="translate(1133.8333333333333, 536) rotate(-42)">
+      <text x="0" y="0" text-anchor="end" font-family="'Barlow', sans-serif" font-size="18" font-weight="800" fill="#0e4b75">Volley Stars</text>
+    </g>
+  
+        </svg>
+      </section>
+
+      <!-- Rechter kolom: Bokaal & Top 5 Podium Spotlight -->
+      <aside class="spotlight-section">
+        <!-- 100% Vector Bokaal Illustratie (scherp op elke resolutie) -->
+        <div class="trophy-wrapper">
+          
+<svg viewBox="0 0 460 480" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gold Metallic Gradients -->
+    <linearGradient id="goldCup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE885" />
+      <stop offset="35%" stop-color="#F59E0B" />
+      <stop offset="70%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#92400E" />
+    </linearGradient>
+    <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#FDE68A" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="goldStem" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#B45309" />
+      <stop offset="30%" stop-color="#FDE68A" />
+      <stop offset="70%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#78350F" />
+    </linearGradient>
+    <linearGradient id="marblePedestal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="50%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="goldPlaque" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7" />
+      <stop offset="50%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <radialGradient id="trophyGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.45" />
+      <stop offset="60%" stop-color="#F59E0B" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0" />
+    </radialGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Warm Halo Glow -->
+  <circle cx="230" cy="180" r="170" fill="url(#trophyGlow)" />
+
+  <!-- Trophy Handles (Ears) -->
+  <!-- Left Handle -->
+  <path d="M 140 100 C 60 100, 50 200, 150 240 C 130 220, 100 180, 105 130 C 108 105, 125 105, 140 105 Z" fill="url(#goldCup)" stroke="#B45309" stroke-width="2.5" />
+  <!-- Right Handle -->
+  <path d="M 320 100 C 400 100, 410 200, 310 240 C 330 220, 360 180, 355 130 C 352 105, 335 105, 320 105 Z" fill="url(#goldCup)" stroke="#B45309" stroke-width="2.5" />
+
+  <!-- Main Trophy Cup Body -->
+  <path d="M 130 70 L 330 70 C 330 70, 335 160, 310 215 C 285 270, 255 285, 230 285 C 205 285, 175 270, 150 215 C 125 160, 130 70, 130 70 Z" fill="url(#goldCup)" stroke="#92400E" stroke-width="3" />
+  
+  <!-- Cup Rim Lip -->
+  <ellipse cx="230" cy="70" rx="100" ry="14" fill="#FFE885" stroke="#92400E" stroke-width="2.5" />
+  <ellipse cx="230" cy="70" rx="92" ry="10" fill="#D97706" />
+
+  <!-- Cup Inner Highlight Curved Sheen -->
+  <path d="M 152 85 C 150 145, 168 200, 185 240 C 172 205, 160 155, 162 95 C 163 88, 172 85, 152 85 Z" fill="url(#goldHighlight)" />
+
+  <!-- Stem & Base Connectors -->
+  <!-- Upper Connector -->
+  <path d="M 210 285 L 250 285 L 246 315 L 214 315 Z" fill="url(#goldStem)" stroke="#92400E" stroke-width="2" />
+  <!-- Knob -->
+  <ellipse cx="230" cy="320" rx="26" ry="10" fill="#FFE885" stroke="#92400E" stroke-width="2" />
+  <!-- Lower Stem -->
+  <path d="M 218 325 L 242 325 L 248 355 L 212 355 Z" fill="url(#goldStem)" stroke="#92400E" stroke-width="2" />
+  <!-- Base Flange -->
+  <ellipse cx="230" cy="358" rx="44" ry="12" fill="url(#goldStem)" stroke="#92400E" stroke-width="2" />
+
+  <!-- Marble Pedestal Base -->
+  <!-- Top Tier -->
+  <polygon points="170,366 290,366 280,380 180,380" fill="#475569" stroke="#1E293B" stroke-width="2" />
+  <!-- Main Pedestal Box -->
+  <rect x="155" y="380" width="150" height="75" rx="6" fill="url(#marblePedestal)" stroke="#0F172A" stroke-width="3" />
+  <!-- Bottom Plate Foot -->
+  <rect x="140" y="455" width="180" height="15" rx="4" fill="#0F172A" />
+
+  <!-- Center Medallion Badge on Cup -->
+  <circle cx="230" cy="155" r="44" fill="#FFFBEB" stroke="#B45309" stroke-width="4" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.25))" />
+  <circle cx="230" cy="155" r="38" fill="url(#goldCup)" />
+  <!-- Crisp Star Icon in Center -->
+  <path d="M 230 128 L 235 142 L 250 143 L 238 152 L 242 166 L 230 157 L 218 166 L 222 152 L 210 143 L 225 142 Z" fill="#FFE885" stroke="#92400E" stroke-width="1.5" />
+  <!-- Bold #1 Text -->
+  <text x="230" y="184" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="28" font-weight="900" fill="#78350F">1</text>
+
+  <!-- Gold Plaque on Pedestal -->
+  <rect x="170" y="396" width="120" height="42" rx="4" fill="url(#goldPlaque)" stroke="#78350F" stroke-width="1.5" />
+  <text x="230" y="414" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="12" font-weight="800" fill="#78350F" letter-spacing="1">TEAM VAN</text>
+  <text x="230" y="430" text-anchor="middle" font-family="'Barlow', sans-serif" font-size="13" font-weight="900" fill="#451A03" letter-spacing="1.5">HET JAAR</text>
+
+  <!-- Celebratory Sparkles -->
+  <path d="M 100 70 L 105 85 L 120 90 L 105 95 L 100 110 L 95 95 L 80 90 L 95 85 Z" fill="#F59E0B" opacity="0.85" />
+  <path d="M 360 65 L 364 78 L 377 82 L 364 86 L 360 99 L 356 86 L 343 82 L 356 78 Z" fill="#F59E0B" opacity="0.85" />
+  <circle cx="90" cy="180" r="4" fill="#FDE68A" opacity="0.75" />
+  <circle cx="370" cy="195" r="5" fill="#FDE68A" opacity="0.75" />
+</svg>
+
+        </div>
+
+        <!-- Top 5 Tussenstand Kaart -->
+        <div class="podium-card">
+          <div class="podium-header">
+            <div class="podium-title">🏆 Top 5 Tussenstand</div>
+            <div class="podium-badge">Live Stand</div>
+          </div>
+
+          <div class="podium-row">
+            <div class="podium-team"><span class="medal-icon">🥇</span> 1. VOKO HS 1</div>
+            <div class="podium-score top1">71% (304/430 pt)</div>
+          </div>
+          <div class="podium-row">
+            <div class="podium-team"><span class="medal-icon">🥈</span> 2. Volley Stars</div>
+            <div class="podium-score top2">64% (316/492 pt)</div>
+          </div>
+          <div class="podium-row">
+            <div class="podium-team"><span class="medal-icon">🥉</span> 3. VOKO HS 4</div>
+            <div class="podium-score">63% (120/192 pt)</div>
+          </div>
+          <div class="podium-row">
+            <div class="podium-team"><span class="medal-icon">🔹</span> 4. VOKO MC 1</div>
+            <div class="podium-score">51% (49/96 pt)</div>
+          </div>
+          <div class="podium-row">
+            <div class="podium-team"><span class="medal-icon">🔹</span> 5. VOKO HS 2</div>
+            <div class="podium-score">49% (201/408 pt)</div>
+          </div>
+
+          <div class="podium-footer">Punten t.o.v. teamdoel &bull; Incl. overvloei &bull; VOKO Oosterhout</div>
+        </div>
+      </aside>
+    </main>
+
+  </div>
+</div>
+
+<script>
+  // Automatische Schaling (Yodeck Full-screen 1080p fitting)
+  function fitViewport() {
+    const canvas = document.getElementById('slide-canvas');
+    if (!canvas) return;
+    const targetWidth = 1920;
+    const targetHeight = 1080;
+    const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
+    canvas.style.transform = `scale(${scale})`;
+  }
+  window.addEventListener('resize', fitViewport);
+  window.addEventListener('DOMContentLoaded', fitViewport);
+  fitViewport();
+  // Yodeck Auto-Refresh elke 15 minuten
+  setTimeout(() => {
+    window.location.reload();
+  }, 15 * 60 * 1000);
+</script>
+</body>
+</html>

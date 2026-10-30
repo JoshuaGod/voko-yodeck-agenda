@@ -1,0 +1,157 @@
+{
+  "peildatum": "2026-10-30",
+  "seizoen": "2026-2027",
+  "titel": "Tussenstand: Team van het jaar 2026/2027",
+  "teams": [
+    {
+      "key": "VOKO DS 1",
+      "label": "VOKO DS 1",
+      "doel": 528,
+      "beh": 252,
+      "behOrig": 252,
+      "delta": 0,
+      "pct": 47.7,
+      "pctRound": 48
+    },
+    {
+      "key": "VOKO DS 2",
+      "label": "VOKO DS 2",
+      "doel": 315,
+      "beh": 146,
+      "behOrig": 146,
+      "delta": 0,
+      "pct": 46.3,
+      "pctRound": 46
+    },
+    {
+      "key": "VOKO DS 3",
+      "label": "VOKO DS 3",
+      "doel": 169,
+      "beh": 61,
+      "behOrig": 61,
+      "delta": 0,
+      "pct": 36.1,
+      "pctRound": 36
+    },
+    {
+      "key": "VOKO HS 1",
+      "label": "VOKO HS 1",
+      "doel": 430,
+      "beh": 304,
+      "behOrig": 356,
+      "delta": -52,
+      "pct": 70.7,
+      "pctRound": 71
+    },
+    {
+      "key": "VOKO HS 2",
+      "label": "VOKO HS 2",
+      "doel": 408,
+      "beh": 201,
+      "behOrig": 201,
+      "delta": 0,
+      "pct": 49.3,
+      "pctRound": 49
+    },
+    {
+      "key": "VOKO HS 3",
+      "label": "VOKO HS 3",
+      "doel": 168,
+      "beh": 36,
+      "behOrig": 36,
+      "delta": 0,
+      "pct": 21.4,
+      "pctRound": 21
+    },
+    {
+      "key": "VOKO HS 4",
+      "label": "VOKO HS 4",
+      "doel": 192,
+      "beh": 120,
+      "behOrig": 120,
+      "delta": 0,
+      "pct": 62.5,
+      "pctRound": 63
+    },
+    {
+      "key": "VOKO HS 5",
+      "label": "VOKO HS 5",
+      "doel": 216,
+      "beh": 45,
+      "behOrig": 45,
+      "delta": 0,
+      "pct": 20.8,
+      "pctRound": 21
+    },
+    {
+      "key": "VOKO MA 1",
+      "label": "VOKO MA 1",
+      "doel": 200,
+      "beh": 47,
+      "behOrig": 47,
+      "delta": 0,
+      "pct": 23.5,
+      "pctRound": 24
+    },
+    {
+      "key": "VOKO MA 2",
+      "label": "VOKO MA 2",
+      "doel": 175,
+      "beh": 32,
+      "behOrig": 32,
+      "delta": 0,
+      "pct": 18.3,
+      "pctRound": 18
+    },
+    {
+      "key": "VOKO MB 1",
+      "label": "VOKO MB 1",
+      "doel": 152,
+      "beh": 31,
+      "behOrig": 31,
+      "delta": 0,
+      "pct": 20.4,
+      "pctRound": 20
+    },
+    {
+      "key": "VOKO MB 2",
+      "label": "VOKO MB 2",
+      "doel": 228,
+      "beh": 33,
+      "behOrig": 33,
+      "delta": 0,
+      "pct": 14.5,
+      "pctRound": 15
+    },
+    {
+      "key": "VOKO MC 1",
+      "label": "VOKO MC 1",
+      "doel": 96,
+      "beh": 49,
+      "behOrig": 49,
+      "delta": 0,
+      "pct": 51,
+      "pctRound": 51
+    },
+    {
+      "key": "VOKO MC 2",
+      "label": "VOKO MC 2",
+      "doel": 120,
+      "beh": 17,
+      "behOrig": 17,
+      "delta": 0,
+      "pct": 14.2,
+      "pctRound": 14
+    },
+    {
+      "key": "Volley Stars",
+      "label": "Volley Stars",
+      "doel": 492,
+      "beh": 316,
+      "behOrig": 264,
+      "delta": 52,
+      "pct": 64.2,
+      "pctRound": 64
+    }
+  ]
+}
