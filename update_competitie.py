@@ -11,6 +11,7 @@ Genereert:
 - standen.json (4 categorieën: Heren, Dames, Jeugd, Volley Stars)
 """
 
+from __future__ import annotations
 import io
 import json
 import logging
@@ -20,6 +21,7 @@ import urllib.parse
 import zipfile
 from datetime import datetime, timedelta, date
 from pathlib import Path
+from typing import Optional
 import xml.etree.ElementTree as ET
 import requests
 from bs4 import BeautifulSoup
@@ -166,8 +168,71 @@ def fetch_team_photos() -> dict[str, dict]:
     return photos
 
 
+def find_local_team_photo(team_name: str) -> Optional[str]:
+    """
+    Zoekt in de map assets/teams/ naar een specifieke teamfoto.
+    Ondersteunt verschillende naamconventies:
+    bv. 'Level 5-1' -> level5_1, level_5_1, level-5-1, l5_1, l5-1, voko_l5_1
+        'Level 2'   -> level2, level_2, level-2, l2, voko_l2
+        'VOKO HS 2' -> hs2, hs_2, heren2, voko_hs_2
+    """
+    teams_dir = SCRIPT_DIR / "assets" / "teams"
+    if not teams_dir.exists():
+        return None
+
+    clean_name = re.sub(r"[^a-zA-Z0-9]", "", team_name.lower())
+    aliases = {clean_name}
+
+    m_lvl = re.search(r"level\s*([0-9])(?:[-\s]*([0-9]))?", team_name, flags=re.IGNORECASE)
+    if not m_lvl:
+        m_lvl = re.search(r"l([0-9])\s*([0-9])?", team_name, flags=re.IGNORECASE)
+
+    if m_lvl:
+        lvl = m_lvl.group(1)
+        sub = m_lvl.group(2)
+        if sub:
+            aliases.update([
+                f"level{lvl}_{sub}", f"level{lvl}-{sub}", f"level{lvl}{sub}",
+                f"l{lvl}_{sub}", f"l{lvl}-{sub}", f"l{lvl}{sub}",
+                f"voko_l{lvl}_{sub}", f"vokol{lvl}_{sub}", f"voko_l{lvl}{sub}"
+            ])
+        else:
+            aliases.update([
+                f"level{lvl}", f"l{lvl}", f"voko_l{lvl}", f"vokolevel{lvl}"
+            ])
+
+    m_sen = re.search(r"(hs|ds|ma|mb|mc)\s*([0-9])", team_name, flags=re.IGNORECASE)
+    if m_sen:
+        prefix = m_sen.group(1).lower()
+        num = m_sen.group(2)
+        aliases.update([
+            f"{prefix}{num}", f"{prefix}_{num}", f"{prefix}-{num}",
+            f"voko_{prefix}{num}", f"voko_{prefix}_{num}"
+        ])
+
+    valid_exts = {".jpg", ".jpeg", ".png", ".webp"}
+    norm_aliases = {re.sub(r"[^a-zA-Z0-9]", "", a.lower()) for a in aliases}
+
+    for p in teams_dir.iterdir():
+        if p.is_file() and p.suffix.lower() in valid_exts:
+            stem_clean = re.sub(r"[^a-zA-Z0-9]", "", p.stem.lower())
+            if stem_clean in norm_aliases:
+                return f"assets/teams/{p.name}"
+
+    return None
+
+
 def get_team_photo(team_name: str, photos_map: dict) -> tuple[str, bool]:
-    """Geeft de afbeeldings-URL en een boolean is_placeholder terug."""
+    """
+    Geeft de afbeeldings-URL en een boolean is_placeholder terug.
+    1. Controleert eerst lokale map assets/teams/
+    2. Controleert daarna website photos_map
+    3. Valt anders terug op DEFAULT_PLACEHOLDER_IMG
+    """
+    local_photo = find_local_team_photo(team_name)
+    if local_photo:
+        return local_photo, False
+
     norm = normalize_team_name(team_name)
     for k, v in photos_map.items():
         if k.lower() == norm.lower() or k.lower() in norm.lower() or norm.lower() in k.lower():
@@ -1013,8 +1078,7 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
             "is_placeholder": is_ph
         })
 
-    # 4. Volley Stars (Mini's / CMV toernooien)
-    # Zoek dynamisch alle toernooiteams uit stand.xlsx (L2 t/m L5 of CMV)
+    # 4. Volley Stars (Toernooien & Trainingsgroepen)
     img_stars, is_ph_stars = get_team_photo("Volley Stars", photos_map)
     stars_list = []
 
@@ -1036,13 +1100,29 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
 
         for team_name, st_list in stars_teams_found:
             primary = st_list[0]
-            img_url, is_ph = get_team_photo(team_name, photos_map)
-            if is_ph:
-                img_url, is_ph = img_stars, is_ph_stars
+            # Vriendelijke display naam: "VOKO L5 2" -> "Level 5-2"
+            m_l = re.search(r"L([2-5])\s*([0-9])?", team_name, flags=re.IGNORECASE)
+            if m_l:
+                lvl_num = m_l.group(1)
+                team_sub = m_l.group(2)
+                friendly_name = f"Level {lvl_num}-{team_sub}" if team_sub else f"Level {lvl_num}"
+            else:
+                friendly_name = team_name
+
+            # Zoek specifieke teamfoto in assets/teams/
+            local_photo = find_local_team_photo(friendly_name) or find_local_team_photo(team_name)
+            if local_photo:
+                img_url = local_photo
+                is_ph = False
+            else:
+                # Fallback: algemene Volley Stars websitefoto
+                img_url = img_stars
+                is_ph = is_ph_stars
 
             stars_list.append({
-                "team": team_name,
-                "klasse": primary.get("display_klasse", primary.get("klasse", "Niveau CMV")),
+                "team": friendly_name,
+                "team_code": team_name,
+                "klasse": primary.get("display_klasse", primary.get("klasse", "Toernooien")),
                 "positie": primary.get("positie", 99),
                 "positie_tekst": primary.get("positie_tekst", "-"),
                 "stand_omschrijving": primary.get("stand_omschrijving", ""),
@@ -1054,29 +1134,37 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
             })
     else:
         # Fallback indien stand.xlsx (nog) geen toernooigegevens bevat
-        for fallback_team in ["VOKO L5 2", "VOKO L5 1", "VOKO L4 2", "VOKO L4 3", "VOKO L4 1"]:
+        for fallback_code, friendly_name in [
+            ("VOKO L5 2", "Level 5-2"),
+            ("VOKO L5 1", "Level 5-1"),
+            ("VOKO L4 2", "Level 4-2"),
+            ("VOKO L4 3", "Level 4-3"),
+            ("VOKO L4 1", "Level 4-1")
+        ]:
             fallback_st = [{
                 "type": "toernooi",
                 "label": "Toernooi",
-                "klasse": "CMV Toernooien",
-                "display_klasse": "CMV Toernooien",
+                "klasse": "Toernooien",
+                "display_klasse": "Toernooien",
                 "positie": 99,
                 "positie_tekst": "-",
                 "gespeeld": 0,
                 "punten": 0,
                 "stand_omschrijving": "Toernooien West-Brabant"
             }]
+            local_photo = find_local_team_photo(friendly_name) or find_local_team_photo(fallback_code)
             stars_list.append({
-                "team": fallback_team,
-                "klasse": "CMV Toernooien",
+                "team": friendly_name,
+                "team_code": fallback_code,
+                "klasse": "Toernooien",
                 "positie": 99,
                 "positie_tekst": "-",
                 "stand_omschrijving": "Toernooien West-Brabant",
                 "gespeeld": 0,
                 "punten": 0,
                 "standen": fallback_st,
-                "team_foto": img_stars,
-                "is_placeholder": is_ph_stars
+                "team_foto": local_photo or img_stars,
+                "is_placeholder": False if local_photo else is_ph_stars
             })
 
     return {
@@ -1098,9 +1186,9 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
                 "teams": jeugd_list
             },
             "volleystars": {
-                "titel": "Volley Stars (Mini's)",
+                "titel": "Volley Stars",
                 "slide_index": 4,
-                "ondertitel": f"Meest recente speelronde CMV • {len(stars_list)} teams actief",
+                "ondertitel": f"Meest recente speelronde • {len(stars_list)} teams actief",
                 "teams": stars_list
             }
         }
@@ -1109,30 +1197,65 @@ def build_standen_data(nevobo_teams: dict, ds3_stand: dict | None, photos_map: d
 
 def build_oproep_teamfoto_data(photos_map: dict) -> dict:
     """
-    Analyseert welke VOKO teams momenteel een echte teamfoto hebben op de website
+    Analyseert welke VOKO teams momenteel een echte teamfoto hebben op de website of lokaal
     en welke teams nog een placeholder hebben (en dus gezocht worden).
     """
     team_categories = [
-        ("Heren", ["VOKO HS 1", "VOKO HS 2", "VOKO HS 3", "VOKO HS 4", "VOKO HS 5"]),
-        ("Dames", ["VOKO DS 1", "VOKO DS 2", "VOKO DS 3"]),
-        ("Jeugd", ["VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2"]),
-        ("Volley Stars (CMV)", ["Volley Stars"])
+        ("Heren", [
+            ("VOKO HS 1", "VOKO HS 1"),
+            ("VOKO HS 2", "VOKO HS 2"),
+            ("VOKO HS 3", "VOKO HS 3"),
+            ("VOKO HS 4", "VOKO HS 4"),
+            ("VOKO HS 5", "VOKO HS 5")
+        ]),
+        ("Dames", [
+            ("VOKO DS 1", "VOKO DS 1"),
+            ("VOKO DS 2", "VOKO DS 2"),
+            ("VOKO DS 3", "VOKO DS 3")
+        ]),
+        ("Jeugd", [
+            ("VOKO MA 1", "VOKO MA 1"),
+            ("VOKO MA 2", "VOKO MA 2"),
+            ("VOKO MB 1", "VOKO MB 1"),
+            ("VOKO MB 2", "VOKO MB 2"),
+            ("VOKO MC 1", "VOKO MC 1"),
+            ("VOKO MC 2", "VOKO MC 2")
+        ]),
+        ("Volley Stars", [
+            ("Level 5-1", "VOKO L5 1"),
+            ("Level 5-2", "VOKO L5 2"),
+            ("Level 4-1", "VOKO L4 1"),
+            ("Level 4-2", "VOKO L4 2"),
+            ("Level 4-3", "VOKO L4 3"),
+            ("Level 3", "Level 3"),
+            ("Level 2", "Level 2")
+        ])
     ]
 
     met_foto = []
     zonder_foto = []
     categorieen = {}
 
-    for cat_name, t_list in team_categories:
+    for cat_name, t_pairs in team_categories:
         categorieen[cat_name] = {"compleet": [], "gezocht": []}
-        for t in t_list:
-            _, is_ph = get_team_photo(t, photos_map)
-            if not is_ph:
-                met_foto.append(t)
-                categorieen[cat_name]["compleet"].append(t)
+        for display_name, match_name in t_pairs:
+            local_photo = find_local_team_photo(display_name) or find_local_team_photo(match_name)
+            if local_photo:
+                has_photo = True
+            elif cat_name == "Volley Stars":
+                # Voor Volley Stars telt de algemene website groepsfoto NIET als individuele teamfoto;
+                # we willen immers een eigen foto per team/niveau!
+                has_photo = False
             else:
-                zonder_foto.append(t)
-                categorieen[cat_name]["gezocht"].append(t)
+                _, is_ph = get_team_photo(match_name, photos_map)
+                has_photo = not is_ph
+
+            if has_photo:
+                met_foto.append(display_name)
+                categorieen[cat_name]["compleet"].append(display_name)
+            else:
+                zonder_foto.append(display_name)
+                categorieen[cat_name]["gezocht"].append(display_name)
 
     total_teams = len(met_foto) + len(zonder_foto)
     percentage = int(round((len(met_foto) / total_teams) * 100)) if total_teams else 0

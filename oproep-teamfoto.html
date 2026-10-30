@@ -444,17 +444,17 @@
           <div>
             <div class="oproep-header-right">
               <h2 class="oproep-right-title">Wie missen we nog?</h2>
-              <div class="oproep-badge-missing" id="missing-badge">13 teams gezocht</div>
+              <div class="oproep-badge-missing" id="missing-badge">19 teams gezocht</div>
             </div>
 
             <!-- Voortgangsbalk -->
             <div class="oproep-progress-wrap">
               <div class="oproep-progress-header">
-                <span id="progress-text">2 van de 15 teams compleet</span>
-                <span id="progress-pct">13%</span>
+                <span id="progress-text">2 van de 21 teams compleet</span>
+                <span id="progress-pct">10%</span>
               </div>
               <div class="oproep-progress-bar-bg">
-                <div class="oproep-progress-bar-fill" id="progress-bar-fill" style="width: 13%;"></div>
+                <div class="oproep-progress-bar-fill" id="progress-bar-fill" style="width: 10%;"></div>
               </div>
             </div>
 
@@ -493,10 +493,10 @@
     // 0. Fallback data zodat de slide ALTIJD direct en foutloos renderbaar is
     // -------------------------------------------------------------------------
     const INITIAL_OPROEP_DATA = {
-      "totaal_teams": 15,
+      "totaal_teams": 21,
       "aantal_met_foto": 2,
-      "aantal_zonder_foto": 13,
-      "percentage_compleet": 13,
+      "aantal_zonder_foto": 19,
+      "percentage_compleet": 10,
       "teams_met_foto": [
         "VOKO HS 1",
         "VOKO HS 5"
@@ -505,7 +505,7 @@
         "VOKO HS 2", "VOKO HS 3", "VOKO HS 4",
         "VOKO DS 1", "VOKO DS 2", "VOKO DS 3",
         "VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2",
-        "Volley Stars"
+        "Level 5-1", "Level 5-2", "Level 4-1", "Level 4-2", "Level 4-3", "Level 3", "Level 2"
       ],
       "categorieen": {
         "Heren": {
@@ -520,9 +520,11 @@
           "compleet": [],
           "gezocht": ["VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2"]
         },
-        "Volley Stars (CMV)": {
+        "Volley Stars": {
           "compleet": [],
-          "gezocht": ["Volley Stars"]
+          "gezocht": [
+            "Level 5-1", "Level 5-2", "Level 4-1", "Level 4-2", "Level 4-3", "Level 3", "Level 2"
+          ]
         }
       }
     };

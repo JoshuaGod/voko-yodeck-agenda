@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-10-30T12:43:46.843874",
+  "updated_at": "2026-10-30T13:50:00",
   "email": "communicatie@voko-oosterhout.nl",
-  "totaal_teams": 15,
+  "totaal_teams": 21,
   "aantal_met_foto": 2,
-  "aantal_zonder_foto": 13,
-  "percentage_compleet": 13,
+  "aantal_zonder_foto": 19,
+  "percentage_compleet": 10,
   "teams_met_foto": [
     "VOKO HS 1",
     "VOKO HS 5"
@@ -22,7 +22,13 @@
     "VOKO MB 2",
     "VOKO MC 1",
     "VOKO MC 2",
-    "Volley Stars"
+    "Level 5-1",
+    "Level 5-2",
+    "Level 4-1",
+    "Level 4-2",
+    "Level 4-3",
+    "Level 3",
+    "Level 2"
   ],
   "categorieen": {
     "Heren": {
@@ -55,10 +61,16 @@
         "VOKO MC 2"
       ]
     },
-    "Volley Stars (CMV)": {
+    "Volley Stars": {
       "compleet": [],
       "gezocht": [
-        "Volley Stars"
+        "Level 5-1",
+        "Level 5-2",
+        "Level 4-1",
+        "Level 4-2",
+        "Level 4-3",
+        "Level 3",
+        "Level 2"
       ]
     }
   }
