@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-30T12:43:46.842655",
+  "updated_at": "2026-10-30T23:21:24.171837",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -173,8 +173,8 @@
           "positie": 1,
           "positie_tekst": "1e",
           "stand_omschrijving": "1e in Dames 3e Klasse G",
-          "gespeeld": 3,
-          "punten": 11,
+          "gespeeld": 4,
+          "punten": 14,
           "standen": [
             {
               "type": "competitie",
@@ -183,8 +183,8 @@
               "display_klasse": "Dames 3e Klasse G",
               "positie": 1,
               "positie_tekst": "1e",
-              "gespeeld": 3,
-              "punten": 11,
+              "gespeeld": 4,
+              "punten": 14,
               "stand_omschrijving": "1e in Dames 3e Klasse G"
             }
           ],
@@ -198,8 +198,8 @@
           "positie": 6,
           "positie_tekst": "6e",
           "stand_omschrijving": "6e in 2e Klasse Dames (ORV)",
-          "gespeeld": 2,
-          "punten": 1,
+          "gespeeld": 4,
+          "punten": 8,
           "bron": "ORV Breda",
           "standen": [
             {
@@ -209,8 +209,8 @@
               "display_klasse": "2e Klasse Dames",
               "positie": 6,
               "positie_tekst": "6e",
-              "gespeeld": 2,
-              "punten": 1,
+              "gespeeld": 4,
+              "punten": 8,
               "stand_omschrijving": "6e in 2e Klasse Dames (ORV)"
             }
           ],
@@ -372,10 +372,11 @@
     "volleystars": {
       "titel": "Volley Stars",
       "slide_index": 4,
-      "ondertitel": "Meest recente toernooironde \u2022 5 teams actief",
+      "ondertitel": "Meest recente speelronde • 5 teams actief",
       "teams": [
         {
           "team": "Level 5-2",
+          "team_code": "VOKO L5 2",
           "klasse": "VS WB Level 5 - 2e Kl - 1e toernooi",
           "positie": 1,
           "positie_tekst": "1e",
@@ -396,11 +397,11 @@
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
-          "is_placeholder": true,
-          "team_code": "VOKO L5 2"
+          "is_placeholder": true
         },
         {
           "team": "Level 5-1",
+          "team_code": "VOKO L5 1",
           "klasse": "VS WB Level 5 - 2e Kl - 1e toernooi",
           "positie": 5,
           "positie_tekst": "5e",
@@ -421,11 +422,11 @@
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
-          "is_placeholder": true,
-          "team_code": "VOKO L5 1"
+          "is_placeholder": true
         },
         {
           "team": "Level 4-2",
+          "team_code": "VOKO L4 2",
           "klasse": "VS WB Level 4 - 2e Kl - 1e toernooi",
           "positie": 1,
           "positie_tekst": "1e",
@@ -446,11 +447,11 @@
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
-          "is_placeholder": true,
-          "team_code": "VOKO L4 2"
+          "is_placeholder": true
         },
         {
           "team": "Level 4-3",
+          "team_code": "VOKO L4 3",
           "klasse": "VS WB Level 4 - 2e Kl - 1e toernooi",
           "positie": 3,
           "positie_tekst": "3e",
@@ -471,11 +472,11 @@
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
-          "is_placeholder": true,
-          "team_code": "VOKO L4 3"
+          "is_placeholder": true
         },
         {
           "team": "Level 4-1",
+          "team_code": "VOKO L4 1",
           "klasse": "VS WB Level 4 - 2e Kl - 1e toernooi",
           "positie": 5,
           "positie_tekst": "5e",
@@ -496,8 +497,7 @@
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg",
-          "is_placeholder": true,
-          "team_code": "VOKO L4 1"
+          "is_placeholder": true
         }
       ]
     }

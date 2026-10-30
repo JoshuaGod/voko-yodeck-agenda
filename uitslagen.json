@@ -1,9 +1,31 @@
 {
-  "updated_at": "2026-10-30T10:49:45.950704",
+  "updated_at": "2026-10-30T23:21:24.171910",
   "type": "uitslagen",
   "periode": "afgelopen week + live vandaag",
-  "total": 4,
+  "total": 5,
   "items": [
+    {
+      "id": "2040206",
+      "team": "VOKO DS 2",
+      "tegenstander": "Volley Zuid DS 8",
+      "thuis": true,
+      "team_thuis": "VOKO DS 2",
+      "team_uit": "Volley Zuid DS 8",
+      "datum": "Vrijdag 30 oktober",
+      "iso_datum": "2026-10-30",
+      "tijd": "20:30",
+      "locatie": "Sporthal VOKO-Home",
+      "competitie": "Dames 3e Klasse G",
+      "stand_team": "1e in Dames 3e Klasse G",
+      "sets_thuis": 3,
+      "sets_uit": 2,
+      "uitslag": "3 - 2",
+      "winst": true,
+      "setstanden": "25-15, 18-25, 25-16, 20-25, 15-8",
+      "bron": "Nevobo RSS",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204014728.jpg",
+      "is_placeholder": true
+    },
     {
       "id": "ORV_7_5_20261026",
       "team": "VOKO DS 3",
