@@ -18,6 +18,7 @@ import re
 import urllib.parse
 from datetime import datetime, timedelta, date
 from pathlib import Path
+import xml.etree.ElementTree as ET
 import requests
 from bs4 import BeautifulSoup
 
@@ -239,7 +240,9 @@ def fetch_nevobo_teams(poule_cache: dict) -> dict[str, dict]:
 
 def fetch_nevobo_matches(today: date, poule_cache: dict, nevobo_teams: dict) -> tuple[list[dict], list[dict]]:
     """
-    Haalt uitslagen (afgelopen week + vandaag) en programma (komende 7 dagen) op bij Nevobo.
+    Haalt uitslagen (afgelopen week + vandaag) en programma (komende 7 dagen) op via de officiële Nevobo RSS-feeds:
+    - https://api.nevobo.nl/export/vereniging/CKM1R98/resultaten.rss
+    - https://api.nevobo.nl/export/vereniging/CKM1R98/programma.rss
     """
     cutoff_uitslagen = today - timedelta(days=7)
     cutoff_programma = today + timedelta(days=7)
@@ -247,185 +250,244 @@ def fetch_nevobo_matches(today: date, poule_cache: dict, nevobo_teams: dict) -> 
     uitslagen = []
     programma = []
 
-    # Haal wedstrijden op
-    url = (
-        f"{NEVOBO_API_BASE}/competitie/wedstrijden?"
-        f"order%5Bbegintijd%5D=asc&vereniging={urllib.parse.quote(VERENIGING_IRI)}&"
-        f"datum%5Bafter%5D={cutoff_uitslagen.isoformat()}"
-    )
-
-    matches_raw = []
+    # -------------------------------------------------------------------------
+    # A. Resultaten ophalen via resultaten.rss
+    # -------------------------------------------------------------------------
+    rss_uitslagen_url = "https://api.nevobo.nl/export/vereniging/CKM1R98/resultaten.rss"
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=12)
+        resp = requests.get(rss_uitslagen_url, headers=HEADERS, timeout=12)
         if resp.status_code == 200:
-            data = resp.json()
-            matches_raw = data.get("hydra:member", [])
-            logging.info(f"{len(matches_raw)} wedstrijden opgehaald bij Nevobo.")
+            root = ET.fromstring(resp.content)
+            items = root.findall(".//item")
+            logging.info(f"{len(items)} items gevonden in resultaten.rss")
+
+            def parse_resultaten_items(cutoff_date):
+                parsed = []
+                for it in items:
+                    status_el = it.find("{https://www.api.nevobo.nl/rss/}status")
+                    status = status_el.text.strip().lower() if status_el is not None and status_el.text else ""
+                    if status != "gespeeld":
+                        continue
+
+                    pub_date_raw = it.findtext("pubDate") or ""
+                    clean_date = re.sub(r"\s+[+-]\d{4}$", "", pub_date_raw).strip()
+                    try:
+                        dt = datetime.strptime(clean_date, "%a, %d %b %Y %H:%M:%S")
+                        m_date = dt.date()
+                        tijd = dt.strftime("%H:%M")
+                    except Exception:
+                        continue
+
+                    # Alleen uitslagen binnen het datumvenster
+                    if not (cutoff_date <= m_date <= today):
+                        continue
+
+                    title = it.findtext("title") or ""
+                    desc = it.findtext("description") or ""
+
+                    # Formaat: "Dunamis MB 1 - VOKO MB 2, Uitslag: 3-2"
+                    m = re.search(r"(.+?)\s*-\s*(.+?),\s*Uitslag:\s*(\d+)-(\d+)", title)
+                    if not m:
+                        continue
+
+                    t_thuis_raw = m.group(1).strip()
+                    t_uit_raw = m.group(2).strip()
+                    sets_thuis = int(m.group(3))
+                    sets_uit = int(m.group(4))
+
+                    t_thuis = normalize_team_name(t_thuis_raw)
+                    t_uit = normalize_team_name(t_uit_raw)
+
+                    is_voko_thuis = "voko" in t_thuis.lower()
+                    is_voko_uit = "voko" in t_uit.lower()
+                    if not (is_voko_thuis or is_voko_uit):
+                        continue
+
+                    our_team = t_thuis if is_voko_thuis else t_uit
+                    opp_team = t_uit if is_voko_thuis else t_thuis
+                    is_home = is_voko_thuis
+                    our_sets = sets_thuis if is_home else sets_uit
+                    opp_sets = sets_uit if is_home else sets_thuis
+                    winst = our_sets > opp_sets
+
+                    # Parse setstanden uit description: "Setstanden: 25-8, 25-23, 22-25, 20-25, 15-5"
+                    m_sets = re.search(r"Setstanden:\s*([0-9\s,\-]+)", desc)
+                    setstanden_str = m_sets.group(1).strip() if m_sets else ""
+
+                    guid = it.findtext("guid") or it.findtext("link") or f"{our_team}_{m_date.isoformat()}"
+                    match_id = guid.split("/")[-1] if "/" in guid else guid
+
+                    team_info = nevobo_teams.get(our_team, {})
+                    stand_tekst = team_info.get("stand", "")
+                    competitie = stand_tekst.replace(" in ", " • ").split(" • ")[-1] if " in " in stand_tekst else "Nevobo Competitie"
+
+                    parsed.append({
+                        "id": match_id,
+                        "team": our_team,
+                        "tegenstander": opp_team,
+                        "thuis": is_home,
+                        "team_thuis": t_thuis,
+                        "team_uit": t_uit,
+                        "datum": format_dutch_date(m_date),
+                        "iso_datum": m_date.isoformat(),
+                        "tijd": tijd,
+                        "locatie": "Sporthal VOKO-Home" if is_home else "Uitwedstrijd",
+                        "competitie": competitie,
+                        "stand_team": stand_tekst,
+                        "sets_thuis": sets_thuis,
+                        "sets_uit": sets_uit,
+                        "uitslag": f"{sets_thuis} - {sets_uit}",
+                        "winst": winst,
+                        "setstanden": setstanden_str,
+                        "bron": "Nevobo RSS"
+                    })
+                return parsed
+
+            uitslagen = parse_resultaten_items(cutoff_uitslagen)
+            # Als er in de afgelopen 7 dagen < 2 uitslagen zijn (bijv. rustige speelronde), kijk tot 14 dagen terug
+            if len(uitslagen) < 2:
+                uitslagen = parse_resultaten_items(today - timedelta(days=14))
+
+            logging.info(f"{len(uitslagen)} uitslagen geladen uit Nevobo RSS.")
     except Exception as e:
-        logging.warning(f"Nevobo wedstrijden API waarschuwing: {e}. Fallback op lokaal bestand.")
+        logging.warning(f"Nevobo resultaten RSS waarschuwing: {e}")
 
-    if not matches_raw:
-        fallback_file = SCRIPT_DIR.parent / "voko-wedstrijden-check" / "recon-output" / "volleybalnl-json" / "04.json"
-        if fallback_file.exists():
-            try:
-                with open(fallback_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    matches_raw = data.get("hydra:member", [])
-                logging.info(f"{len(matches_raw)} wedstrijden geladen uit lokaal bestand.")
-            except Exception as ex:
-                logging.warning(f"Kon 04.json niet laden: {ex}")
+    # -------------------------------------------------------------------------
+    # B. Programma ophalen via programma.rss
+    # -------------------------------------------------------------------------
+    rss_programma_url = "https://api.nevobo.nl/export/vereniging/CKM1R98/programma.rss"
+    try:
+        resp = requests.get(rss_programma_url, headers=HEADERS, timeout=12)
+        if resp.status_code == 200:
+            root = ET.fromstring(resp.content)
+            items = root.findall(".//item")
+            logging.info(f"{len(items)} items gevonden in programma.rss")
 
-    # Fallback gespeelde wedstrijden laden als live API geen recente gespeelde wedstrijden bevat
-    gespeeld_fallback_file = SCRIPT_DIR.parent / "voko-uitslagen" / "recon-output" / "B01-gespeeld-voorbeeld.json"
-    fallback_gespeeld = []
-    if gespeeld_fallback_file.exists():
-        try:
-            with open(gespeeld_fallback_file, "r", encoding="utf-8") as f:
-                fallback_gespeeld = json.load(f)
-        except Exception:
-            pass
+            for it in items:
+                status_el = it.find("{https://www.api.nevobo.nl/rss/}status")
+                status = status_el.text.strip().lower() if status_el is not None and status_el.text else ""
+                if status != "gepland":
+                    continue
 
-    for m in matches_raw:
-        datum_str = m.get("datum", "")[:10]
-        if not datum_str:
-            continue
-        try:
-            m_date = datetime.strptime(datum_str, "%Y-%m-%d").date()
-        except ValueError:
-            continue
+                pub_date_raw = it.findtext("pubDate") or ""
+                clean_date = re.sub(r"\s+[+-]\d{4}$", "", pub_date_raw).strip()
+                try:
+                    dt = datetime.strptime(clean_date, "%a, %d %b %Y %H:%M:%S")
+                    m_date = dt.date()
+                    tijd = dt.strftime("%H:%M")
+                except Exception:
+                    continue
 
-        teams_iris = m.get("teams", [])
-        if len(teams_iris) < 2:
-            continue
+                if not (today <= m_date <= cutoff_programma):
+                    continue
 
-        team_thuis = poule_cache.get(teams_iris[0], {}).get("om", teams_iris[0].split("/")[-1])
-        team_uit = poule_cache.get(teams_iris[1], {}).get("om", teams_iris[1].split("/")[-1])
+                title = it.findtext("title") or ""
+                desc = it.findtext("description") or ""
 
-        team_thuis_norm = normalize_team_name(team_thuis)
-        team_uit_norm = normalize_team_name(team_uit)
+                # Strip voorloop-datum/tijd indien aanwezig (bv. "30 okt 20:30: VOKO DS 2 - Volley Zuid DS 8")
+                title_clean = re.sub(r"^\s*\d+\s+[a-zA-Z]+\s+\d{1,2}:\d{2}:\s*", "", title)
+                m_teams = re.search(r"(.+?)\s*-\s*(.+)", title_clean)
+                if not m_teams:
+                    continue
 
-        # Bepaal welk team het VOKO team is
-        is_voko_thuis = "voko" in team_thuis_norm.lower()
-        is_voko_uit = "voko" in team_uit_norm.lower()
-        if not (is_voko_thuis or is_voko_uit):
-            continue
+                t_thuis_raw = m_teams.group(1).strip()
+                t_uit_raw = m_teams.group(2).strip()
+                t_thuis = normalize_team_name(t_thuis_raw)
+                t_uit = normalize_team_name(t_uit_raw)
 
-        our_team = team_thuis_norm if is_voko_thuis else team_uit_norm
-        opp_team = team_uit_norm if is_voko_thuis else team_thuis_norm
-        is_home = is_voko_thuis
+                is_voko_thuis = "voko" in t_thuis.lower()
+                is_voko_uit = "voko" in t_uit.lower()
+                if not (is_voko_thuis or is_voko_uit):
+                    continue
 
-        tijdstip_str = m.get("tijdstip", "")
-        tijd = tijdstip_str[11:16] if len(tijdstip_str) >= 16 else ""
+                our_team = t_thuis if is_voko_thuis else t_uit
+                opp_team = t_uit if is_voko_thuis else t_thuis
+                is_home = is_voko_thuis
 
-        # Sporthal & Veld
-        sporthal_raw = m.get("sporthal", "").split("/")[-1].replace("-", " ").title()
-        speelveld_raw = m.get("speelveld", "").split("/")[-1].replace("-", " ").capitalize()
-        locatie = f"{sporthal_raw} ({speelveld_raw})" if sporthal_raw and speelveld_raw else sporthal_raw
+                # Parse Speellocatie uit description: "Speellocatie: VOKO-home, Paterserf 16, 4904AR  Oosterhout NB"
+                loc_match = re.search(r"Speellocatie:\s*([^,]+)", desc)
+                locatie = loc_match.group(1).strip() if loc_match else ("Sporthal VOKO-Home" if is_home else "Uitwedstrijd")
 
-        # Competitie & Stand
-        team_info = nevobo_teams.get(our_team, {})
-        stand_tekst = team_info.get("stand", "")
-        competitie = stand_tekst.replace(" in ", " • ").split(" • ")[-1] if " in " in stand_tekst else "Nevobo Competitie"
+                guid = it.findtext("guid") or it.findtext("link") or f"{our_team}_{m_date.isoformat()}"
+                match_id = guid.split("/")[-1] if "/" in guid else guid
 
-        status_val = m.get("status", {}).get("waarde", "")
-        eindstand = m.get("eindstand")
+                team_info = nevobo_teams.get(our_team, {})
+                stand_tekst = team_info.get("stand", "")
+                competitie = stand_tekst.replace(" in ", " • ").split(" • ")[-1] if " in " in stand_tekst else "Nevobo Competitie"
 
-        # 1. UITSLAG: als wedstrijd gespeeld is (afgelopen 7 dagen of vandaag)
-        if (status_val == "gespeeld" or eindstand) and cutoff_uitslagen <= m_date <= today:
-            sets_thuis = eindstand[0] if eindstand and len(eindstand) >= 2 else 0
-            sets_uit = eindstand[1] if eindstand and len(eindstand) >= 2 else 0
-            our_sets = sets_thuis if is_home else sets_uit
-            opp_sets = sets_uit if is_home else sets_thuis
-            winst = our_sets > opp_sets
-
-            setstanden_list = m.get("setstanden", [])
-            setstanden_str = ", ".join(f"{s.get('puntenA')}-{s.get('puntenB')}" for s in setstanden_list) if setstanden_list else ""
-
-            uitslagen.append({
-                "id": m.get("code") or m.get("uuid") or f"{our_team}_{datum_str}",
-                "team": our_team,
-                "tegenstander": opp_team,
-                "thuis": is_home,
-                "team_thuis": team_thuis_norm,
-                "team_uit": team_uit_norm,
-                "datum": format_dutch_date(m_date),
-                "iso_datum": datum_str,
-                "tijd": tijd,
-                "locatie": locatie,
-                "competitie": competitie,
-                "stand_team": stand_tekst,
-                "sets_thuis": sets_thuis,
-                "sets_uit": sets_uit,
-                "uitslag": f"{sets_thuis} - {sets_uit}",
-                "winst": winst,
-                "setstanden": setstanden_str,
-                "bron": "Nevobo"
-            })
-
-        # 2. PROGRAMMA: geplande wedstrijden van vandaag t/m komende 7 dagen
-        elif status_val == "gepland" and today <= m_date <= cutoff_programma:
-            programma.append({
-                "id": m.get("code") or m.get("uuid") or f"{our_team}_{datum_str}",
-                "team": our_team,
-                "tegenstander": opp_team,
-                "thuis": is_home,
-                "team_thuis": team_thuis_norm,
-                "team_uit": team_uit_norm,
-                "datum": format_dutch_date(m_date),
-                "iso_datum": datum_str,
-                "tijd": tijd,
-                "locatie": locatie,
-                "competitie": competitie,
-                "stand_team": stand_tekst,
-                "bron": "Nevobo"
-            })
-
-    # Indien er in de afgelopen 7 dagen nog geen uitslagen waren (bijv. seizoensstart, vakantie of lokaal testen),
-    # vul aan met de meest recente gespeelde wedstrijden uit het referentiebestand
-    if not uitslagen and fallback_gespeeld:
-        logging.info("Geen uitslagen in afgelopen 7 dagen; meest recente gespeelde wedstrijden ingeladen.")
-        for m in fallback_gespeeld[:6]:
-            d_str = m.get("datum", "")[:10]
-            try:
-                m_date = datetime.strptime(d_str, "%Y-%m-%d").date()
-            except ValueError:
-                m_date = today
-
-            t_iris = m.get("teams", [])
-            if len(t_iris) >= 2:
-                t1 = poule_cache.get(t_iris[0], {}).get("om", t_iris[0].split("/")[-1])
-                t2 = poule_cache.get(t_iris[1], {}).get("om", t_iris[1].split("/")[-1])
-                t1_norm = normalize_team_name(t1)
-                t2_norm = normalize_team_name(t2)
-                is_home = "voko" in t1_norm.lower()
-                our_team = t1_norm if is_home else t2_norm
-                opp_team = t2_norm if is_home else t1_norm
-
-                eind = m.get("eindstand", [0, 0])
-                st_list = m.get("setstanden", [])
-                st_str = ", ".join(f"{s.get('puntenA')}-{s.get('puntenB')}" for s in st_list) if st_list else ""
-                winst = (eind[0] > eind[1]) if is_home else (eind[1] > eind[0])
-
-                uitslagen.append({
-                    "id": m.get("code") or f"{our_team}_{d_str}",
+                programma.append({
+                    "id": match_id,
                     "team": our_team,
                     "tegenstander": opp_team,
                     "thuis": is_home,
-                    "team_thuis": t1_norm,
-                    "team_uit": t2_norm,
+                    "team_thuis": t_thuis,
+                    "team_uit": t_uit,
                     "datum": format_dutch_date(m_date),
-                    "iso_datum": d_str,
-                    "tijd": m.get("tijdstip", "")[11:16],
-                    "locatie": "Sporthal VOKO-Home" if is_home else "Uitwedstrijd",
-                    "competitie": "Nevobo Competitie",
-                    "stand_team": nevobo_teams.get(our_team, {}).get("stand", ""),
-                    "sets_thuis": eind[0],
-                    "sets_uit": eind[1],
-                    "uitslag": f"{eind[0]} - {eind[1]}",
-                    "winst": winst,
-                    "setstanden": st_str,
-                    "bron": "Nevobo"
+                    "iso_datum": m_date.isoformat(),
+                    "tijd": tijd,
+                    "locatie": locatie,
+                    "competitie": competitie,
+                    "stand_team": stand_tekst,
+                    "bron": "Nevobo RSS"
                 })
+            logging.info(f"{len(programma)} programma-items geladen uit Nevobo RSS.")
+    except Exception as e:
+        logging.warning(f"Nevobo programma RSS waarschuwing: {e}")
+
+    # -------------------------------------------------------------------------
+    # C. Lokale Fallbacks indien live RSS niet bereikbaar was
+    # -------------------------------------------------------------------------
+    if not uitslagen:
+        gespeeld_fallback_file = SCRIPT_DIR.parent / "voko-uitslagen" / "recon-output" / "B01-gespeeld-voorbeeld.json"
+        if gespeeld_fallback_file.exists():
+            try:
+                with open(gespeeld_fallback_file, "r", encoding="utf-8") as f:
+                    fallback_gespeeld = json.load(f)
+                    for m in fallback_gespeeld[:6]:
+                        d_str = m.get("datum", "")[:10]
+                        try:
+                            m_date = datetime.strptime(d_str, "%Y-%m-%d").date()
+                        except ValueError:
+                            m_date = today
+
+                        t_iris = m.get("teams", [])
+                        if len(t_iris) >= 2:
+                            t1 = poule_cache.get(t_iris[0], {}).get("om", t_iris[0].split("/")[-1])
+                            t2 = poule_cache.get(t_iris[1], {}).get("om", t_iris[1].split("/")[-1])
+                            t1_norm = normalize_team_name(t1)
+                            t2_norm = normalize_team_name(t2)
+                            is_home = "voko" in t1_norm.lower()
+                            our_team = t1_norm if is_home else t2_norm
+                            opp_team = t2_norm if is_home else t1_norm
+
+                            eind = m.get("eindstand", [0, 0])
+                            st_list = m.get("setstanden", [])
+                            st_str = ", ".join(f"{s.get('puntenA')}-{s.get('puntenB')}" for s in st_list) if st_list else ""
+                            winst = (eind[0] > eind[1]) if is_home else (eind[1] > eind[0])
+
+                            uitslagen.append({
+                                "id": m.get("code") or f"{our_team}_{d_str}",
+                                "team": our_team,
+                                "tegenstander": opp_team,
+                                "thuis": is_home,
+                                "team_thuis": t1_norm,
+                                "team_uit": t2_norm,
+                                "datum": format_dutch_date(m_date),
+                                "iso_datum": d_str,
+                                "tijd": m.get("tijdstip", "")[11:16],
+                                "locatie": "Sporthal VOKO-Home" if is_home else "Uitwedstrijd",
+                                "competitie": "Nevobo Competitie",
+                                "stand_team": nevobo_teams.get(our_team, {}).get("stand", ""),
+                                "sets_thuis": eind[0],
+                                "sets_uit": eind[1],
+                                "uitslag": f"{eind[0]} - {eind[1]}",
+                                "winst": winst,
+                                "setstanden": st_str,
+                                "bron": "Lokaal referentiebestand"
+                            })
+                    logging.info(f"{len(uitslagen)} uitslagen geladen uit referentiebestand.")
+            except Exception as ex:
+                logging.warning(f"Kon fallback gespeeld niet laden: {ex}")
 
     return uitslagen, programma
 
