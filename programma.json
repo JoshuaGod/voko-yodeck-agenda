@@ -1,43 +1,9 @@
 {
-  "updated_at": "2026-10-31T15:38:43.185522",
+  "updated_at": "2026-10-31T19:46:39.328652",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 44,
+  "total": 42,
   "items": [
-    {
-      "id": "1985077",
-      "team": "VOKO HS 3",
-      "tegenstander": "VV Stevo HS 2",
-      "thuis": true,
-      "team_thuis": "VOKO HS 3",
-      "team_uit": "VV Stevo HS 2",
-      "datum": "Zaterdag 31 oktober",
-      "iso_datum": "2026-10-31",
-      "tijd": "17:00",
-      "locatie": "VOKO-home",
-      "competitie": "Heren 2e Klasse D",
-      "stand_team": "7e in Heren 2e Klasse D",
-      "bron": "Nevobo RSS",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204034137.jpg",
-      "is_placeholder": true
-    },
-    {
-      "id": "1979489",
-      "team": "VOKO DS 1",
-      "tegenstander": "SOMAS/Activia DS 5",
-      "thuis": false,
-      "team_thuis": "SOMAS/Activia DS 5",
-      "team_uit": "VOKO DS 1",
-      "datum": "Zaterdag 31 oktober",
-      "iso_datum": "2026-10-31",
-      "tijd": "19:00",
-      "locatie": "Activiahal",
-      "competitie": "Dames Derde divisie B",
-      "stand_team": "2e in Dames Derde divisie B",
-      "bron": "Nevobo RSS",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
-      "is_placeholder": true
-    },
     {
       "id": "2078402",
       "team": "VOKO L2 1",
@@ -730,7 +696,7 @@
       "tijd": "16:30",
       "locatie": "De Schutsboom",
       "competitie": "Dames Derde divisie B",
-      "stand_team": "2e in Dames Derde divisie B",
+      "stand_team": "1e in Dames Derde divisie B",
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
       "is_placeholder": true
@@ -747,7 +713,7 @@
       "tijd": "17:00",
       "locatie": "De Dijk",
       "competitie": "Heren Derde divisie B",
-      "stand_team": "9e in Heren Derde divisie B",
+      "stand_team": "10e in Heren Derde divisie B",
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/photo-2026-09-24-18-18-05_20260924185739577269.jpg",
       "is_placeholder": false

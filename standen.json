@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-31T15:38:43.184949",
+  "updated_at": "2026-10-31T19:46:39.328065",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -8,9 +8,9 @@
         {
           "team": "VOKO HS 1",
           "klasse": "Heren Derde divisie B",
-          "positie": 9,
-          "positie_tekst": "9e",
-          "stand_omschrijving": "9e in Heren Derde divisie B",
+          "positie": 10,
+          "positie_tekst": "10e",
+          "stand_omschrijving": "10e in Heren Derde divisie B",
           "gespeeld": 2,
           "punten": 2,
           "standen": [
@@ -19,11 +19,11 @@
               "label": "Competitie",
               "klasse": "Heren Derde divisie B",
               "display_klasse": "Heren Derde divisie B",
-              "positie": 9,
-              "positie_tekst": "9e",
+              "positie": 10,
+              "positie_tekst": "10e",
               "gespeeld": 2,
               "punten": 2,
-              "stand_omschrijving": "9e in Heren Derde divisie B"
+              "stand_omschrijving": "10e in Heren Derde divisie B"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/photo-2026-09-24-18-18-05_20260924185739577269.jpg",
@@ -59,8 +59,8 @@
           "positie": 7,
           "positie_tekst": "7e",
           "stand_omschrijving": "7e in Heren 2e Klasse D",
-          "gespeeld": 1,
-          "punten": 4,
+          "gespeeld": 2,
+          "punten": 6,
           "standen": [
             {
               "type": "competitie",
@@ -69,8 +69,8 @@
               "display_klasse": "Heren 2e Klasse D",
               "positie": 7,
               "positie_tekst": "7e",
-              "gespeeld": 1,
-              "punten": 4,
+              "gespeeld": 2,
+              "punten": 6,
               "stand_omschrijving": "7e in Heren 2e Klasse D"
             }
           ],
@@ -134,22 +134,22 @@
         {
           "team": "VOKO DS 1",
           "klasse": "Dames Derde divisie B",
-          "positie": 2,
-          "positie_tekst": "2e",
-          "stand_omschrijving": "2e in Dames Derde divisie B",
-          "gespeeld": 3,
-          "punten": 10,
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "1e in Dames Derde divisie B",
+          "gespeeld": 4,
+          "punten": 14,
           "standen": [
             {
               "type": "competitie",
               "label": "Competitie",
               "klasse": "Dames Derde divisie B",
               "display_klasse": "Dames Derde divisie B",
-              "positie": 2,
-              "positie_tekst": "2e",
-              "gespeeld": 3,
-              "punten": 10,
-              "stand_omschrijving": "2e in Dames Derde divisie B"
+              "positie": 1,
+              "positie_tekst": "1e",
+              "gespeeld": 4,
+              "punten": 14,
+              "stand_omschrijving": "1e in Dames Derde divisie B"
             },
             {
               "type": "beker",
