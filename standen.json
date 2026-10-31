@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-30T23:21:24.171837",
+  "updated_at": "2026-10-31T15:38:43.184949",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -80,22 +80,22 @@
         {
           "team": "VOKO HS 4",
           "klasse": "Heren 3e Klasse C",
-          "positie": 6,
-          "positie_tekst": "6e",
-          "stand_omschrijving": "6e in Heren 3e Klasse C",
-          "gespeeld": 1,
-          "punten": 0,
+          "positie": 5,
+          "positie_tekst": "5e",
+          "stand_omschrijving": "5e in Heren 3e Klasse C",
+          "gespeeld": 2,
+          "punten": 3,
           "standen": [
             {
               "type": "competitie",
               "label": "Competitie",
               "klasse": "Heren 3e Klasse C",
               "display_klasse": "Heren 3e Klasse C",
-              "positie": 6,
-              "positie_tekst": "6e",
-              "gespeeld": 1,
-              "punten": 0,
-              "stand_omschrijving": "6e in Heren 3e Klasse C"
+              "positie": 5,
+              "positie_tekst": "5e",
+              "gespeeld": 2,
+              "punten": 3,
+              "stand_omschrijving": "5e in Heren 3e Klasse C"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204039331.jpg",
@@ -134,9 +134,9 @@
         {
           "team": "VOKO DS 1",
           "klasse": "Dames Derde divisie B",
-          "positie": 1,
-          "positie_tekst": "1e",
-          "stand_omschrijving": "1e in Dames Derde divisie B",
+          "positie": 2,
+          "positie_tekst": "2e",
+          "stand_omschrijving": "2e in Dames Derde divisie B",
           "gespeeld": 3,
           "punten": 10,
           "standen": [
@@ -145,11 +145,11 @@
               "label": "Competitie",
               "klasse": "Dames Derde divisie B",
               "display_klasse": "Dames Derde divisie B",
-              "positie": 1,
-              "positie_tekst": "1e",
+              "positie": 2,
+              "positie_tekst": "2e",
               "gespeeld": 3,
               "punten": 10,
-              "stand_omschrijving": "1e in Dames Derde divisie B"
+              "stand_omschrijving": "2e in Dames Derde divisie B"
             },
             {
               "type": "beker",
@@ -253,8 +253,8 @@
           "positie": 2,
           "positie_tekst": "2e",
           "stand_omschrijving": "2e in Meiden A 1e Klasse D",
-          "gespeeld": 3,
-          "punten": 11,
+          "gespeeld": 4,
+          "punten": 16,
           "standen": [
             {
               "type": "1e_helft",
@@ -263,8 +263,8 @@
               "display_klasse": "Meiden A 1e Klasse D",
               "positie": 2,
               "positie_tekst": "2e",
-              "gespeeld": 3,
-              "punten": 11,
+              "gespeeld": 4,
+              "punten": 16,
               "stand_omschrijving": "2e in Meiden A 1e Klasse D"
             }
           ],
@@ -277,8 +277,8 @@
           "positie": 5,
           "positie_tekst": "5e",
           "stand_omschrijving": "5e in Meiden B 1e Klasse D",
-          "gespeeld": 2,
-          "punten": 4,
+          "gespeeld": 3,
+          "punten": 5,
           "standen": [
             {
               "type": "1e_helft",
@@ -287,8 +287,8 @@
               "display_klasse": "Meiden B 1e Klasse D",
               "positie": 5,
               "positie_tekst": "5e",
-              "gespeeld": 2,
-              "punten": 4,
+              "gespeeld": 3,
+              "punten": 5,
               "stand_omschrijving": "5e in Meiden B 1e Klasse D"
             }
           ],
@@ -298,10 +298,10 @@
         {
           "team": "VOKO MB 2",
           "klasse": "Meiden B 3e Klasse E",
-          "positie": 3,
-          "positie_tekst": "3e",
-          "stand_omschrijving": "3e in Meiden B 3e Klasse E",
-          "gespeeld": 3,
+          "positie": 4,
+          "positie_tekst": "4e",
+          "stand_omschrijving": "4e in Meiden B 3e Klasse E",
+          "gespeeld": 4,
           "punten": 7,
           "standen": [
             {
@@ -309,11 +309,11 @@
               "label": "1e helft",
               "klasse": "Meiden B 3e Klasse E Eerste helft",
               "display_klasse": "Meiden B 3e Klasse E",
-              "positie": 3,
-              "positie_tekst": "3e",
-              "gespeeld": 3,
+              "positie": 4,
+              "positie_tekst": "4e",
+              "gespeeld": 4,
               "punten": 7,
-              "stand_omschrijving": "3e in Meiden B 3e Klasse E"
+              "stand_omschrijving": "4e in Meiden B 3e Klasse E"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204059145.jpg",
@@ -322,22 +322,22 @@
         {
           "team": "VOKO MC 1",
           "klasse": "C Jeugd 3e Klasse J",
-          "positie": 4,
-          "positie_tekst": "4e",
-          "stand_omschrijving": "4e in C Jeugd 3e Klasse J",
-          "gespeeld": 4,
-          "punten": 8,
+          "positie": 3,
+          "positie_tekst": "3e",
+          "stand_omschrijving": "3e in C Jeugd 3e Klasse J",
+          "gespeeld": 5,
+          "punten": 11,
           "standen": [
             {
               "type": "1e_helft",
               "label": "1e helft",
               "klasse": "C Jeugd 3e Klasse J Eerste helft",
               "display_klasse": "C Jeugd 3e Klasse J",
-              "positie": 4,
-              "positie_tekst": "4e",
-              "gespeeld": 4,
-              "punten": 8,
-              "stand_omschrijving": "4e in C Jeugd 3e Klasse J"
+              "positie": 3,
+              "positie_tekst": "3e",
+              "gespeeld": 5,
+              "punten": 11,
+              "stand_omschrijving": "3e in C Jeugd 3e Klasse J"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204104739.jpg",
@@ -346,22 +346,22 @@
         {
           "team": "VOKO MC 2",
           "klasse": "C Jeugd 3e Klasse K",
-          "positie": 5,
-          "positie_tekst": "5e",
-          "stand_omschrijving": "5e in C Jeugd 3e Klasse K",
-          "gespeeld": 5,
-          "punten": 1,
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in C Jeugd 3e Klasse K",
+          "gespeeld": 6,
+          "punten": 2,
           "standen": [
             {
               "type": "1e_helft",
               "label": "1e helft",
               "klasse": "C Jeugd 3e Klasse K Eerste helft",
               "display_klasse": "C Jeugd 3e Klasse K",
-              "positie": 5,
-              "positie_tekst": "5e",
-              "gespeeld": 5,
-              "punten": 1,
-              "stand_omschrijving": "5e in C Jeugd 3e Klasse K"
+              "positie": 6,
+              "positie_tekst": "6e",
+              "gespeeld": 6,
+              "punten": 2,
+              "stand_omschrijving": "6e in C Jeugd 3e Klasse K"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203958607.jpg",
