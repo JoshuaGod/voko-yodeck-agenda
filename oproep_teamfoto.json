@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-11-02T01:13:09.765111",
+  "updated_at": "2026-11-03T03:18:46.109707",
   "email": "communicatie@voko-oosterhout.nl",
   "totaal_teams": 21,
-  "aantal_met_foto": 2,
-  "aantal_zonder_foto": 19,
-  "percentage_compleet": 10,
+  "aantal_met_foto": 3,
+  "aantal_zonder_foto": 18,
+  "percentage_compleet": 14,
   "teams_met_foto": [
     "VOKO HS 1",
-    "VOKO HS 5"
+    "VOKO HS 5",
+    "VOKO DS 1"
   ],
   "teams_zonder_foto": [
     "VOKO HS 2",
     "VOKO HS 3",
     "VOKO HS 4",
-    "VOKO DS 1",
     "VOKO DS 2",
     "VOKO DS 3",
     "VOKO MA 1",
@@ -43,9 +43,10 @@
       ]
     },
     "Dames": {
-      "compleet": [],
+      "compleet": [
+        "VOKO DS 1"
+      ],
       "gezocht": [
-        "VOKO DS 1",
         "VOKO DS 2",
         "VOKO DS 3"
       ]

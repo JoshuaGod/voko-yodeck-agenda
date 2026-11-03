@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-02T01:13:09.760521",
+  "updated_at": "2026-11-03T03:18:46.104863",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -163,8 +163,8 @@
               "stand_omschrijving": "2e in Beker Dames A Poule 6"
             }
           ],
-          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
-          "is_placeholder": true,
+          "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/dames1_2026-2027_20261102103926848747.jpg",
+          "is_placeholder": false,
           "bron": "Nevobo"
         },
         {
@@ -195,11 +195,11 @@
         {
           "team": "VOKO DS 3",
           "klasse": "ORV 2e Klasse Dames",
-          "positie": 6,
-          "positie_tekst": "6e",
-          "stand_omschrijving": "6e in 2e Klasse Dames (ORV)",
-          "gespeeld": 4,
-          "punten": 8,
+          "positie": 4,
+          "positie_tekst": "4e",
+          "stand_omschrijving": "4e in 2e Klasse Dames (ORV)",
+          "gespeeld": 5,
+          "punten": 11,
           "bron": "ORV Breda",
           "standen": [
             {
@@ -207,11 +207,11 @@
               "label": "ORV",
               "klasse": "ORV 2e Klasse Dames",
               "display_klasse": "2e Klasse Dames",
-              "positie": 6,
-              "positie_tekst": "6e",
-              "gespeeld": 4,
-              "punten": 8,
-              "stand_omschrijving": "6e in 2e Klasse Dames (ORV)"
+              "positie": 4,
+              "positie_tekst": "4e",
+              "gespeeld": 5,
+              "punten": 11,
+              "stand_omschrijving": "4e in 2e Klasse Dames (ORV)"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",

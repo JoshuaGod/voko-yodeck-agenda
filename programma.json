@@ -1,26 +1,9 @@
 {
-  "updated_at": "2026-11-02T01:13:09.762158",
+  "updated_at": "2026-11-03T03:18:46.105988",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 37,
+  "total": 36,
   "items": [
-    {
-      "id": "ORV_7_6_20261102",
-      "team": "VOKO DS 3",
-      "tegenstander": "Gilze dames",
-      "thuis": false,
-      "team_thuis": "Gilze dames",
-      "team_uit": "VOKO DS 3",
-      "datum": "Maandag 2 november",
-      "iso_datum": "2026-11-02",
-      "tijd": "19.45",
-      "locatie": "Sporthal",
-      "competitie": "ORV 2e Klasse Dames",
-      "stand_team": "6e in 2e Klasse Dames (ORV)",
-      "bron": "ORV Breda",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
-      "is_placeholder": true
-    },
     {
       "id": "1984109",
       "team": "VOKO HS 2",
@@ -205,8 +188,8 @@
       "competitie": "Dames Derde divisie B",
       "stand_team": "1e in Dames Derde divisie B",
       "bron": "Nevobo RSS",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
-      "is_placeholder": true
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/dames1_2026-2027_20261102103926848747.jpg",
+      "is_placeholder": false
     },
     {
       "id": "1979144",
