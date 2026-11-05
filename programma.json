@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-04T01:53:32.352536",
+  "updated_at": "2026-11-05T01:59:39.604348",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 37,
+  "total": 36,
   "items": [
     {
       "id": "1984109",
@@ -155,23 +155,6 @@
       "stand_team": "9e in Heren 1e Klasse D",
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204030542.jpg",
-      "is_placeholder": true
-    },
-    {
-      "id": "2035326",
-      "team": "VOKO DS 2",
-      "tegenstander": "Pegasus DS 2",
-      "thuis": false,
-      "team_thuis": "Pegasus DS 2",
-      "team_uit": "VOKO DS 2",
-      "datum": "Zaterdag 7 november",
-      "iso_datum": "2026-11-07",
-      "tijd": "16:00",
-      "locatie": "Optisport Sporthuis Reusel",
-      "competitie": "Dames 3e Klasse G",
-      "stand_team": "1e in Dames 3e Klasse G",
-      "bron": "Nevobo RSS",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204014728.jpg",
       "is_placeholder": true
     },
     {
