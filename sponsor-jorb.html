@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOKO Digital Signage - Sponsor: JorB Projecten</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Barlow';
+      font-style: normal;
+      font-weight: 400;
+      src: url('assets/fonts/barlow-400-normal-17ef8a.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Barlow';
+      font-style: normal;
+      font-weight: 600;
+      src: url('assets/fonts/barlow-600-normal-7abf44.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Barlow';
+      font-style: normal;
+      font-weight: 700;
+      src: url('assets/fonts/barlow-700-normal-4a2043.woff2') format('woff2');
+    }
+
+    @page {
+      size: 1920px 1080px;
+      margin: 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0b0f19;
+      font-family: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #17263c;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #viewport-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #slide-canvas {
+      width: 1920px;
+      height: 1080px;
+      min-width: 1920px;
+      min-height: 1080px;
+      max-width: 1920px;
+      max-height: 1080px;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 1. Bovenbalk: VOKO Donkergrijze gradient met wit VOKO logo */
+    .top-bar {
+      width: 100%;
+      height: 68px;
+      background: linear-gradient(90deg, #384654 0%, #2e3c49 55%, #25333f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 85px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .top-bar .voko-logo {
+      height: 38px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .top-bar .sponsor-pill-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 30px;
+      padding: 6px 18px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .top-bar .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4030;
+      box-shadow: 0 0 8px #ef4030;
+    }
+
+    /* 2. Rode Banner met VOKO Red gradient en subtiele curve onderzijde */
+    .red-banner-wrapper {
+      position: relative;
+      width: 100%;
+      height: 192px;
+      z-index: 5;
+    }
+
+    .banner-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 192px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .banner-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 30px 85px 0 85px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .banner-title {
+      color: #ffffff;
+      font-size: 74px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .banner-sponsor-badge {
+      background: #ffffff;
+      color: #17263c;
+      font-size: 20px;
+      font-weight: 800;
+      padding: 8px 24px;
+      border-radius: 30px;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      text-transform: uppercase;
+    }
+
+    /* 3. Hoofdcontent: Rustige, krachtige billboard commercial */
+    .content-area {
+      position: absolute;
+      top: 270px;
+      bottom: 58px;
+      left: 85px;
+      right: 85px;
+      display: grid;
+      grid-template-columns: 1.14fr 0.86fr;
+      gap: 52px;
+      align-items: stretch;
+    }
+
+    /* Linker Kolom: De Advertentie Pitch */
+    .ad-pitch {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+
+    .ad-top-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+
+    .ad-brand-logo-wrap {
+      display: flex;
+      align-items: center;
+    }
+
+    .ad-tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 7px 18px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .ad-headline {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.12;
+      color: #17263c;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .ad-subline {
+      font-size: 23px;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 22px;
+      letter-spacing: -0.2px;
+    }
+
+    /* 3 Snappy Billboard Value Props */
+    .props-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .prop-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px 20px;
+    }
+
+    .prop-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .prop-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .prop-text strong {
+      font-size: 20.5px;
+      font-weight: 800;
+      color: #17263c;
+    }
+
+    .prop-text span {
+      font-size: 16px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* CTA Card */
+    .cta-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px 24px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+      gap: 20px;
+    }
+
+    .cta-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cta-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 800;
+      padding: 9px 22px;
+      border-radius: 10px;
+      width: fit-content;
+      letter-spacing: 0.3px;
+    }
+
+    .cta-phone {
+      font-size: 17px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .cta-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px 12px;
+      flex-shrink: 0;
+    }
+
+    .cta-qr img {
+      width: 80px;
+      height: 80px;
+      display: block;
+    }
+
+    .cta-qr span {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #17263c;
+      letter-spacing: 0.5px;
+    }
+
+    /* Rechter Kolom: Rustige Hero Visual */
+    .ad-visual {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .hero-card {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-card-ui {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      background: #f8fafc;
+    }
+
+    .hero-img-ui {
+      width: 100%;
+      height: auto;
+      max-height: 580px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.10);
+      border: 1px solid #cbd5e1;
+    }
+
+    .hero-card-joris {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      text-align: center;
+    }
+
+    .joris-avatar {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 8px solid #d97706;
+      margin-bottom: 22px;
+    }
+
+    .joris-name {
+      font-size: 34px;
+      font-weight: 900;
+      color: #17263c;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    .joris-sub {
+      font-size: 19px;
+      font-weight: 800;
+      color: #d97706;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+    }
+
+    .joris-quote {
+      font-size: 18px;
+      color: #475569;
+      font-style: italic;
+      line-height: 1.4;
+      max-width: 480px;
+      margin-top: 14px;
+    }
+
+    .joris-tag-badge {
+      display: inline-block;
+      margin-top: 20px;
+      background: #d97706;
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+    }
+
+    .hero-overlay-tag {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    /* 4. Subtiele footer status bar */
+    .signage-status {
+      position: absolute;
+      bottom: 18px;
+      left: 85px;
+      right: 85px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      color: #94a3b8;
+      font-weight: 600;
+      z-index: 10;
+    }
+
+    .signage-status strong {
+      color: #ef4030;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk met wit VOKO logo -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+        <div class="sponsor-pill-header">
+          <span class="badge-dot"></span>
+          <span>Trotse Sponsor van VOKO</span>
+        </div>
+      </header>
+
+      <!-- 2. Rode Banner met VOKO Red gradient en subtiele curve onderzijde -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,158 Q 1100,172 450,190 Q 180,192 0,176 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Sponsor in beeld:</h1>
+          <div class="banner-sponsor-badge">JorB Projecten</div>
+        </div>
+      </div>
+
+      <!-- 3. Hoofdcontent: Rustige, krachtige billboard commercial -->
+      <main class="content-area">
+        
+        <section class="ad-pitch">
+          <div>
+            <div class="ad-top-meta">
+              <div class="ad-brand-logo-wrap">
+                <img src="assets/sponsoren/jorb_logo.svg" alt="JorB Projecten Logo" style="height: 60px; width: auto; object-fit: contain;">
+              </div>
+              <div class="ad-tag" style="color: #B45309; background: #FFFBEB; border: 1.5px solid #FDE68A;">
+                🏗️ DE ALLROUND VAKMAN IN OOSTERHOUT
+              </div>
+            </div>
+
+            <h2 class="ad-headline">Grote plannen of kleine klus?<br><span style="color: #D97706;">JorB regelt 't voor je!</span></h2>
+            <p class="ad-subline">Bouw • Tuinen • Onderhoud • Transport</p>
+
+            <div class="props-list">
+              
+        <div class="prop-item">
+          <div class="prop-icon" style="background: #FFFBEB; color: #D97706;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 12-8.5 8.5a2.12 2.12 0 1 1-3-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 3.26-6.36 6.36a4.5 4.5 0 0 0-6.36 6.36"/><path d="m8.18 9.82 6.36-6.36"/></svg></div>
+          <div class="prop-text">
+            <strong>Allround vakmanschap</strong>
+            <span>Van aanbouw en badkamerrenovatie tot strakke tuinoverkapping</span>
+          </div>
+        </div>
+        
+
+        <div class="prop-item">
+          <div class="prop-icon" style="background: #FFFBEB; color: #D97706;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 0 0 1.4 0l6.6-6.6a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L14 11"/><path d="m3 7 3.3-3.3a2 2 0 0 1 2.8 0L11 5"/><path d="m6 10 7 7"/><path d="M18 14v4a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-4"/></svg></div>
+          <div class="prop-text">
+            <strong>Afspraak = afspraak</strong>
+            <span>Eén vast aanspreekpunt, eerlijk advies & nuchter vakwerk</span>
+          </div>
+        </div>
+        
+
+        <div class="prop-item">
+          <div class="prop-icon" style="background: #FFFBEB; color: #D97706;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M9 12v6"/><path d="M13 12v6"/><path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5s1.44-.5 3-.5 2 .5 3 .5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"/><path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/></svg></div>
+          <div class="prop-text">
+            <strong>Actief VOKO clublid</strong>
+            <span>Vraag 't Joris gerust even aan de bar of in de zaal!</span>
+          </div>
+        </div>
+        
+            </div>
+          </div>
+
+          <div class="cta-strip" style="border-left: 6px solid #D97706;">
+            <div class="cta-info">
+              <div class="cta-link-pill" style="background: #17263c; color: #ffffff;">
+                <span>📍 Bosboomplantsoen, Oosterhout</span>
+              </div>
+              <div class="cta-phone" style="color: #D97706;">
+                <span>🍻 Spreek Joris aan aan de bar</span>
+              </div>
+            </div>
+            <div class="cta-qr">
+              <img src="assets/sponsoren/qr_jorb.svg" alt="QR Code">
+              <span>Scan voor info & contact</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="ad-visual">
+          
+          <div class="hero-card hero-card-joris">
+            <img src="assets/sponsoren/joris_portrait.jpg" alt="Joris Blankestijn" class="joris-avatar">
+            <div class="joris-name">Joris Blankestijn</div>
+            <div class="joris-sub">Eigenaar & Vakman • JorB Projecten</div>
+            <p class="joris-quote">“Geen gedoe, gewoon goed werk afleveren. Of het nou om een grote verbouwing gaat of een kleine klus!”</p>
+            <div class="joris-tag-badge">
+              <span>✓ Vrijblijvend advies & offerte</span>
+            </div>
+          </div>
+        
+        </section>
+
+      </main>
+
+      <!-- 4. Subtiele footer status bar -->
+      <footer class="signage-status">
+        <div>VOKO Digital Signage • Sponsoren</div>
+        <div>Trotse sponsor van <strong>VOKO Oosterhout</strong> • www.voko-oosterhout.nl</div>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+      const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
+      canvas.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+    fitViewport();
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 15 * 60 * 1000);
+  </script>
+</body>
+</html>

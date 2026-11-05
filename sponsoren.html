@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOKO Digital Signage - Onze Sponsoren</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Barlow';
+      font-style: normal;
+      font-weight: 400;
+      src: url('assets/fonts/barlow-400-normal-17ef8a.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Barlow';
+      font-style: normal;
+      font-weight: 600;
+      src: url('assets/fonts/barlow-600-normal-7abf44.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Barlow';
+      font-style: normal;
+      font-weight: 700;
+      src: url('assets/fonts/barlow-700-normal-4a2043.woff2') format('woff2');
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0b0f19;
+      font-family: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #17263c;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #viewport-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #slide-canvas {
+      width: 1920px;
+      height: 1080px;
+      min-width: 1920px;
+      min-height: 1080px;
+      max-width: 1920px;
+      max-height: 1080px;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      width: 100%;
+      height: 68px;
+      background: linear-gradient(90deg, #384654 0%, #2e3c49 55%, #25333f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 85px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .top-bar .voko-logo {
+      height: 38px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .top-bar .sponsor-pill-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 30px;
+      padding: 6px 18px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .top-bar .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4030;
+      box-shadow: 0 0 8px #ef4030;
+    }
+
+    .red-banner-wrapper {
+      position: relative;
+      width: 100%;
+      height: 192px;
+      z-index: 5;
+    }
+
+    .banner-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 192px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .banner-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 30px 85px 0 85px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .banner-title {
+      color: #ffffff;
+      font-size: 74px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+
+    .banner-sponsor-badge {
+      background: #ffffff;
+      color: #17263c;
+      font-size: 20px;
+      font-weight: 800;
+      padding: 8px 24px;
+      border-radius: 30px;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      text-transform: uppercase;
+      transition: all 0.4s ease;
+    }
+
+    /* Stage met Carrousel Slides */
+    .carousel-stage {
+      position: absolute;
+      top: 270px;
+      bottom: 58px;
+      left: 85px;
+      right: 85px;
+      overflow: hidden;
+    }
+
+    .sponsor-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: 1.14fr 0.86fr;
+      gap: 52px;
+      align-items: stretch;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(40px);
+      transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .sponsor-slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .ad-pitch {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+
+    .ad-top-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+
+    .ad-brand-logo-wrap {
+      display: flex;
+      align-items: center;
+    }
+
+    .ad-tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 7px 18px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .ad-headline {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.12;
+      color: #17263c;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .ad-subline {
+      font-size: 23px;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 22px;
+      letter-spacing: -0.2px;
+    }
+
+    .props-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .prop-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px 20px;
+    }
+
+    .prop-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .prop-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .prop-text strong {
+      font-size: 20.5px;
+      font-weight: 800;
+      color: #17263c;
+    }
+
+    .prop-text span {
+      font-size: 16px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .cta-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px 24px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+      gap: 20px;
+    }
+
+    .cta-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cta-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 800;
+      padding: 9px 22px;
+      border-radius: 10px;
+      width: fit-content;
+      letter-spacing: 0.3px;
+    }
+
+    .cta-phone {
+      font-size: 17px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .cta-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px 12px;
+      flex-shrink: 0;
+    }
+
+    .cta-qr img {
+      width: 80px;
+      height: 80px;
+      display: block;
+    }
+
+    .cta-qr span {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #17263c;
+      letter-spacing: 0.5px;
+    }
+
+    .ad-visual {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .hero-card {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-card-ui {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      background: #f8fafc;
+    }
+
+    .hero-img-ui {
+      width: 100%;
+      height: auto;
+      max-height: 580px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.10);
+      border: 1px solid #cbd5e1;
+    }
+
+    .hero-card-joris {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      text-align: center;
+    }
+
+    .joris-avatar {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 8px solid #d97706;
+      margin-bottom: 22px;
+    }
+
+    .joris-name {
+      font-size: 34px;
+      font-weight: 900;
+      color: #17263c;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    .joris-sub {
+      font-size: 19px;
+      font-weight: 800;
+      color: #d97706;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+    }
+
+    .joris-quote {
+      font-size: 18px;
+      color: #475569;
+      font-style: italic;
+      line-height: 1.4;
+      max-width: 480px;
+      margin-top: 14px;
+    }
+
+    .joris-tag-badge {
+      display: inline-block;
+      margin-top: 20px;
+      background: #d97706;
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
+    }
+
+    .hero-overlay-tag {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    .signage-status {
+      position: absolute;
+      bottom: 18px;
+      left: 85px;
+      right: 85px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      color: #94a3b8;
+      font-weight: 600;
+      z-index: 10;
+    }
+
+    .signage-status strong {
+      color: #ef4030;
+    }
+
+    .progress-bar-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: rgba(0, 0, 0, 0.06);
+      z-index: 100;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #ef4030;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk met wit VOKO logo -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+        <div class="sponsor-pill-header">
+          <span class="badge-dot"></span>
+          <span>Trotse Sponsor van VOKO</span>
+        </div>
+      </header>
+
+      <!-- 2. Rode Banner met VOKO Red gradient en subtiele curve onderzijde -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,158 Q 1100,172 450,190 Q 180,192 0,176 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Sponsor in beeld:</h1>
+          <div class="banner-sponsor-badge" id="badge-title">PC INTERIEUR</div>
+        </div>
+      </div>
+
+      <!-- 3. Carrousel Stage: Roteert elke 12 seconden tussen de 3 sponsoren -->
+      <main class="carousel-stage">
+        
+        <article class="sponsor-slide active" id="slide-0" data-index="0">
+          <section class="ad-pitch">
+            <div>
+              <div class="ad-top-meta">
+                <div class="ad-brand-logo-wrap">
+                  
+          <div style="display: flex; align-items: center;">
+            <img src="assets/sponsoren/pc_logo_horizontal.png" alt="PC Interieur Logo" style="height: 60px; width: auto; object-fit: contain;">
+          </div>
+        
+                </div>
+                <div class="ad-tag" style="color: #998342; background: #FFF9EB; border: 1.5px solid #EAD8A7;">
+                  ✨ WOONSPECIALIST OOSTERHOUT • BREDASEWEG 23
+                </div>
+              </div>
+
+              <h2 class="ad-headline">Van woonwens naar<br><span style="color: #998342;">droominterieur.</span></h2>
+              <p class="ad-subline">Gordijnen & Raambekleding • Binnenzonwering • Kwaliteitsvloeren</p>
+
+              <div class="props-list">
+                
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #FFF9EB; color: #998342;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7 8.7 21.3a2 2 0 0 1-2.8 0L2.7 18.1a2 2 0 0 1 0-2.8L15.3 2.7a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8Z"/><path d="m14.5 3.5 2 2"/><path d="m11.5 6.5 2 2"/><path d="m8.5 9.5 2 2"/><path d="m5.5 12.5 2 2"/></svg></div>
+              <div class="prop-text">
+                <strong>Gratis inmeten aan huis</strong>
+                <span>Altijd 100% exact op maat voor jouw woning</span>
+              </div>
+            </div>
+            
+
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #FFF9EB; color: #998342;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+              <div class="prop-text">
+                <strong>Eigen vakkundige montage</strong>
+                <span>Ervaren vakmensen, betrouwbaar & CBW-erkend</span>
+              </div>
+            </div>
+            
+
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #FFF9EB; color: #998342;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
+              <div class="prop-text">
+                <strong>Kom langs in onze showroom</strong>
+                <span>Bredaseweg 23 in Oosterhout — De koffie staat klaar!</span>
+              </div>
+            </div>
+            
+              </div>
+            </div>
+
+            <div class="cta-strip" style="border-left: 6px solid #998342;">
+              <div class="cta-info">
+                <div class="cta-link-pill" style="background: #17263c; color: #ffffff;">
+                  <span>🌐 pcinterieur.nl</span>
+                </div>
+                <div class="cta-phone" style="color: #475569;">
+                  <span>📞 0162 433733</span>
+                </div>
+              </div>
+              <div class="cta-qr">
+                <img src="assets/sponsoren/qr_pcinterieur.svg" alt="QR Code">
+                <span>Scan voor inspiratie</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="ad-visual">
+            
+          <div class="hero-card">
+            <img src="assets/sponsoren/pc_nubus.jpg" alt="PC Interieur Showroom" class="hero-img">
+            <div class="hero-overlay-tag" style="background: rgba(23, 38, 60, 0.90);">
+              <span>Stijlvolle Zonwering & Duette® Shades</span>
+            </div>
+          </div>
+        
+          </section>
+        </article>
+        
+        <article class="sponsor-slide " id="slide-1" data-index="1">
+          <section class="ad-pitch">
+            <div>
+              <div class="ad-top-meta">
+                <div class="ad-brand-logo-wrap">
+                  <img src="assets/sponsoren/logo-topical.svg" alt="Topical Logo" style="height: 56px; width: auto; object-fit: contain;">
+                </div>
+                <div class="ad-tag" style="color: #2563EB; background: #EFF6FF; border: 1.5px solid #BFDBFE;">
+                  ✨ AI VERGADERSOFTWARE VOOR TEAMS & BESTUREN
+                </div>
+              </div>
+
+              <h2 class="ad-headline">Klaar met notuleren?<br><span style="color: #2563EB;">Topical doet 't voor je.</span></h2>
+              <p class="ad-subline">Automatische AI-notulen & actiepunten direct na je overleg.</p>
+
+              <div class="props-list">
+                
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #EFF6FF; color: #2563EB;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+              <div class="prop-text">
+                <strong>Verslag binnen 1 minuut</strong>
+                <span>Klaar voordat je koffie koud is. Aan tafel of via Teams & Meet</span>
+              </div>
+            </div>
+            
+
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #EFF6FF; color: #2563EB;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+              <div class="prop-text">
+                <strong>Actiepunten direct verdeeld</strong>
+                <span>Iedereen weet meteen wat hij moet doen, inclusief opvolging</span>
+              </div>
+            </div>
+            
+
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #EFF6FF; color: #2563EB;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+              <div class="prop-text">
+                <strong>100% veilig in Nederland</strong>
+                <span>Europese privacygarantie met data veilig & AVG-proof in NL</span>
+              </div>
+            </div>
+            
+              </div>
+            </div>
+
+            <div class="cta-strip" style="border-left: 6px solid #2563EB;">
+              <div class="cta-info">
+                <div class="cta-link-pill" style="background: #2563EB; color: #ffffff;">
+                  <span>🌐 topicalmeetings.com</span>
+                </div>
+                <div class="cta-phone" style="color: #475569;">
+                  <span>✨ 30 dagen gratis proberen</span>
+                </div>
+              </div>
+              <div class="cta-qr">
+                <img src="assets/sponsoren/qr_topical.svg" alt="QR Code">
+                <span>Scan & probeer direct</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="ad-visual">
+            
+          <div class="hero-card hero-card-ui">
+            <img src="assets/sponsoren/actions_and_decisions.27f431.png" alt="Topical AI Samenvatting" class="hero-img-ui">
+            <div class="hero-overlay-tag" style="background: rgba(37, 99, 235, 0.94);">
+              <span>AI-Notulen & Actielijst in 1 klik</span>
+            </div>
+          </div>
+        
+          </section>
+        </article>
+        
+        <article class="sponsor-slide " id="slide-2" data-index="2">
+          <section class="ad-pitch">
+            <div>
+              <div class="ad-top-meta">
+                <div class="ad-brand-logo-wrap">
+                  <img src="assets/sponsoren/jorb_logo.svg" alt="JorB Projecten Logo" style="height: 60px; width: auto; object-fit: contain;">
+                </div>
+                <div class="ad-tag" style="color: #B45309; background: #FFFBEB; border: 1.5px solid #FDE68A;">
+                  🏗️ DE ALLROUND VAKMAN IN OOSTERHOUT
+                </div>
+              </div>
+
+              <h2 class="ad-headline">Grote plannen of kleine klus?<br><span style="color: #D97706;">JorB regelt 't voor je!</span></h2>
+              <p class="ad-subline">Bouw • Tuinen • Onderhoud • Transport</p>
+
+              <div class="props-list">
+                
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #FFFBEB; color: #D97706;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 12-8.5 8.5a2.12 2.12 0 1 1-3-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 3.26-6.36 6.36a4.5 4.5 0 0 0-6.36 6.36"/><path d="m8.18 9.82 6.36-6.36"/></svg></div>
+              <div class="prop-text">
+                <strong>Allround vakmanschap</strong>
+                <span>Van aanbouw en badkamerrenovatie tot strakke tuinoverkapping</span>
+              </div>
+            </div>
+            
+
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #FFFBEB; color: #D97706;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 0 0 1.4 0l6.6-6.6a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L14 11"/><path d="m3 7 3.3-3.3a2 2 0 0 1 2.8 0L11 5"/><path d="m6 10 7 7"/><path d="M18 14v4a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-4"/></svg></div>
+              <div class="prop-text">
+                <strong>Afspraak = afspraak</strong>
+                <span>Eén vast aanspreekpunt, eerlijk advies & nuchter vakwerk</span>
+              </div>
+            </div>
+            
+
+            <div class="prop-item">
+              <div class="prop-icon" style="background: #FFFBEB; color: #D97706;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M9 12v6"/><path d="M13 12v6"/><path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5s1.44-.5 3-.5 2 .5 3 .5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"/><path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/></svg></div>
+              <div class="prop-text">
+                <strong>Actief VOKO clublid</strong>
+                <span>Vraag 't Joris gerust even aan de bar of in de zaal!</span>
+              </div>
+            </div>
+            
+              </div>
+            </div>
+
+            <div class="cta-strip" style="border-left: 6px solid #D97706;">
+              <div class="cta-info">
+                <div class="cta-link-pill" style="background: #17263c; color: #ffffff;">
+                  <span>📍 Bosboomplantsoen, Oosterhout</span>
+                </div>
+                <div class="cta-phone" style="color: #D97706;">
+                  <span>🍻 Spreek Joris aan aan de bar</span>
+                </div>
+              </div>
+              <div class="cta-qr">
+                <img src="assets/sponsoren/qr_jorb.svg" alt="QR Code">
+                <span>Scan voor info & contact</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="ad-visual">
+            
+          <div class="hero-card hero-card-joris">
+            <img src="assets/sponsoren/joris_portrait.jpg" alt="Joris Blankestijn" class="joris-avatar">
+            <div class="joris-name">Joris Blankestijn</div>
+            <div class="joris-sub">Eigenaar & Vakman • JorB Projecten</div>
+            <p class="joris-quote">“Geen gedoe, gewoon goed werk afleveren. Of het nou om een grote verbouwing gaat of een kleine klus!”</p>
+            <div class="joris-tag-badge">
+              <span>✓ Vrijblijvend advies & offerte</span>
+            </div>
+          </div>
+        
+          </section>
+        </article>
+        
+      </main>
+
+      <!-- 4. Subtiele footer status bar -->
+      <footer class="signage-status">
+        <div id="counter-label">Sponsor 1 van 3 • VOKO Digital Signage</div>
+        <div>Trotse sponsor van <strong>VOKO Oosterhout</strong> • www.voko-oosterhout.nl</div>
+      </footer>
+
+      <!-- Progress bar onderaan -->
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+      const scale = Math.min(window.innerWidth / targetWidth, window.innerHeight / targetHeight);
+      canvas.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+    fitViewport();
+
+    // Carrousel Rotatie
+    const SLIDE_DURATION_MS = 12000;
+    const slides = document.querySelectorAll('.sponsor-slide');
+    const badgeTitle = document.getElementById('badge-title');
+    const counterLabel = document.getElementById('counter-label');
+    const progressBar = document.getElementById('progress-bar');
+    const sponsorNames = ["PC INTERIEUR", "TOPICAL", "JORB PROJECTEN"];
+
+    let currentIndex = 0;
+    let startTime = performance.now();
+
+    function showSlide(index) {
+      slides.forEach((s, idx) => {
+        if (idx === index) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+      if (badgeTitle) badgeTitle.textContent = sponsorNames[index];
+      if (counterLabel) counterLabel.textContent = `Sponsor ${index + 1} van ${slides.length} • VOKO Digital Signage`;
+      startTime = performance.now();
+    }
+
+    function animateProgress(now) {
+      const elapsed = now - startTime;
+      const percent = Math.min((elapsed / SLIDE_DURATION_MS) * 100, 100);
+      if (progressBar) progressBar.style.width = `${percent}%`;
+
+      if (elapsed >= SLIDE_DURATION_MS) {
+        currentIndex = (currentIndex + 1) % slides.length;
+        showSlide(currentIndex);
+      }
+      requestAnimationFrame(animateProgress);
+    }
+
+    requestAnimationFrame(animateProgress);
+
+    // Yodeck Auto-refresh elke 15 minuten
+    setTimeout(() => {
+      window.location.reload();
+    }, 15 * 60 * 1000);
+  </script>
+</body>
+</html>
