@@ -27,9 +27,19 @@ De sponsor uitingen zijn ontworpen in de rustige, professionele VOKO kantine-hui
 - 🏆 **Standen:** [`https://joshuagod.github.io/voko-yodeck-agenda/standen.html`](https://joshuagod.github.io/voko-yodeck-agenda/standen.html)
 - 📊 **Uitslagen:** [`https://joshuagod.github.io/voko-yodeck-agenda/uitslagen.html`](https://joshuagod.github.io/voko-yodeck-agenda/uitslagen.html)
 - 📸 **Oproep Teamfoto's:** [`https://joshuagod.github.io/voko-yodeck-agenda/oproep-teamfoto.html`](https://joshuagod.github.io/voko-yodeck-agenda/oproep-teamfoto.html)
-- 🥇 **Team van het Jaar:** [`https://joshuagod.github.io/voko-yodeck-agenda/team-van-het-jaar.html`](https://joshuagod.github.io/voko-yodeck-agenda/team-van-het-jaar.html)
+- 🥇 **Team van het Jaar:** [`https://joshuagod.github.io/voko-yodeck-agenda/team-van-het-jaar.html`](https://joshuagod.github.io/voko-yodeck-agenda/team-van-het-jaar.html)  
+  *Tussenstand Team van het Jaar op basis van vrijwilligerspunten per team.*
 
 ## Werking & Architectuur
 1. **GitHub Actions:** Draait elke 6 uur `update_agenda.py` om de VOKO activiteitenpagina te scrapen.
 2. **GitHub Pages:** Serveert alle HTML-slides en assets direct en snel via HTTPS.
 3. **Yodeck Narrowcasting:** Speelt de URL's op 1080p full-screen af via de Yodeck mediaplayer en ververst periodiek de pagina's in het geheugen.
+
+## Team van het Jaar (`team-van-het-jaar.html` & `.json`)
+- **Doel:** Toont de actuele tussenstand van de teamcompetitie voor vrijwilligersinzet op de kantine-tv.
+- **Gegevensbron:** Wordt gevoed door `team-van-het-jaar.json`. Deze data wordt gegenereerd vanuit het lokale vrijwilligersdashboard (`voko-vrijstellingspunten`) en handmatig gecommit/gepusht bij puntenupdates.
+- **Privacy (AVG):** Bevat **uitsluitend geaggregeerde teamtotalen** (geen lidnamen, e-mailadressen, Club-Assistent URL's of individuele pilot-vergoedingen).
+- **Rekenregels teamdoelen:**
+  - Standaard teamdoel: 18 punten per spelend lid.
+  - Uitzonderingen: MC1 (12 pt p.p.), MC2 (12 pt p.p.), Dames 3 (13 pt p.p.) en Volley Stars (12 pt p.p.).
+  - Overvloei van punten (bijv. overschot van een team dat doorgeschoven wordt naar een ander team) wordt netjes verwerkt in `beh` en `delta`.
