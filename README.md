@@ -43,3 +43,13 @@ De sponsor uitingen zijn ontworpen in de rustige, professionele VOKO kantine-hui
   - Standaard teamdoel: 18 punten per spelend lid.
   - Uitzonderingen: MC1 (12 pt p.p.), MC2 (12 pt p.p.), Dames 3 (13 pt p.p.) en Volley Stars (12 pt p.p.).
   - Overvloei van punten (bijv. overschot van een team dat doorgeschoven wordt naar een ander team) wordt netjes verwerkt in `beh` en `delta`.
+
+## Changelog & Recente Updates
+- **2026-11-05 (Sponsor Billboard Uitingen & Carrousel):**
+  - Nieuwe rustige narrowcasting slides toegevoegd in de officiële VOKO TV-kantine huisstijl voor:
+    - **PC Interieur** (`sponsor-pcinterieur.html`)
+    - **Topical** (`sponsor-topical.html`)
+    - **JorB Projecten** (`sponsor-jorb.html`)
+  - Auto-roterende carrousel slide toegevoegd (`sponsoren.html`) met 12-seconden crossfade en voortgangsbalk voor eenvoudige weergave op Yodeck.
+  - Alle assets en vector QR-codes ondergebracht in `assets/sponsoren/`.
+  - Hoge resolutie 1080p vector PDF's en PNG's gegenereerd voor print/archief.
