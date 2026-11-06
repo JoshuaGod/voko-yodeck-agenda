@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-05T01:59:39.603439",
+  "updated_at": "2026-11-06T01:59:18.669644",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -35,8 +35,8 @@
           "positie": 9,
           "positie_tekst": "9e",
           "stand_omschrijving": "9e in Heren 1e Klasse D",
-          "gespeeld": 2,
-          "punten": 4,
+          "gespeeld": 3,
+          "punten": 5,
           "standen": [
             {
               "type": "competitie",
@@ -45,8 +45,8 @@
               "display_klasse": "Heren 1e Klasse D",
               "positie": 9,
               "positie_tekst": "9e",
-              "gespeeld": 2,
-              "punten": 4,
+              "gespeeld": 3,
+              "punten": 5,
               "stand_omschrijving": "9e in Heren 1e Klasse D"
             }
           ],
@@ -59,7 +59,7 @@
           "positie": 7,
           "positie_tekst": "7e",
           "stand_omschrijving": "7e in Heren 2e Klasse D",
-          "gespeeld": 2,
+          "gespeeld": 3,
           "punten": 6,
           "standen": [
             {
@@ -69,7 +69,7 @@
               "display_klasse": "Heren 2e Klasse D",
               "positie": 7,
               "positie_tekst": "7e",
-              "gespeeld": 2,
+              "gespeeld": 3,
               "punten": 6,
               "stand_omschrijving": "7e in Heren 2e Klasse D"
             }
