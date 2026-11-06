@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-06T01:59:18.669644",
+  "updated_at": "2026-11-06T23:52:26.970924",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -83,7 +83,7 @@
           "positie": 5,
           "positie_tekst": "5e",
           "stand_omschrijving": "5e in Heren 3e Klasse C",
-          "gespeeld": 2,
+          "gespeeld": 3,
           "punten": 3,
           "standen": [
             {
@@ -93,7 +93,7 @@
               "display_klasse": "Heren 3e Klasse C",
               "positie": 5,
               "positie_tekst": "5e",
-              "gespeeld": 2,
+              "gespeeld": 3,
               "punten": 3,
               "stand_omschrijving": "5e in Heren 3e Klasse C"
             }

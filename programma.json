@@ -1,26 +1,9 @@
 {
-  "updated_at": "2026-11-06T01:59:18.670342",
+  "updated_at": "2026-11-06T23:52:26.972295",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 36,
+  "total": 35,
   "items": [
-    {
-      "id": "2035535",
-      "team": "VOKO HS 4",
-      "tegenstander": "WHV HS 3",
-      "thuis": true,
-      "team_thuis": "VOKO HS 4",
-      "team_uit": "WHV HS 3",
-      "datum": "Vrijdag 6 november",
-      "iso_datum": "2026-11-06",
-      "tijd": "20:30",
-      "locatie": "VOKO-home",
-      "competitie": "Heren 3e Klasse C",
-      "stand_team": "5e in Heren 3e Klasse C",
-      "bron": "Nevobo RSS",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204039331.jpg",
-      "is_placeholder": true
-    },
     {
       "id": "1978070",
       "team": "VOKO MC 1",
