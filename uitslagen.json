@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-09T01:25:00.307983",
+  "updated_at": "2026-11-10T03:57:55.576716",
   "type": "uitslagen",
   "periode": "afgelopen week + live vandaag",
   "total": 36,
@@ -783,8 +783,8 @@
       "team_uit": "VOKO DS 3",
       "datum": "Maandag 2 november",
       "iso_datum": "2026-11-02",
-      "tijd": "20.00",
-      "locatie": "Sporthal",
+      "tijd": "20:30",
+      "locatie": "Sporthal De Opperdam",
       "competitie": "ORV 2e Klasse Dames",
       "stand_team": "4e in 2e Klasse Dames (ORV)",
       "sets_thuis": 1,

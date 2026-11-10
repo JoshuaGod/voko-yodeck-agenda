@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-09T01:25:00.308852",
+  "updated_at": "2026-11-10T03:57:55.577666",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 12,
+  "total": 13,
   "items": [
     {
       "id": "1984150",
@@ -207,6 +207,23 @@
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/dames1_2026-2027_20261102103926848747.jpg",
       "is_placeholder": false
+    },
+    {
+      "id": "ORV_7_8_20261117",
+      "team": "VOKO DS 3",
+      "tegenstander": "De Burgst Breda Dames 1",
+      "thuis": false,
+      "team_thuis": "De Burgst Breda Dames 1",
+      "team_uit": "VOKO DS 3",
+      "datum": "Dinsdag 17 november",
+      "iso_datum": "2026-11-17",
+      "tijd": "20.30",
+      "locatie": "Sporthal",
+      "competitie": "ORV 2e Klasse Dames",
+      "stand_team": "4e in 2e Klasse Dames (ORV)",
+      "bron": "ORV Breda",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
+      "is_placeholder": true
     }
   ]
 }
