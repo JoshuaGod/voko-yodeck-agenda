@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-10T03:57:55.577666",
+  "updated_at": "2026-11-11T01:42:25.265833",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 13,
+  "total": 14,
   "items": [
     {
       "id": "1984150",
@@ -223,6 +223,23 @@
       "stand_team": "4e in 2e Klasse Dames (ORV)",
       "bron": "ORV Breda",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
+      "is_placeholder": true
+    },
+    {
+      "id": "2045147",
+      "team": "VOKO MA 2",
+      "tegenstander": "Volley Tilburg MA 1",
+      "thuis": false,
+      "team_thuis": "Volley Tilburg MA 1",
+      "team_uit": "VOKO MA 2",
+      "datum": "Woensdag 18 november",
+      "iso_datum": "2026-11-18",
+      "tijd": "18:30",
+      "locatie": "Reeshof Indoor Sportcentrum",
+      "competitie": "Meiden A 1e Klasse D Eerste helft",
+      "stand_team": "2e in Meiden A 1e Klasse D Eerste helft",
+      "bron": "Nevobo RSS",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
       "is_placeholder": true
     }
   ]
