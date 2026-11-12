@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-11T01:42:25.265120",
+  "updated_at": "2026-11-12T02:41:39.369814",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -35,7 +35,7 @@
           "positie": 9,
           "positie_tekst": "9e",
           "stand_omschrijving": "9e in Heren 1e Klasse D",
-          "gespeeld": 4,
+          "gespeeld": 5,
           "punten": 5,
           "standen": [
             {
@@ -45,7 +45,7 @@
               "display_klasse": "Heren 1e Klasse D",
               "positie": 9,
               "positie_tekst": "9e",
-              "gespeeld": 4,
+              "gespeeld": 5,
               "punten": 5,
               "stand_omschrijving": "9e in Heren 1e Klasse D"
             }
@@ -195,9 +195,9 @@
         {
           "team": "VOKO DS 3",
           "klasse": "ORV 2e Klasse Dames",
-          "positie": 4,
-          "positie_tekst": "4e",
-          "stand_omschrijving": "4e in 2e Klasse Dames (ORV)",
+          "positie": 5,
+          "positie_tekst": "5e",
+          "stand_omschrijving": "5e in 2e Klasse Dames (ORV)",
           "gespeeld": 5,
           "punten": 11,
           "bron": "ORV Breda",
@@ -207,11 +207,11 @@
               "label": "ORV",
               "klasse": "ORV 2e Klasse Dames",
               "display_klasse": "2e Klasse Dames",
-              "positie": 4,
-              "positie_tekst": "4e",
+              "positie": 5,
+              "positie_tekst": "5e",
               "gespeeld": 5,
               "punten": 11,
-              "stand_omschrijving": "4e in 2e Klasse Dames (ORV)"
+              "stand_omschrijving": "5e in 2e Klasse Dames (ORV)"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",

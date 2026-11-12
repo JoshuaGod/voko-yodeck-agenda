@@ -1,26 +1,9 @@
 {
-  "updated_at": "2026-11-11T01:42:25.265833",
+  "updated_at": "2026-11-12T02:41:39.370919",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 14,
+  "total": 13,
   "items": [
-    {
-      "id": "1984150",
-      "team": "VOKO HS 2",
-      "tegenstander": "Ardito HS 1",
-      "thuis": true,
-      "team_thuis": "VOKO HS 2",
-      "team_uit": "Ardito HS 1",
-      "datum": "Woensdag 11 november",
-      "iso_datum": "2026-11-11",
-      "tijd": "21:00",
-      "locatie": "VOKO-home",
-      "competitie": "Heren 1e Klasse D",
-      "stand_team": "9e in Heren 1e Klasse D",
-      "bron": "Nevobo RSS",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204030542.jpg",
-      "is_placeholder": true
-    },
     {
       "id": "2035329",
       "team": "VOKO DS 2",
@@ -220,7 +203,7 @@
       "tijd": "20.30",
       "locatie": "Sporthal",
       "competitie": "ORV 2e Klasse Dames",
-      "stand_team": "4e in 2e Klasse Dames (ORV)",
+      "stand_team": "5e in 2e Klasse Dames (ORV)",
       "bron": "ORV Breda",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
       "is_placeholder": true
