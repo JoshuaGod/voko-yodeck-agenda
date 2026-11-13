@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-12T02:41:39.370919",
+  "updated_at": "2026-11-13T02:22:53.659639",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 13,
+  "total": 16,
   "items": [
     {
       "id": "2035329",
@@ -203,7 +203,7 @@
       "tijd": "20.30",
       "locatie": "Sporthal",
       "competitie": "ORV 2e Klasse Dames",
-      "stand_team": "5e in 2e Klasse Dames (ORV)",
+      "stand_team": "6e in 2e Klasse Dames (ORV)",
       "bron": "ORV Breda",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
       "is_placeholder": true
@@ -223,6 +223,57 @@
       "stand_team": "2e in Meiden A 1e Klasse D Eerste helft",
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
+      "is_placeholder": true
+    },
+    {
+      "id": "1979477",
+      "team": "Ammers HS 3 - VOKO HS 1",
+      "tegenstander": "VC WIK Groot",
+      "thuis": false,
+      "team_thuis": "VC WIK Groot",
+      "team_uit": "Ammers HS 3 - VOKO HS 1",
+      "datum": "Vrijdag 20 november",
+      "iso_datum": "2026-11-20",
+      "tijd": "20:00",
+      "locatie": "De Reiger",
+      "competitie": "Nevobo Competitie",
+      "stand_team": "",
+      "bron": "Nevobo RSS",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/photo-2026-09-24-18-18-05_20260924185739577269.jpg",
+      "is_placeholder": false
+    },
+    {
+      "id": "2035534",
+      "team": "VOKO HS 4",
+      "tegenstander": "VC WIK Groot-Ammers HS 7",
+      "thuis": true,
+      "team_thuis": "VOKO HS 4",
+      "team_uit": "VC WIK Groot-Ammers HS 7",
+      "datum": "Vrijdag 20 november",
+      "iso_datum": "2026-11-20",
+      "tijd": "20:30",
+      "locatie": "VOKO-home",
+      "competitie": "Heren 3e Klasse C",
+      "stand_team": "5e in Heren 3e Klasse C",
+      "bron": "Nevobo RSS",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204039331.jpg",
+      "is_placeholder": true
+    },
+    {
+      "id": "1984333",
+      "team": "VOKO HS 2",
+      "tegenstander": "Savok HS 1",
+      "thuis": false,
+      "team_thuis": "Savok HS 1",
+      "team_uit": "VOKO HS 2",
+      "datum": "Vrijdag 20 november",
+      "iso_datum": "2026-11-20",
+      "tijd": "21:00",
+      "locatie": "MFC De Statie",
+      "competitie": "Heren 1e Klasse D",
+      "stand_team": "9e in Heren 1e Klasse D",
+      "bron": "Nevobo RSS",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204030542.jpg",
       "is_placeholder": true
     }
   ]
