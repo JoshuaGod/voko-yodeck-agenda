@@ -142,18 +142,25 @@
         const data = await response.json();
         if (!data || !Array.isArray(data.items)) return;
 
-        const newFingerprint = JSON.stringify(data.items);
+        // Filter eventuele Volley Stars wedstrijden eruit (niet zinvol voor live uitslagen)
+        function isVolleyStars(t) {
+          if (!t) return false;
+          return /\bl[1-6]\b/i.test(t) || /volley\s*stars/i.test(t) || /volleystars/i.test(t) || /level/i.test(t) || /cmv/i.test(t);
+        }
+        const filteredItems = data.items.filter(it => !isVolleyStars(it.team) && !isVolleyStars(it.team_thuis) && !isVolleyStars(it.team_uit));
+
+        const newFingerprint = JSON.stringify(filteredItems);
         if (newFingerprint !== currentFingerprint) {
           currentFingerprint = newFingerprint;
-          currentItems = data.items;
-          renderUitslagenSlides(data.items);
+          currentItems = filteredItems;
+          renderUitslagenSlides(filteredItems);
         }
 
         const statusEl = document.getElementById('status-indicator');
         if (statusEl) {
           const now = new Date();
           const timeStr = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-          statusEl.textContent = `Bijgewerkt: ${timeStr} • ${data.items.length} uitslagen`;
+          statusEl.textContent = `Bijgewerkt: ${timeStr} • ${filteredItems.length} uitslagen`;
         }
       } catch (err) {
         console.warn('Uitslagen refresh waarschuwing:', err);

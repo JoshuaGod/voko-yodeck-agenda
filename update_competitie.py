@@ -96,6 +96,20 @@ def normalize_team_name(name: str) -> str:
     return n
 
 
+def is_volley_stars_team(name: str) -> bool:
+    """Controleert of een teamnaam bij de Volley Stars (CMV Level 1-6 / toernooien) hoort."""
+    if not name:
+        return False
+    t = name.lower().strip()
+    return bool(
+        re.search(r"\bl[1-6]\b", t)
+        or "volley stars" in t
+        or "volleystars" in t
+        or "level" in t
+        or "cmv" in t
+    )
+
+
 # -----------------------------------------------------------------------------
 # 1. Teamfoto's van VOKO clubsite
 # -----------------------------------------------------------------------------
@@ -502,6 +516,11 @@ def fetch_nevobo_matches(today: date, poule_cache: dict, nevobo_teams: dict) -> 
 
                     our_team = t_thuis if is_voko_thuis else t_uit
                     opp_team = t_uit if is_voko_thuis else t_thuis
+
+                    # Volley Stars toernooitjes overslaan voor live uitslagen/resultaten (niet zinvol)
+                    if is_volley_stars_team(our_team) or is_volley_stars_team(t_thuis) or is_volley_stars_team(t_uit):
+                        continue
+
                     is_home = is_voko_thuis
                     our_sets = sets_thuis if is_home else sets_uit
                     opp_sets = sets_uit if is_home else sets_thuis
@@ -656,6 +675,9 @@ def fetch_nevobo_matches(today: date, poule_cache: dict, nevobo_teams: dict) -> 
                             is_home = "voko" in t1_norm.lower()
                             our_team = t1_norm if is_home else t2_norm
                             opp_team = t2_norm if is_home else t1_norm
+
+                            if is_volley_stars_team(our_team) or is_volley_stars_team(t1_norm) or is_volley_stars_team(t2_norm):
+                                continue
 
                             eind = m.get("eindstand", [0, 0])
                             st_list = m.get("setstanden", [])
