@@ -27,6 +27,7 @@ De sponsor uitingen zijn ontworpen in de rustige, professionele VOKO kantine-hui
 - 🏆 **Standen:** [`https://joshuagod.github.io/voko-yodeck-agenda/standen.html`](https://joshuagod.github.io/voko-yodeck-agenda/standen.html)
 - 📊 **Uitslagen:** [`https://joshuagod.github.io/voko-yodeck-agenda/uitslagen.html`](https://joshuagod.github.io/voko-yodeck-agenda/uitslagen.html)
 - 📸 **Oproep Teamfoto's:** [`https://joshuagod.github.io/voko-yodeck-agenda/oproep-teamfoto.html`](https://joshuagod.github.io/voko-yodeck-agenda/oproep-teamfoto.html)
+- 👤 **Even voorstellen (Daniëlle - Ledenadministratie):** [`https://joshuagod.github.io/voko-yodeck-agenda/danielle_ledenadministratie.html`](https://joshuagod.github.io/voko-yodeck-agenda/danielle_ledenadministratie.html)
 - 🥇 **Team van het Jaar:** [`https://joshuagod.github.io/voko-yodeck-agenda/team-van-het-jaar.html`](https://joshuagod.github.io/voko-yodeck-agenda/team-van-het-jaar.html)  
   *Tussenstand Team van het Jaar op basis van vrijwilligerspunten per team.*
 

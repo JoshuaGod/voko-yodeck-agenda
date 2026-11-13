@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VOKO - Even voorstellen: Daniëlle (Ledenadministratie)</title>
+  <style>
+    @page {
+      size: 1920px 1080px;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* -------------------------------------------------------------------------
+       Zelfstandige Viewport Schaling (1920x1080 canvas behoudt altijd verhouding)
+       ------------------------------------------------------------------------- */
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #0b0f19;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #1e293b;
+    }
+
+    #viewport-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #slide-canvas {
+      width: 1920px;
+      height: 1080px;
+      min-width: 1920px;
+      min-height: 1080px;
+      max-width: 1920px;
+      max-height: 1080px;
+      background: #f8fafc;
+      position: relative;
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 1. Donkergrijze VOKO Topbalk */
+    .top-bar {
+      height: 68px;
+      background: linear-gradient(180deg, #384654 0%, #25333f 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 80px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .voko-logo {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .header-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 9999px;
+      padding: 7px 20px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .badge-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #ef4030;
+      box-shadow: 0 0 8px #ef4030;
+    }
+
+    /* 2. Rode Wave Banner */
+    .red-banner-wrapper {
+      position: relative;
+      width: 1920px;
+      height: 172px;
+      z-index: 5;
+    }
+
+    .banner-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 172px;
+      display: block;
+    }
+
+    .banner-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 154px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 80px;
+      box-sizing: border-box;
+      z-index: 6;
+    }
+
+    .banner-title {
+      font-size: 56px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -1px;
+      margin: 0;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .banner-badge {
+      background: #111827;
+      color: #ffffff;
+      border: 2.5px solid #ffffff;
+      padding: 13px 34px;
+      border-radius: 9999px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20);
+    }
+
+    /* 3. Hoofd Content Ruimte */
+    .content-area {
+      position: absolute;
+      top: 232px;
+      bottom: 50px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      gap: 36px;
+      box-sizing: border-box;
+      height: 778px;
+    }
+
+    /* Linker Kolom: Portret (gespiegeld) & Sabine Bedankkaart */
+    .col-left {
+      width: 520px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .photo-card {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+      position: relative;
+      height: 540px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Gespiegelde foto: kijkt nu direct naar rechts, de slide in */
+    .danielle-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 12%;
+      border-radius: 14px;
+      display: block;
+    }
+
+    .photo-caption-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      background: rgba(17, 24, 39, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 12px 22px;
+      border-radius: 14px;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .caption-name {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .caption-team {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ef4030;
+      background: rgba(239, 64, 48, 0.16);
+      border: 1px solid rgba(239, 64, 48, 0.4);
+      padding: 5px 14px;
+      border-radius: 20px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* Bedankkaart Sabine */
+    .sabine-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px solid #fde68a;
+      border-radius: 20px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.10);
+      height: 218px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .sabine-icon {
+      width: 58px;
+      height: 58px;
+      min-width: 58px;
+      background: #ffffff;
+      border: 2px solid #fcd34d;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+    }
+
+    .sabine-text-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #92400e;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .sabine-text-desc {
+      font-size: 19px;
+      font-weight: 600;
+      color: #78350f;
+      line-height: 1.4;
+    }
+
+    /* Rechter Kolom: Grote Bulletpoints & Contact Strip */
+    .col-right {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .intro-main-card {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      padding: 28px 36px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Bovenkant Intro Card */
+    .intro-header-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .badge-pill {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vol-badge {
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .role-badge {
+      background: #fef2f2;
+      border: 1.5px solid #fecaca;
+      color: #dc2626;
+    }
+
+    .intro-headline {
+      font-size: 46px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.6px;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+
+    .intro-subline {
+      font-size: 24px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.3;
+      margin-bottom: 14px;
+    }
+
+    /* 4 Grote Overzichtelijke Bulletpoints */
+    .bullets-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .bullet-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 11px 20px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .bullet-icon-box {
+      width: 54px;
+      height: 54px;
+      min-width: 54px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      background: #ffffff;
+    }
+
+    .bullet-icon-box.volley {
+      border: 2px solid #fca5a5;
+      background: #fef2f2;
+    }
+
+    .bullet-icon-box.admin {
+      border: 2px solid #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .bullet-icon-box.roots {
+      border: 2px solid #fde68a;
+      background: #fffbeb;
+    }
+
+    .bullet-icon-box.chat {
+      border: 2px solid #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .bullet-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .bullet-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.2px;
+    }
+
+    .bullet-text {
+      font-size: 21px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.3;
+    }
+
+    /* Contact Strip Onderaan */
+    .contact-strip {
+      background: #0f172a;
+      border-radius: 16px;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.22);
+    }
+
+    .contact-prompt {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .contact-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .contact-sub {
+      font-size: 17px;
+      font-weight: 500;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .contact-pill {
+      background: #ef4030;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 16px rgba(239, 64, 48, 0.45);
+      white-space: nowrap;
+    }
+
+    /* 4. Onderste Statusbalk */
+    .status-footer {
+      position: absolute;
+      bottom: 12px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      color: #94a3b8;
+      font-weight: 600;
+      z-index: 10;
+    }
+
+    .status-footer strong {
+      color: #ef4030;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+        <div class="header-pill">
+          <span class="badge-dot"></span>
+          <span>VOKO Vrijwilligers & Verenigingsnieuws</span>
+        </div>
+      </header>
+
+      <!-- 2. Rode Banner met vloeiende curve -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 172" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,140 Q 1100,154 450,170 Q 180,172 0,158 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Even voorstellen:</h1>
+          <div class="banner-badge">Ledenadministratie</div>
+        </div>
+      </div>
+
+      <!-- 3. Inhoud Ruimte (2 Kolommen) -->
+      <main class="content-area">
+        
+        <!-- Linker Kolom: Portret (gespiegeld) & Sabine Bedankkaart -->
+        <aside class="col-left">
+          <div class="photo-card">
+            <img src="assets/danielle_mirrored.jpg" alt="Danielle" class="danielle-img">
+            <div class="photo-caption-bar">
+              <span class="caption-name">Daniëlle</span>
+              <span class="caption-team">Dames 1</span>
+            </div>
+          </div>
+
+          <div class="sabine-card">
+            <div class="sabine-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="#f59e0b" stroke="#d97706" stroke-width="1.8">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="sabine-text-title">Dankjewel Sabine! 💛</div>
+              <div class="sabine-text-desc">Daniëlle neemt het stokje over van Sabine. Ontzettend bedankt voor je jarenlange inzet en toewijding aan VOKO!</div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Rechter Kolom: Voorstelkaart met grote bullets -->
+        <section class="col-right">
+          <div class="intro-main-card">
+            
+            <div class="intro-header-block">
+              <div class="meta-tag-row">
+                <span class="badge-pill vol-badge">🎉 Nieuw Gezicht</span>
+                <span class="badge-pill role-badge">🏐 Dames 1 & Ledenadministratie</span>
+              </div>
+
+              <h2 class="intro-headline">Hoi allemaal, ik ben Daniëlle!</h2>
+              <p class="intro-subline">Sinds dit seizoen speelster bij Dames 1 én het nieuwe aanspreekpunt voor onze ledenadministratie.</p>
+            </div>
+
+            <!-- 4 Grote Overzichtelijke Bulletpoints -->
+            <div class="bullets-container">
+              
+              <!-- Bullet 1: Volleybal -->
+              <div class="bullet-row">
+                <div class="bullet-icon-box volley">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4030" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20"/>
+                    <path d="M2 12a14.5 14.5 0 0 0 20 0"/>
+                  </svg>
+                </div>
+                <div class="bullet-content">
+                  <div class="bullet-title">Weer op het veld bij Dames 1</div>
+                  <div class="bullet-text">Na een volleybalpauze weer met veel plezier terug op het veld bij VOKO Dames 1!</div>
+                </div>
+              </div>
+
+              <!-- Bullet 2: Ledenadministratie -->
+              <div class="bullet-row">
+                <div class="bullet-icon-box admin">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                    <path d="m9 14 2 2 4-4"/>
+                  </svg>
+                </div>
+                <div class="bullet-content">
+                  <div class="bullet-title">Nieuw aanspreekpunt Ledenadministratie</div>
+                  <div class="bullet-text">Neemt het stokje over van Sabine voor aanmeldingen, wijzigingen en alle lidmaatschapsvragen.</div>
+                </div>
+              </div>
+
+              <!-- Bullet 3: Roots & Woonplaats -->
+              <div class="bullet-row">
+                <div class="bullet-icon-box roots">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <div class="bullet-content">
+                  <div class="bullet-title">Roots in Limburg, thuis in Terheijden</div>
+                  <div class="bullet-text">29 jaar, geboren in Limburg, lang in Nijmegen gewoond & gevolleybald en nu samenwonend in Terheijden.</div>
+                </div>
+              </div>
+
+              <!-- Bullet 4: Spreek me aan -->
+              <div class="bullet-row">
+                <div class="bullet-icon-box chat">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
+                <div class="bullet-content">
+                  <div class="bullet-title">Spreek me gerust aan in de sporthal!</div>
+                  <div class="bullet-text">Heb je vragen over je lidmaatschap of wil je kennismaken? Zeg gerust even gedag!</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Contact / Vragen Strip -->
+            <div class="contact-strip">
+              <div class="contact-prompt">
+                <div class="contact-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="contact-title">Vragen over je lidmaatschap of gegevens wijzigen?</div>
+                  <div class="contact-sub">Spreek Daniëlle gerust aan in de zaal of stuur een e-mail</div>
+                </div>
+              </div>
+              <div class="contact-pill">ledenadministratie@voko-oosterhout.nl</div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+      <!-- 4. Status Footer -->
+      <footer class="status-footer">
+        <span>VOKO Digital Signage • Vrijwilligers & Vereniging</span>
+        <span>Trotse vereniging <strong>VOKO Oosterhout</strong> • www.voko-oosterhout.nl</span>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    /* Zelfstandige Viewport Schaling */
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scale = Math.min(vw / 1920, vh / 1080);
+      canvas.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+    fitViewport();
+  </script>
+</body>
+</html>
