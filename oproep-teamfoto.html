@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>VOKO Digital Signage - Oproep Teamfoto's</title>
-  <link rel="stylesheet" href="style.css?v=20261030_1300">
+  <link rel="stylesheet" href="style.css?v=20261113_1420">
   <style>
     /* -------------------------------------------------------------------------
        Zelfstandige Viewport Schaling (1920x1080 canvas behoudt altijd verhouding)
@@ -50,6 +50,7 @@
 
     /* -------------------------------------------------------------------------
        Stijlen specifiek voor de Teamfoto Oproep Slide (1920x1080)
+       Extra grote lettertypes & minimale ruis voor optimale kantine-leesbaarheid
        ------------------------------------------------------------------------- */
     .oproep-stage {
       position: absolute;
@@ -58,7 +59,7 @@
       left: 80px;
       right: 80px;
       display: grid;
-      grid-template-columns: 1.15fr 0.95fr;
+      grid-template-columns: 1fr 1fr;
       gap: 36px;
       overflow: hidden;
       box-sizing: border-box;
@@ -67,9 +68,9 @@
     .oproep-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 18px;
-      padding: 30px 34px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-radius: 20px;
+      padding: 36px 40px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -77,104 +78,71 @@
       overflow: hidden;
     }
 
-    /* Linker Card: De Oproep & Instructies */
+    /* Linker Card: De Oproep & Grote Actiebox */
     .oproep-tag-top {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: #fef2f2;
-      border: 1px solid #fecaca;
+      border: 1.5px solid #fecaca;
       color: #dc2626;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 16px;
+      padding: 7px 18px;
+      border-radius: 24px;
+      font-size: 19px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       width: fit-content;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .oproep-main-title {
-      font-size: 38px;
+      font-size: 44px;
       font-weight: 800;
       color: #17263c;
       line-height: 1.18;
       letter-spacing: -0.5px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .oproep-intro-text {
-      font-size: 20px;
-      color: #475569;
-      line-height: 1.45;
-      font-weight: 500;
-      margin-bottom: 18px;
+      font-size: 28px;
+      color: #334155;
+      line-height: 1.35;
+      font-weight: 600;
+      margin-bottom: 16px;
     }
 
-    /* Tips Box */
-    .oproep-tips-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 16px 20px;
-      margin-bottom: 20px;
-    }
-
-    .oproep-tips-title {
-      font-size: 17px;
-      font-weight: 800;
-      color: #0f172a;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
+    .oproep-tip-highlight {
+      font-size: 22px;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .oproep-tips-list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .oproep-tip-item {
-      display: flex;
-      align-items: flex-start;
       gap: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #334155;
-      line-height: 1.3;
     }
 
-    .oproep-tip-icon {
-      font-size: 22px;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    /* Mail Actie Box & QR Code */
+    /* Mail Actie Box & Grote QR Code */
     .oproep-action-row {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 24px;
       background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%);
-      border: 2px solid #fed7aa;
-      border-radius: 16px;
-      padding: 18px 24px;
+      border: 2.5px solid #fed7aa;
+      border-radius: 20px;
+      padding: 22px 26px;
     }
 
     .oproep-qr-wrap {
-      width: 110px;
-      height: 110px;
-      min-width: 110px;
+      width: 175px;
+      height: 175px;
+      min-width: 175px;
       background: #ffffff;
-      border-radius: 12px;
-      padding: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      border: 1.5px solid #fed7aa;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -190,13 +158,13 @@
     .oproep-action-details {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
       flex: 1;
       min-width: 0;
     }
 
     .oproep-action-label {
-      font-size: 14px;
+      font-size: 19px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -204,18 +172,20 @@
     }
 
     .oproep-email-link {
-      font-size: 26px;
-      font-weight: 800;
+      font-size: 34px;
+      font-weight: 900;
       color: #cb1d12;
       text-decoration: none;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.5px;
       word-break: break-all;
+      line-height: 1.15;
     }
 
     .oproep-action-sub {
-      font-size: 15px;
+      font-size: 19px;
       font-weight: 600;
-      color: #64748b;
+      color: #475569;
+      margin-top: 4px;
     }
 
     /* Rechter Card: Wie missen we nog? */
@@ -223,11 +193,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .oproep-right-title {
-      font-size: 30px;
+      font-size: 40px;
       font-weight: 800;
       color: #17263c;
       letter-spacing: -0.3px;
@@ -236,49 +206,49 @@
     .oproep-badge-missing {
       background: #fee2e2;
       color: #991b1b;
-      border: 1px solid #f87171;
-      padding: 6px 16px;
-      border-radius: 8px;
-      font-size: 17px;
+      border: 2px solid #f87171;
+      padding: 7px 18px;
+      border-radius: 10px;
+      font-size: 22px;
       font-weight: 800;
     }
 
     /* Voortgangsbar */
     .oproep-progress-wrap {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .oproep-progress-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 16px;
+      font-size: 22px;
       font-weight: 700;
       color: #475569;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .oproep-progress-bar-bg {
       width: 100%;
-      height: 12px;
+      height: 16px;
       background: #e2e8f0;
-      border-radius: 6px;
+      border-radius: 8px;
       overflow: hidden;
     }
 
     .oproep-progress-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
-      border-radius: 6px;
+      border-radius: 8px;
       transition: width 0.8s ease;
-      width: 13%;
+      width: 14%;
     }
 
-    /* Categorieën & Pills */
+    /* Categorieën & Grote Pills */
     .oproep-categories-container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       flex: 1;
       overflow: hidden;
     }
@@ -294,32 +264,33 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 14px;
+      font-size: 17px;
       font-weight: 800;
       color: #334155;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       margin-bottom: 6px;
     }
 
     .oproep-pills-wrap {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
 
     .oproep-team-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 700;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 10px;
+      font-size: 22px;
+      font-weight: 800;
       background: #ffffff;
-      border: 1.5px solid #cbd5e1;
+      border: 2px solid #cbd5e1;
       color: #1e293b;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+      letter-spacing: -0.2px;
     }
 
     .oproep-team-pill.needed {
@@ -335,22 +306,22 @@
     }
 
     .oproep-team-pill-icon {
-      font-size: 15px;
+      font-size: 20px;
     }
 
     /* Al Compleet Sectie */
     .oproep-completed-box {
       margin-top: 14px;
       padding-top: 12px;
-      border-top: 1px dashed #cbd5e1;
+      border-top: 2px dashed #cbd5e1;
     }
 
     .oproep-completed-title {
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 800;
       color: #15803d;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -384,7 +355,7 @@
         </div>
       </div>
 
-      <!-- 3. Main Stage: Twee kolommen (Links Oproep, Rechts Live Stand van Zaken) -->
+      <!-- 3. Main Stage: Twee kolommen (Links Oproep & Mailbox, Rechts Overzicht Teams) -->
       <main class="oproep-stage">
         
         <!-- Linker Card: De Oproep -->
@@ -396,33 +367,15 @@
             </div>
             <h2 class="oproep-main-title">Staat jouw team nog met een placeholder op dit scherm?</h2>
             <p class="oproep-intro-text">
-              We willen onze kantine-narrowcasting en de VOKO-website graag vullen met echte, vrolijke teamfoto's van alle senioren-, jeugd- en miniteams! Maak na je volgende wedstrijd of trainingsavond samen even een leuke teamfoto.
+              Maak na jullie wedstrijd of training even een leuke teamfoto en stuur 'm op!
             </p>
-
-            <!-- 3 Snelle Tips -->
-            <div class="oproep-tips-box">
-              <div class="oproep-tips-title">
-                <span>💡</span>
-                <span>3 Tips voor een topfoto:</span>
-              </div>
-              <div class="oproep-tips-list">
-                <div class="oproep-tip-item">
-                  <span class="oproep-tip-icon">🏐</span>
-                  <span><strong>In VOKO-tenue:</strong> Gezellig samen als team op het veld of bij het net.</span>
-                </div>
-                <div class="oproep-tip-item">
-                  <span class="oproep-tip-icon">📐</span>
-                  <span><strong>Liggend formaat:</strong> Horizontaal/landschap vult de schermen het mooist.</span>
-                </div>
-                <div class="oproep-tip-item">
-                  <span class="oproep-tip-icon">✨</span>
-                  <span><strong>Hoge resolutie:</strong> Goed belicht en scherp direct vanuit je telefoon.</span>
-                </div>
-              </div>
+            <div class="oproep-tip-highlight">
+              <span>💡</span>
+              <span>Graag samen in VOKO-tenue en liggend formaat (horizontaal).</span>
             </div>
           </div>
 
-          <!-- Actie Box met QR code en e-mailadres -->
+          <!-- Grote Actie Box met QR code en e-mailadres -->
           <div class="oproep-action-row">
             <div class="oproep-qr-wrap">
               <img src="assets/qr_teamfoto.svg" alt="Scan QR code om te mailen">
@@ -433,7 +386,7 @@
                 communicatie@voko-oosterhout.nl
               </a>
               <div class="oproep-action-sub">
-                📱 Tip: Scan de QR-code met je smartphone en mail de foto direct vanuit je filmrol!
+                📱 Scan de QR-code met je smartphone om direct vanuit je filmrol te mailen!
               </div>
             </div>
           </div>
@@ -444,17 +397,17 @@
           <div>
             <div class="oproep-header-right">
               <h2 class="oproep-right-title">Wie missen we nog?</h2>
-              <div class="oproep-badge-missing" id="missing-badge">19 teams gezocht</div>
+              <div class="oproep-badge-missing" id="missing-badge">18 teams gezocht</div>
             </div>
 
             <!-- Voortgangsbalk -->
             <div class="oproep-progress-wrap">
               <div class="oproep-progress-header">
-                <span id="progress-text">2 van de 21 teams compleet</span>
-                <span id="progress-pct">10%</span>
+                <span id="progress-text">3 van de 21 teams compleet</span>
+                <span id="progress-pct">14%</span>
               </div>
               <div class="oproep-progress-bar-bg">
-                <div class="oproep-progress-bar-fill" id="progress-bar-fill" style="width: 10%;"></div>
+                <div class="oproep-progress-bar-fill" id="progress-bar-fill" style="width: 14%;"></div>
               </div>
             </div>
 
@@ -494,16 +447,17 @@
     // -------------------------------------------------------------------------
     const INITIAL_OPROEP_DATA = {
       "totaal_teams": 21,
-      "aantal_met_foto": 2,
-      "aantal_zonder_foto": 19,
-      "percentage_compleet": 10,
+      "aantal_met_foto": 3,
+      "aantal_zonder_foto": 18,
+      "percentage_compleet": 14,
       "teams_met_foto": [
         "VOKO HS 1",
-        "VOKO HS 5"
+        "VOKO HS 5",
+        "VOKO DS 1"
       ],
       "teams_zonder_foto": [
         "VOKO HS 2", "VOKO HS 3", "VOKO HS 4",
-        "VOKO DS 1", "VOKO DS 2", "VOKO DS 3",
+        "VOKO DS 2", "VOKO DS 3",
         "VOKO MA 1", "VOKO MA 2", "VOKO MB 1", "VOKO MB 2", "VOKO MC 1", "VOKO MC 2",
         "Level 5-1", "Level 5-2", "Level 4-1", "Level 4-2", "Level 4-3", "Level 3", "Level 2"
       ],
@@ -513,8 +467,8 @@
           "gezocht": ["VOKO HS 2", "VOKO HS 3", "VOKO HS 4"]
         },
         "Dames": {
-          "compleet": [],
-          "gezocht": ["VOKO DS 1", "VOKO DS 2", "VOKO DS 3"]
+          "compleet": ["VOKO DS 1"],
+          "gezocht": ["VOKO DS 2", "VOKO DS 3"]
         },
         "Jeugd": {
           "compleet": [],
@@ -551,6 +505,11 @@
     // -------------------------------------------------------------------------
     // 2. Data inladen en dynamisch renderen
     // -------------------------------------------------------------------------
+    function formatPillName(name) {
+      if (!name) return '';
+      return name.replace(/^VOKO\s+/i, '').trim();
+    }
+
     async function loadOproepData() {
       try {
         const resp = await fetch(`oproep_teamfoto.json?t=${Date.now()}`);
@@ -565,7 +524,7 @@
     function renderOproep(data) {
       if (!data) return;
 
-      const total = data.totaal_teams || 15;
+      const total = data.totaal_teams || 21;
       const done = data.aantal_met_foto !== undefined ? data.aantal_met_foto : 0;
       const needed = data.aantal_zonder_foto !== undefined ? data.aantal_zonder_foto : (total - done);
       const pct = data.percentage_compleet !== undefined ? data.percentage_compleet : Math.round((done / total) * 100);
@@ -574,6 +533,7 @@
       const tagTop = document.querySelector('.oproep-tag-top');
       const mainTitle = document.querySelector('.oproep-main-title');
       const introText = document.querySelector('.oproep-intro-text');
+      const tipHighlight = document.querySelector('.oproep-tip-highlight');
       const rightTitle = document.querySelector('.oproep-right-title');
       const missingBadge = document.getElementById('missing-badge');
       const progressText = document.getElementById('progress-text');
@@ -601,7 +561,11 @@
         if (mainTitle) mainTitle.textContent = "Staan jullie nog tip top op je teamfoto?";
 
         if (introText) {
-          introText.textContent = "Geweldig nieuws: alle teams van VOKO hebben inmiddels een officiële teamfoto! Maar staan jullie er nog tip top op? Zijn er nieuwe spelers bijgekomen, een nieuwe coach, of zijn jullie toe aan een frisse actiefoto? Zo niet, stuur dan gerust een nieuwe foto naar communicatie@voko-oosterhout.nl!";
+          introText.textContent = "Geweldig nieuws: alle teams van VOKO hebben inmiddels een officiële teamfoto! Zijn er nieuwe spelers bijgekomen of toe aan een frisse actiefoto? Stuur gerust een update!";
+        }
+
+        if (tipHighlight) {
+          tipHighlight.innerHTML = '<span>📸</span><span>Nieuwe teamfoto gemaakt? Mail hem gerust door!</span>';
         }
 
         if (rightTitle) rightTitle.textContent = "Alle teams in beeld! 📸";
@@ -622,9 +586,9 @@
 
         if (catContainer) {
           catContainer.innerHTML = `
-            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 20px 24px; color: #166534; font-size: 18px; line-height: 1.45; font-weight: 600;">
-              <div style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Dank aan alle VOKO teams! 🏐</div>
-              Ieder team staat nu netjes op de narrowcasting en de website. Wil je toch iets actualiseren of heb je een nog leukere foto van je team? Mail het ons gerust!
+            <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 16px; padding: 24px 28px; color: #166534; font-size: 24px; line-height: 1.4; font-weight: 700;">
+              <div style="font-size: 30px; font-weight: 900; margin-bottom: 10px;">Dank aan alle VOKO teams! 🏐</div>
+              Ieder team staat nu netjes op de narrowcasting en de website. Wil je toch iets actualiseren? Mail het ons gerust!
             </div>
           `;
         }
@@ -635,7 +599,7 @@
           completedPills.innerHTML = data.teams_met_foto.map(t => `
             <span class="oproep-team-pill done">
               <span class="oproep-team-pill-icon">✅</span>
-              <span>${t}</span>
+              <span>${formatPillName(t)}</span>
             </span>
           `).join('');
         }
@@ -645,6 +609,8 @@
         // ---------------------------------------------------------------------
         if (bannerTitle) bannerTitle.textContent = "Gezocht: Teamfoto's 2026-2027";
         if (mainTitle) mainTitle.textContent = "Staat jouw team nog met een placeholder op dit scherm?";
+        if (introText) introText.textContent = "Maak na jullie wedstrijd of training even een leuke teamfoto en stuur 'm op!";
+        if (tipHighlight) tipHighlight.innerHTML = "<span>💡</span><span>Graag samen in VOKO-tenue en liggend formaat (horizontaal).</span>";
         if (rightTitle) rightTitle.textContent = "Wie missen we nog?";
 
         if (missingBadge) {
@@ -671,14 +637,14 @@
             const pillsHtml = neededList.map(t => `
               <span class="oproep-team-pill needed">
                 <span class="oproep-team-pill-icon">📷</span>
-                <span>${t}</span>
+                <span>${formatPillName(t)}</span>
               </span>
             `).join('');
 
             groupEl.innerHTML = `
               <div class="oproep-cat-header">
                 <span>${catName}</span>
-                <span style="color: #dc2626; font-size: 13px;">${neededList.length} nog nodig</span>
+                <span style="color: #dc2626; font-size: 15px; font-weight: 800;">${neededList.length} nog nodig</span>
               </div>
               <div class="oproep-pills-wrap">
                 ${pillsHtml}
@@ -697,7 +663,7 @@
             completedPills.innerHTML = data.teams_met_foto.map(t => `
               <span class="oproep-team-pill done">
                 <span class="oproep-team-pill-icon">✅</span>
-                <span>${t}</span>
+                <span>${formatPillName(t)}</span>
               </span>
             `).join('');
           }
