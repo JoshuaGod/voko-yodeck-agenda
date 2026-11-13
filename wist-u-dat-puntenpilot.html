@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VOKO - Wist je dat: Punten Pilot 2026/2027</title>
+  <style>
+    @page {
+      size: 1920px 1080px;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* -------------------------------------------------------------------------
+       Zelfstandige Viewport Schaling (1920x1080 canvas behoudt altijd verhouding)
+       ------------------------------------------------------------------------- */
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #0b0f19;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #1e293b;
+    }
+
+    #viewport-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #slide-canvas {
+      width: 1920px;
+      height: 1080px;
+      min-width: 1920px;
+      min-height: 1080px;
+      max-width: 1920px;
+      max-height: 1080px;
+      background: #f8fafc;
+      position: relative;
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 1. Donkergrijze VOKO Topbalk */
+    .top-bar {
+      height: 68px;
+      background: linear-gradient(180deg, #384654 0%, #25333f 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 80px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .voko-logo {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .header-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 9999px;
+      padding: 7px 20px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .badge-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #ef4030;
+      box-shadow: 0 0 8px #ef4030;
+    }
+
+    /* 2. Rode Wave Banner */
+    .red-banner-wrapper {
+      position: relative;
+      width: 1920px;
+      height: 172px;
+      z-index: 5;
+    }
+
+    .banner-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 172px;
+      display: block;
+    }
+
+    .banner-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 154px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 80px;
+      box-sizing: border-box;
+      z-index: 6;
+    }
+
+    .banner-title {
+      font-size: 56px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -1px;
+      margin: 0;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .banner-badge {
+      background: #111827;
+      color: #ffffff;
+      border: 2.5px solid #ffffff;
+      padding: 13px 34px;
+      border-radius: 9999px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20);
+    }
+
+    /* 3. Hoofd Content Ruimte: 2 Grote Kaarten */
+    .content-area {
+      position: absolute;
+      top: 232px;
+      bottom: 50px;
+      left: 80px;
+      right: 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      box-sizing: border-box;
+      height: 778px;
+    }
+
+    .stage-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 30px 36px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Top Tags */
+    .card-top-tag {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      margin-bottom: 10px;
+    }
+
+    .tag-blue {
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .tag-red {
+      background: #fef2f2;
+      border: 1.5px solid #fecaca;
+      color: #dc2626;
+    }
+
+    .card-headline {
+      font-size: 44px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.6px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .card-subline {
+      font-size: 23px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    /* Hero Stat Box (Linker Kaart) */
+    .hero-stat-box {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border: 2.5px solid #86efac;
+      border-radius: 18px;
+      padding: 22px 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(22, 163, 74, 0.12);
+    }
+
+    .hero-stat-row {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .hero-stat-amount {
+      font-size: 84px;
+      font-weight: 900;
+      color: #15803d;
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+
+    .hero-stat-desc {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hero-stat-title {
+      font-size: 30px;
+      font-weight: 900;
+      color: #166534;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+
+    .hero-stat-sub {
+      font-size: 23px;
+      font-weight: 700;
+      color: #15803d;
+      line-height: 1.2;
+    }
+
+    /* Kernpunten (Links) */
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px 20px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .feature-icon-circle {
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .feature-icon-circle.volley {
+      border: 2px solid #fca5a5;
+      background: #fef2f2;
+    }
+
+    .feature-icon-circle.heart {
+      border: 2px solid #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .feature-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.2px;
+      margin-bottom: 2px;
+    }
+
+    .feature-desc {
+      font-size: 20px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.32;
+    }
+
+    /* Plafond Callout Strip (Links Onder) */
+    .ceiling-highlight-box {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .ceiling-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 12px;
+      background: #fef3c7;
+      border: 1.5px solid #fde68a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .ceiling-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #92400e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .ceiling-desc {
+      font-size: 18px;
+      font-weight: 700;
+      color: #334155;
+      line-height: 1.3;
+    }
+
+    /* Stappenplan (Rechter Kaart) */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .step-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 20px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .step-num {
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 900;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .step-num.s1 { background: #ef4030; }
+    .step-num.s2 { background: #2563eb; }
+    .step-num.s3 { background: #16a34a; }
+
+    .step-body {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .step-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.2px;
+    }
+
+    .step-desc {
+      font-size: 20px;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.32;
+    }
+
+    .app-badge-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #1e293b;
+      color: #ffffff;
+      padding: 3px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.3px;
+    }
+
+    .app-choice-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #dcfce7;
+      border: 1.5px solid #86efac;
+      color: #166534;
+      padding: 3px 14px;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    /* Actie Banner Onderaan Rechts */
+    .action-callout {
+      background: #0f172a;
+      border-radius: 16px;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.22);
+    }
+
+    .callout-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .callout-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .callout-sub {
+      font-size: 17px;
+      font-weight: 500;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* 4. Onderste Statusbalk */
+    .status-footer {
+      position: absolute;
+      bottom: 12px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      color: #94a3b8;
+      font-weight: 600;
+      z-index: 10;
+    }
+
+    .status-footer strong {
+      color: #ef4030;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport-scaler">
+    <div id="slide-canvas">
+      
+      <!-- 1. Bovenbalk -->
+      <header class="top-bar">
+        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
+        <div class="header-pill">
+          <span class="badge-dot"></span>
+          <span>VOKO Vrijwilligers & Verenigingsnieuws</span>
+        </div>
+      </header>
+
+      <!-- 2. Rode Wave Banner met vloeiende curve -->
+      <div class="red-banner-wrapper">
+        <svg class="banner-svg" viewBox="0 0 1920 172" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e42819" />
+              <stop offset="100%" stop-color="#cb1d12" />
+            </linearGradient>
+          </defs>
+          <path d="M 0,0 L 1920,0 L 1920,140 Q 1100,154 450,170 Q 180,172 0,158 Z" fill="url(#vokoRedGrad)" />
+        </svg>
+        <div class="banner-content">
+          <h1 class="banner-title">Wist je dat...?</h1>
+          <div class="banner-badge">PUNTEN PILOT 2026/2027</div>
+        </div>
+      </div>
+
+      <!-- 3. Hoofd Content Ruimte: 2 Grote Overzichtelijke Kaarten -->
+      <main class="content-area">
+        
+        <!-- Linker Kaart: De Beloning (€ 2,50 per punt) -->
+        <section class="stage-card">
+          <div>
+            <div class="card-top-tag tag-blue">🎉 NIEUW IN SEIZOEN 2026/2027</div>
+            <h2 class="card-headline">Extra vrijwilligerspunten zijn geld waard!</h2>
+            
+            <!-- Hero Stat Box -->
+            <div class="hero-stat-box">
+              <div class="hero-stat-row">
+                <div class="hero-stat-amount">€ 2,50</div>
+                <div class="hero-stat-desc">
+                  <div class="hero-stat-title">per punt uitbetaald</div>
+                  <div class="hero-stat-sub">voor alle punten boven je doelstelling</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kernpunten -->
+            <div class="features-list">
+              <div class="feature-item">
+                <div class="feature-icon-circle volley">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4030" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20"/>
+                    <path d="M2 12a14.5 14.5 0 0 0 20 0"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="feature-title">Verdien je contributie terug</div>
+                  <div class="feature-desc">Haal je meer punten dan je teamdoel? Dan kun je die extra inzet laten uitkeren.</div>
+                </div>
+              </div>
+
+              <div class="feature-item">
+                <div class="feature-icon-circle heart">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="feature-title">100% Vrijwillige keuze</div>
+                  <div class="feature-desc">Zie je er bewust vanaf? Dan vloeit jouw inzet rechtstreeks naar de clubkas!</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Financiële Plafonds Balk Onderaan Links -->
+          <div class="ceiling-highlight-box">
+            <div class="ceiling-icon">🛡️</div>
+            <div>
+              <div class="ceiling-title">Eerlijke financiële plafonds</div>
+              <div class="ceiling-desc">Spelers: max. eigen contributie • Gezinnen: max. gezinsrekening • Vrijwilligers: max. € 250,-</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Rechter Kaart: Eenvoudig Activeren in de App -->
+        <section class="stage-card">
+          <div>
+            <div class="card-top-tag tag-red">📱 ZO ACTIVEER JE HET</div>
+            <h2 class="card-headline">In 3 stappen via de Club-App:</h2>
+            <p class="card-subline">Regel het eenvoudig in jouw persoonlijke profiel:</p>
+
+            <!-- 3 Duidelijke Stappen -->
+            <div class="steps-container">
+              
+              <div class="step-card">
+                <div class="step-num s1">1</div>
+                <div class="step-body">
+                  <div class="step-title">Open MyClub in de club-app</div>
+                  <div class="step-desc">Open de VOKO / Club-Assistent app en ga onderin naar <span class="app-badge-inline">MyClub</span></div>
+                </div>
+              </div>
+
+              <div class="step-card">
+                <div class="step-num s2">2</div>
+                <div class="step-body">
+                  <div class="step-title">Klik op 'Profiel aanpassen'</div>
+                  <div class="step-desc">Druk onder je foto op de knop <span class="app-badge-inline">✏️ Profiel aanpassen</span></div>
+                </div>
+              </div>
+
+              <div class="step-card">
+                <div class="step-num s3">3</div>
+                <div class="step-body">
+                  <div class="step-title">Kies 'Ja, dat wil ik'</div>
+                  <div class="step-desc">Kies bij <em>'Punten laten uitbetalen'</em> voor <span class="app-choice-inline">✔ Ja, dat wil ik</span></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Actie Banner Onderaan Rechts -->
+          <div class="action-callout">
+            <div class="callout-icon">💡</div>
+            <div>
+              <div class="callout-title">Activeer het vandaag nog in de app!</div>
+              <div class="callout-sub">Aan het einde van het seizoen worden je boventallige punten automatisch verrekend.</div>
+            </div>
+          </div>
+
+        </section>
+
+      </main>
+
+      <!-- 4. Status Footer -->
+      <footer class="status-footer">
+        <span>VOKO Digital Signage • Vrijwilligers & Vereniging</span>
+        <span>Trotse vereniging <strong>VOKO Oosterhout</strong> • www.voko-oosterhout.nl</span>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    /* Zelfstandige Viewport Schaling */
+    function fitViewport() {
+      const canvas = document.getElementById('slide-canvas');
+      if (!canvas) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scale = Math.min(vw / 1920, vh / 1080);
+      canvas.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', fitViewport);
+    window.addEventListener('DOMContentLoaded', fitViewport);
+    fitViewport();
+  </script>
+</body>
+</html>
