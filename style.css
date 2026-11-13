@@ -762,6 +762,150 @@ html, body {
 }
 
 /* --------------------------------------------------------------------------
+   5b. Volley Stars Toernooidag Slide (Alle mini-wedstrijden op 1 dia)
+   -------------------------------------------------------------------------- */
+.vs-tournament-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.vs-tournament-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 12px 0;
+  flex: 1;
+  min-height: 0;
+}
+
+.vs-tournament-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vs-level-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.vs-level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  border-bottom: 1.5px solid #f1f5f9;
+}
+
+.vs-level-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #17263c;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vs-level-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.vs-match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.vs-match-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  padding: 3px 8px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 3px solid #cb1d12;
+  line-height: 1.25;
+}
+
+.vs-match-row.is-away {
+  border-left-color: #64748b;
+}
+
+.vs-match-time {
+  font-weight: 800;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.vs-match-teams {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #334155;
+}
+
+.vs-team-voko {
+  font-weight: 800;
+  color: #cb1d12;
+}
+
+.vs-team-opp {
+  font-weight: 600;
+  color: #475569;
+}
+
+.vs-sep {
+  color: #94a3b8;
+  font-weight: 400;
+  margin: 0 3px;
+}
+
+.vs-match-tag {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.vs-media-subbox {
+  margin-top: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.vs-media-subbox strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
    6. Standen Slide Stijlen (standen.html - 4 slides van 10s = 40s totaal)
    -------------------------------------------------------------------------- */
 .stand-stage {

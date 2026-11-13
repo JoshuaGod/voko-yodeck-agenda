@@ -5,7 +5,152 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>VOKO Digital Signage - Programma Komende Week</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261113_1420">
+  <style>
+    /* -------------------------------------------------------------------------
+       Volley Stars Toernooidag Slide (Alle mini-wedstrijden op 1 dia)
+       ------------------------------------------------------------------------- */
+    .vs-tournament-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .vs-tournament-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 12px 0;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .vs-tournament-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .vs-level-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .vs-level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+      border-bottom: 1.5px solid #f1f5f9;
+    }
+
+    .vs-level-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #17263c;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .vs-level-badge {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .vs-match-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .vs-match-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      padding: 3px 8px;
+      background: #f8fafc;
+      border-radius: 6px;
+      border-left: 3px solid #cb1d12;
+      line-height: 1.25;
+    }
+
+    .vs-match-row.is-away {
+      border-left-color: #64748b;
+    }
+
+    .vs-match-time {
+      font-weight: 800;
+      color: #0f172a;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 12.5px;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .vs-match-teams {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #334155;
+    }
+
+    .vs-team-voko {
+      font-weight: 800;
+      color: #cb1d12;
+    }
+
+    .vs-team-opp {
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .vs-sep {
+      color: #94a3b8;
+      font-weight: 400;
+      margin: 0 3px;
+    }
+
+    .vs-match-tag {
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .vs-media-subbox {
+      margin-top: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .vs-media-subbox strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+  </style>
 </head>
 <body>
 
@@ -33,7 +178,7 @@
         </div>
       </div>
 
-      <!-- 3. Wedstrijden Stage (1 wedstrijd per slide) -->
+      <!-- 3. Wedstrijden Stage (Reguliere wedstrijden + Volley Stars toernooidagen) -->
       <main class="comp-stage" id="comp-stage">
         <!-- Wordt dynamisch gevuld via programma.json -->
       </main>
@@ -62,16 +207,16 @@
     }
     window.addEventListener('resize', fitViewport);
     window.addEventListener('DOMContentLoaded', fitViewport);
+    window.addEventListener('load', fitViewport);
     fitViewport();
 
     // -------------------------------------------------------------------------
-    // 2. Dia-Rotatie Logica: 45 seconden totaal voor het programma
+    // 2. Dia-Rotatie Logica: cyclus voor het programma
     // -------------------------------------------------------------------------
     const TOTAL_CYCLE_MS = 45000;
     let currentSlideIndex = 0;
     let rotationTimer = null;
-    let currentItems = [];
-    let slideDurationMs = 7000;
+    let slideDurationMs = 4500;
 
     function startProgressBar(duration) {
       const bar = document.getElementById('comp-progress-bar');
@@ -97,12 +242,23 @@
         }
       });
 
+      const activeSlide = slides[currentSlideIndex];
+      const isVSTournament = activeSlide && activeSlide.classList.contains('vs-tournament-slide');
       const counterEl = document.getElementById('comp-counter');
       if (counterEl) {
-        counterEl.textContent = `Wedstrijd ${currentSlideIndex + 1} van ${slides.length} • 45s cyclus`;
+        if (isVSTournament) {
+          counterEl.textContent = `Dia ${currentSlideIndex + 1} van ${slides.length} • Volley Stars Toernooidag`;
+        } else {
+          counterEl.textContent = `Wedstrijd ${currentSlideIndex + 1} van ${slides.length} • Programma`;
+        }
       }
 
-      startProgressBar(slideDurationMs);
+      // Geef de Volley Stars toernooislide 8,5 seconden leestijd, reguliere wedstrijden dynamisch ~4.5s
+      const currentDuration = isVSTournament ? Math.max(8500, Math.round(slideDurationMs * 1.8)) : slideDurationMs;
+      startProgressBar(currentDuration);
+
+      if (rotationTimer) clearTimeout(rotationTimer);
+      rotationTimer = setTimeout(nextSlide, currentDuration);
     }
 
     function nextSlide() {
@@ -115,20 +271,41 @@
     }
 
     function restartRotation() {
-      if (rotationTimer) clearInterval(rotationTimer);
+      if (rotationTimer) clearTimeout(rotationTimer);
       const slides = document.querySelectorAll('.comp-slide');
       if (slides.length === 0) return;
 
-      // Bereken dynamische tijdsduur per slide zodat de hele cyclus exact 45 sec duurt
       slideDurationMs = Math.max(4000, Math.floor(TOTAL_CYCLE_MS / slides.length));
-      startProgressBar(slideDurationMs);
-      rotationTimer = setInterval(nextSlide, slideDurationMs);
+      showSlide(0);
     }
 
     // -------------------------------------------------------------------------
     // 3. Client-Side Auto-Refresh (fetcht programma.json elke 15 min)
     // -------------------------------------------------------------------------
     let currentFingerprint = '';
+
+    function isVolleyStars(t) {
+      if (!t) return false;
+      return /\bl[1-6]\b/i.test(t) || /volley\s*stars/i.test(t) || /volleystars/i.test(t) || /level/i.test(t) || /cmv/i.test(t);
+    }
+
+    function cleanOpponentName(name) {
+      if (!name) return '';
+      return name
+        .replace(/De Moriaan Symmachia Roosendaal/i, 'De Moriaan')
+        .replace(/Cegelec ZUVO/i, 'ZUVO')
+        .replace(/Volleybalvereniging\s*/i, '')
+        .trim();
+    }
+
+    function getMatchLevel(m) {
+      const s = (m.team || '') + ' ' + (m.competitie || '') + ' ' + (m.team_thuis || '');
+      const match = s.match(/\bl([1-6])\b|level\s*([1-6])/i);
+      if (match) {
+        return 'Level ' + (match[1] || match[2]);
+      }
+      return 'Volley Stars';
+    }
 
     async function fetchProgramma() {
       try {
@@ -145,7 +322,6 @@
         const newFingerprint = JSON.stringify(data.items);
         if (newFingerprint !== currentFingerprint) {
           currentFingerprint = newFingerprint;
-          currentItems = data.items;
           renderProgrammaSlides(data.items);
         }
 
@@ -153,7 +329,7 @@
         if (statusEl) {
           const now = new Date();
           const timeStr = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-          statusEl.textContent = `Bijgewerkt: ${timeStr} • ${data.items.length} wedstrijden komende week`;
+          statusEl.textContent = `Bijgewerkt: ${timeStr} • Programma komende week`;
         }
       } catch (err) {
         console.warn('Programma refresh waarschuwing:', err);
@@ -177,69 +353,244 @@
         return;
       }
 
-      items.forEach((item, i) => {
+      // 1. Splits in reguliere wedstrijden en Volley Stars toernooien per datum
+      const regularItems = [];
+      const vsByDate = {}; // datum -> [items]
+
+      items.forEach(item => {
+        const isVS = item.is_volleystars || isVolleyStars(item.team) || isVolleyStars(item.team_thuis) || isVolleyStars(item.team_uit);
+        if (isVS) {
+          const d = item.datum || 'Toernooidag';
+          if (!vsByDate[d]) vsByDate[d] = [];
+          vsByDate[d].push(item);
+        } else {
+          regularItems.push(item);
+        }
+      });
+
+      // 2. Bouw slide-objecten en sorteer chronologisch
+      const slidesData = [];
+
+      regularItems.forEach(it => {
+        slidesData.push({
+          type: 'regular',
+          iso_datum: it.iso_datum || '',
+          tijd: it.tijd || '',
+          item: it
+        });
+      });
+
+      Object.entries(vsByDate).forEach(([d, matches]) => {
+        matches.sort((a, b) => (a.tijd || '').localeCompare(b.tijd || ''));
+        slidesData.push({
+          type: 'volleystars_tournament',
+          datum: d,
+          iso_datum: matches[0]?.iso_datum || '',
+          tijd: matches[0]?.tijd || '09:00',
+          matches: matches
+        });
+      });
+
+      // Sorteer op datum en tijd
+      slidesData.sort((a, b) => {
+        const c = (a.iso_datum || '').localeCompare(b.iso_datum || '');
+        if (c !== 0) return c;
+        return (a.tijd || '').localeCompare(b.tijd || '');
+      });
+
+      // 3. Render alle slides
+      slidesData.forEach((sData, i) => {
         const slide = document.createElement('article');
         slide.className = 'comp-slide' + (i === 0 ? ' active' : '');
 
-        slide.innerHTML = `
-          <div class="comp-content">
-            <div class="comp-meta-row">
-              <span class="comp-badge-date">${item.datum || ''} ${item.tijd ? '• ' + item.tijd : ''}</span>
-              <span class="comp-badge-league">${item.competitie || 'Competitie'}</span>
-              ${item.thuis ? '<span class="comp-badge-league" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd; font-weight: 700;">🏠 Thuiswedstrijd</span>' : '<span class="comp-badge-league">🚌 Uitwedstrijd</span>'}
-            </div>
+        if (sData.type === 'regular') {
+          const item = sData.item;
+          slide.innerHTML = `
+            <div class="comp-content">
+              <div class="comp-meta-row">
+                <span class="comp-badge-date">${item.datum || ''} ${item.tijd ? '• ' + item.tijd : ''}</span>
+                <span class="comp-badge-league">${item.competitie || 'Competitie'}</span>
+                ${item.thuis ? '<span class="comp-badge-league" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd; font-weight: 700;">🏠 Thuiswedstrijd</span>' : '<span class="comp-badge-league">🚌 Uitwedstrijd</span>'}
+              </div>
 
-            <div class="comp-match-card">
-              <div class="match-teams-row">
-                <!-- Thuisteam -->
-                <div class="match-team team-home">
-                  <span class="match-team-label">Thuis</span>
-                  <div class="match-team-name ${item.thuis ? 'is-voko' : ''}">${item.team_thuis || ''}</div>
+              <div class="comp-match-card">
+                <div class="match-teams-row">
+                  <!-- Thuisteam -->
+                  <div class="match-team team-home">
+                    <span class="match-team-label">Thuis</span>
+                    <div class="match-team-name ${item.thuis ? 'is-voko' : ''}">${item.team_thuis || ''}</div>
+                  </div>
+
+                  <!-- VS Badge met tijd -->
+                  <div class="match-vs-container">
+                    <div class="match-vs-circle">VS</div>
+                    <div class="match-time-tag">${item.tijd || 'T.b.a.'}</div>
+                  </div>
+
+                  <!-- Uitteam -->
+                  <div class="match-team team-away">
+                    <span class="match-team-label">Uit</span>
+                    <div class="match-team-name ${!item.thuis ? 'is-voko' : ''}">${item.team_uit || ''}</div>
+                  </div>
                 </div>
+              </div>
 
-                <!-- VS Badge met tijd -->
-                <div class="match-vs-container">
-                  <div class="match-vs-circle">VS</div>
-                  <div class="match-time-tag">${item.tijd || 'T.b.a.'}</div>
+              <!-- Footer context -->
+              <div class="comp-footer-cards">
+                <div class="comp-info-card">
+                  <span class="comp-info-icon">📍</span>
+                  <div class="comp-info-text">
+                    <span class="comp-info-title">Sporthal & Veld</span>
+                    <span class="comp-info-val">${item.locatie || 'Sporthal'}</span>
+                  </div>
                 </div>
-
-                <!-- Uitteam -->
-                <div class="match-team team-away">
-                  <span class="match-team-label">Uit</span>
-                  <div class="match-team-name ${!item.thuis ? 'is-voko' : ''}">${item.team_uit || ''}</div>
+                <div class="comp-info-card">
+                  <span class="comp-info-icon">🏆</span>
+                  <div class="comp-info-text">
+                    <span class="comp-info-title">Stand & Niveau ${item.team || 'VOKO'}</span>
+                    <span class="comp-info-val">${item.stand_team || item.competitie || 'Competitie'}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Footer context -->
-            <div class="comp-footer-cards">
-              <div class="comp-info-card">
-                <span class="comp-info-icon">📍</span>
-                <div class="comp-info-text">
-                  <span class="comp-info-title">Sporthal & Veld</span>
-                  <span class="comp-info-val">${item.locatie || 'Sporthal'}</span>
-                </div>
-              </div>
-              <div class="comp-info-card">
-                <span class="comp-info-icon">🏆</span>
-                <div class="comp-info-text">
-                  <span class="comp-info-title">Stand & Niveau ${item.team || 'VOKO'}</span>
-                  <span class="comp-info-val">${item.stand_team || item.competitie || 'Competitie'}</span>
+            <!-- Rechterkolom: Team Media Card -->
+            <div class="comp-media-wrapper">
+              <div class="comp-team-card">
+                <div class="comp-team-img-wrap">
+                  <img src="${item.team_foto || ''}" alt="${item.team || ''}" class="comp-team-img">
+                  <div class="comp-team-badge-overlay">${item.team || 'VOKO'}</div>
                 </div>
               </div>
             </div>
-          </div>
+          `;
+        } else {
+          // Volley Stars Toernooidag Slide (Alle mini-wedstrijden van deze dag op 1 dia)
+          slide.classList.add('vs-tournament-slide');
+          const matches = sData.matches;
+          const dayStr = sData.datum;
+          const locCounts = {};
+          matches.forEach(m => {
+            if (m.locatie) locCounts[m.locatie] = (locCounts[m.locatie] || 0) + 1;
+          });
+          const primaryLocatie = Object.keys(locCounts).sort((a, b) => locCounts[b] - locCounts[a])[0] || "Sporthal";
 
-          <!-- Rechterkolom: Team Media Card -->
-          <div class="comp-media-wrapper">
-            <div class="comp-team-card">
-              <div class="comp-team-img-wrap">
-                <img src="${item.team_foto || ''}" alt="${item.team || ''}" class="comp-team-img">
-                <div class="comp-team-badge-overlay">${item.team || 'VOKO'}</div>
+          // Groepeer per niveau (Level 2, Level 3, Level 4, Level 5)
+          const byLevel = {};
+          matches.forEach(m => {
+            const lvl = getMatchLevel(m);
+            if (!byLevel[lvl]) byLevel[lvl] = [];
+            byLevel[lvl].push(m);
+          });
+
+          const sortedLevels = Object.keys(byLevel).sort();
+
+          // Splits levels in 2 kolommen voor een evenwichtige 1080p verdeling
+          const col1Levels = [];
+          const col2Levels = [];
+          let col1Count = 0;
+          let col2Count = 0;
+
+          sortedLevels.forEach(lvl => {
+            const count = byLevel[lvl].length;
+            if (col1Count <= col2Count) {
+              col1Levels.push(lvl);
+              col1Count += count;
+            } else {
+              col2Levels.push(lvl);
+              col2Count += count;
+            }
+          });
+
+          function renderLevelCard(lvl) {
+            const lvlMatches = byLevel[lvl];
+            lvlMatches.sort((a, b) => (a.tijd || '').localeCompare(b.tijd || ''));
+            const startTime = lvlMatches[0]?.tijd || '';
+            const endTime = lvlMatches[lvlMatches.length - 1]?.tijd || '';
+            const timeSpan = startTime && endTime ? `${startTime} - ${endTime}` : startTime;
+
+            const rowsHtml = lvlMatches.map(m => {
+              const isHome = m.thuis;
+              const vokoName = m.team || (isHome ? m.team_thuis : m.team_uit);
+              const oppName = cleanOpponentName(isHome ? m.team_uit : m.team_thuis);
+              const tagIcon = isHome ? '🏠' : '🚌';
+              return `
+                <div class="vs-match-row ${isHome ? 'is-home' : 'is-away'}">
+                  <span class="vs-match-time">${m.tijd || '--:--'}</span>
+                  <div class="vs-match-teams">
+                    ${isHome 
+                      ? `<span class="vs-team-voko">${vokoName}</span><span class="vs-sep">vs</span><span class="vs-team-opp">${oppName}</span>` 
+                      : `<span class="vs-team-opp">${oppName}</span><span class="vs-sep">vs</span><span class="vs-team-voko">${vokoName}</span>`}
+                  </div>
+                  <span class="vs-match-tag" title="${isHome ? 'Thuis' : 'Uit'}">${tagIcon}</span>
+                </div>
+              `;
+            }).join('');
+
+            return `
+              <div class="vs-level-card">
+                <div class="vs-level-header">
+                  <div class="vs-level-title">
+                    <span>🏐</span>
+                    <span>${lvl}</span>
+                  </div>
+                  <span class="vs-level-badge">${lvlMatches.length} wedstrijden • ${timeSpan}</span>
+                </div>
+                <div class="vs-match-list">
+                  ${rowsHtml}
+                </div>
+              </div>
+            `;
+          }
+
+          const col1Html = col1Levels.map(renderLevelCard).join('');
+          const col2Html = col2Levels.map(renderLevelCard).join('');
+
+          const starsPhoto = matches[0]?.team_foto || 'https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817203918422.jpg';
+
+          slide.innerHTML = `
+            <div class="comp-content vs-tournament-content">
+              <div class="comp-meta-row">
+                <span class="comp-badge-date">${dayStr}</span>
+                <span class="comp-badge-league" style="background: #fef3c7; color: #92400e; border-color: #fde68a; font-weight: 800;">⭐ Volley Stars Toernooidag</span>
+                <span class="comp-badge-league">📍 ${primaryLocatie}</span>
+                <span class="comp-badge-league" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd; font-weight: 700;">🏐 ${matches.length} wedstrijden gepland</span>
+              </div>
+
+              <div class="vs-tournament-grid">
+                <div class="vs-tournament-col">${col1Html}</div>
+                <div class="vs-tournament-col">${col2Html}</div>
+              </div>
+
+              <div class="comp-footer-cards">
+                <div class="comp-info-card">
+                  <span class="comp-info-icon">📍</span>
+                  <div class="comp-info-text">
+                    <span class="comp-info-title">Toernooilocatie</span>
+                    <span class="comp-info-val">${primaryLocatie}</span>
+                  </div>
+                </div>
+                <div class="comp-info-card">
+                  <span class="comp-info-icon">⭐</span>
+                  <div class="comp-info-text">
+                    <span class="comp-info-title">VOKO Volley Stars</span>
+                    <span class="comp-info-val">${sortedLevels.join(', ')} • Veel succes allemaal!</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        `;
+
+            <!-- Rechterkolom: Media Card -->
+            <div class="comp-media-wrapper">
+              <div class="comp-team-card">
+                <div class="comp-team-img-wrap">
+                  <img src="${starsPhoto}" alt="Volley Stars" class="comp-team-img">
+                  <div class="comp-team-badge-overlay">Volley Stars</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
 
         stage.appendChild(slide);
       });

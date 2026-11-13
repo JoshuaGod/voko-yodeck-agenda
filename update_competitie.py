@@ -631,6 +631,8 @@ def fetch_nevobo_matches(today: date, poule_cache: dict, nevobo_teams: dict) -> 
                 stand_tekst = team_info.get("stand", "")
                 competitie = stand_tekst.replace(" in ", " • ").split(" • ")[-1] if " in " in stand_tekst else "Nevobo Competitie"
 
+                is_vs = is_volley_stars_team(our_team) or is_volley_stars_team(t_thuis) or is_volley_stars_team(t_uit)
+
                 programma.append({
                     "id": match_id,
                     "team": our_team,
@@ -644,7 +646,8 @@ def fetch_nevobo_matches(today: date, poule_cache: dict, nevobo_teams: dict) -> 
                     "locatie": locatie,
                     "competitie": competitie,
                     "stand_team": stand_tekst,
-                    "bron": "Nevobo RSS"
+                    "bron": "Nevobo RSS",
+                    "is_volleystars": is_vs
                 })
             logging.info(f"{len(programma)} programma-items geladen uit Nevobo RSS.")
     except Exception as e:
