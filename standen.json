@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-14T00:32:54.123607",
+  "updated_at": "2026-11-14T16:26:35.621500",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -107,8 +107,8 @@
           "positie": 7,
           "positie_tekst": "7e",
           "stand_omschrijving": "7e in Heren 3e Klasse D",
-          "gespeeld": 5,
-          "punten": 2,
+          "gespeeld": 6,
+          "punten": 6,
           "standen": [
             {
               "type": "competitie",
@@ -117,8 +117,8 @@
               "display_klasse": "Heren 3e Klasse D",
               "positie": 7,
               "positie_tekst": "7e",
-              "gespeeld": 5,
-              "punten": 2,
+              "gespeeld": 6,
+              "punten": 6,
               "stand_omschrijving": "7e in Heren 3e Klasse D"
             }
           ],
@@ -226,22 +226,22 @@
         {
           "team": "VOKO MA 1",
           "klasse": "Meiden A 1e Klasse C",
-          "positie": 2,
-          "positie_tekst": "2e",
-          "stand_omschrijving": "2e in Meiden A 1e Klasse C",
-          "gespeeld": 6,
-          "punten": 16,
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "1e in Meiden A 1e Klasse C",
+          "gespeeld": 7,
+          "punten": 21,
           "standen": [
             {
               "type": "1e_helft",
               "label": "1e helft",
               "klasse": "Meiden A 1e Klasse C Eerste helft",
               "display_klasse": "Meiden A 1e Klasse C",
-              "positie": 2,
-              "positie_tekst": "2e",
-              "gespeeld": 6,
-              "punten": 16,
-              "stand_omschrijving": "2e in Meiden A 1e Klasse C"
+              "positie": 1,
+              "positie_tekst": "1e",
+              "gespeeld": 7,
+              "punten": 21,
+              "stand_omschrijving": "1e in Meiden A 1e Klasse C"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204049274.jpg",
@@ -253,8 +253,8 @@
           "positie": 2,
           "positie_tekst": "2e",
           "stand_omschrijving": "2e in Meiden A 1e Klasse D",
-          "gespeeld": 5,
-          "punten": 20,
+          "gespeeld": 6,
+          "punten": 24,
           "standen": [
             {
               "type": "1e_helft",
@@ -263,8 +263,8 @@
               "display_klasse": "Meiden A 1e Klasse D",
               "positie": 2,
               "positie_tekst": "2e",
-              "gespeeld": 5,
-              "punten": 20,
+              "gespeeld": 6,
+              "punten": 24,
               "stand_omschrijving": "2e in Meiden A 1e Klasse D"
             }
           ],
@@ -277,7 +277,7 @@
           "positie": 5,
           "positie_tekst": "5e",
           "stand_omschrijving": "5e in Meiden B 1e Klasse D",
-          "gespeeld": 4,
+          "gespeeld": 5,
           "punten": 5,
           "standen": [
             {
@@ -287,7 +287,7 @@
               "display_klasse": "Meiden B 1e Klasse D",
               "positie": 5,
               "positie_tekst": "5e",
-              "gespeeld": 4,
+              "gespeeld": 5,
               "punten": 5,
               "stand_omschrijving": "5e in Meiden B 1e Klasse D"
             }
@@ -301,7 +301,7 @@
           "positie": 4,
           "positie_tekst": "4e",
           "stand_omschrijving": "4e in Meiden B 3e Klasse E",
-          "gespeeld": 4,
+          "gespeeld": 5,
           "punten": 7,
           "standen": [
             {
@@ -311,7 +311,7 @@
               "display_klasse": "Meiden B 3e Klasse E",
               "positie": 4,
               "positie_tekst": "4e",
-              "gespeeld": 4,
+              "gespeeld": 5,
               "punten": 7,
               "stand_omschrijving": "4e in Meiden B 3e Klasse E"
             }
@@ -349,7 +349,7 @@
           "positie": 6,
           "positie_tekst": "6e",
           "stand_omschrijving": "6e in C Jeugd 3e Klasse K",
-          "gespeeld": 6,
+          "gespeeld": 7,
           "punten": 2,
           "standen": [
             {
@@ -359,7 +359,7 @@
               "display_klasse": "C Jeugd 3e Klasse K",
               "positie": 6,
               "positie_tekst": "6e",
-              "gespeeld": 6,
+              "gespeeld": 7,
               "punten": 2,
               "stand_omschrijving": "6e in C Jeugd 3e Klasse K"
             }
