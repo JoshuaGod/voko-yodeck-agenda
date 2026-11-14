@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-14T16:26:35.621500",
+  "updated_at": "2026-11-14T21:10:21.807891",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -11,8 +11,8 @@
           "positie": 9,
           "positie_tekst": "9e",
           "stand_omschrijving": "9e in Heren Derde divisie B",
-          "gespeeld": 3,
-          "punten": 4,
+          "gespeeld": 4,
+          "punten": 6,
           "standen": [
             {
               "type": "competitie",
@@ -21,8 +21,8 @@
               "display_klasse": "Heren Derde divisie B",
               "positie": 9,
               "positie_tekst": "9e",
-              "gespeeld": 3,
-              "punten": 4,
+              "gespeeld": 4,
+              "punten": 6,
               "stand_omschrijving": "9e in Heren Derde divisie B"
             }
           ],
@@ -56,22 +56,22 @@
         {
           "team": "VOKO HS 3",
           "klasse": "Heren 2e Klasse D",
-          "positie": 7,
-          "positie_tekst": "7e",
-          "stand_omschrijving": "7e in Heren 2e Klasse D",
-          "gespeeld": 3,
-          "punten": 6,
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in Heren 2e Klasse D",
+          "gespeeld": 4,
+          "punten": 9,
           "standen": [
             {
               "type": "competitie",
               "label": "Competitie",
               "klasse": "Heren 2e Klasse D",
               "display_klasse": "Heren 2e Klasse D",
-              "positie": 7,
-              "positie_tekst": "7e",
-              "gespeeld": 3,
-              "punten": 6,
-              "stand_omschrijving": "7e in Heren 2e Klasse D"
+              "positie": 6,
+              "positie_tekst": "6e",
+              "gespeeld": 4,
+              "punten": 9,
+              "stand_omschrijving": "6e in Heren 2e Klasse D"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204034137.jpg",
@@ -134,22 +134,22 @@
         {
           "team": "VOKO DS 1",
           "klasse": "Dames Derde divisie B",
-          "positie": 4,
-          "positie_tekst": "4e",
-          "stand_omschrijving": "4e in Dames Derde divisie B",
-          "gespeeld": 5,
-          "punten": 14,
+          "positie": 5,
+          "positie_tekst": "5e",
+          "stand_omschrijving": "5e in Dames Derde divisie B",
+          "gespeeld": 6,
+          "punten": 15,
           "standen": [
             {
               "type": "competitie",
               "label": "Competitie",
               "klasse": "Dames Derde divisie B",
               "display_klasse": "Dames Derde divisie B",
-              "positie": 4,
-              "positie_tekst": "4e",
-              "gespeeld": 5,
-              "punten": 14,
-              "stand_omschrijving": "4e in Dames Derde divisie B"
+              "positie": 5,
+              "positie_tekst": "5e",
+              "gespeeld": 6,
+              "punten": 15,
+              "stand_omschrijving": "5e in Dames Derde divisie B"
             },
             {
               "type": "beker",
