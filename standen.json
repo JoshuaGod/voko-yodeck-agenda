@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-16T01:33:18.812565",
+  "updated_at": "2026-11-17T04:20:27.942792",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -250,22 +250,22 @@
         {
           "team": "VOKO MA 2",
           "klasse": "Meiden A 1e Klasse D",
-          "positie": 2,
-          "positie_tekst": "2e",
-          "stand_omschrijving": "2e in Meiden A 1e Klasse D",
+          "positie": 1,
+          "positie_tekst": "1e",
+          "stand_omschrijving": "1e in Meiden A 1e Klasse D",
           "gespeeld": 6,
-          "punten": 24,
+          "punten": 25,
           "standen": [
             {
               "type": "1e_helft",
               "label": "1e helft",
               "klasse": "Meiden A 1e Klasse D Eerste helft",
               "display_klasse": "Meiden A 1e Klasse D",
-              "positie": 2,
-              "positie_tekst": "2e",
+              "positie": 1,
+              "positie_tekst": "1e",
               "gespeeld": 6,
-              "punten": 24,
-              "stand_omschrijving": "2e in Meiden A 1e Klasse D"
+              "punten": 25,
+              "stand_omschrijving": "1e in Meiden A 1e Klasse D"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
