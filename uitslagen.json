@@ -1,9 +1,31 @@
 {
-  "updated_at": "2026-11-17T04:20:27.942867",
+  "updated_at": "2026-11-18T03:18:40.658384",
   "type": "uitslagen",
   "periode": "afgelopen week + live vandaag",
   "total": 13,
   "items": [
+    {
+      "id": "ORV_7_8_20261117",
+      "team": "VOKO DS 3",
+      "tegenstander": "De Burgst Breda Dames 1",
+      "thuis": false,
+      "team_thuis": "De Burgst Breda Dames 1",
+      "team_uit": "VOKO DS 3",
+      "datum": "Dinsdag 17 november",
+      "iso_datum": "2026-11-17",
+      "tijd": "20.30",
+      "locatie": "Sporthal",
+      "competitie": "ORV 2e Klasse Dames",
+      "stand_team": "3e in 2e Klasse Dames (ORV)",
+      "sets_thuis": 1,
+      "sets_uit": 3,
+      "uitslag": "1 - 3",
+      "winst": true,
+      "setstanden": "25-14, 21-25, 22-25, 17-25",
+      "bron": "ORV Breda",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
+      "is_placeholder": true
+    },
     {
       "id": "1979217",
       "team": "VOKO DS 1",
@@ -266,28 +288,6 @@
       "setstanden": "12-25, 12-25, 9-25, 21-25",
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204030542.jpg",
-      "is_placeholder": true
-    },
-    {
-      "id": "ORV_7_6_20261102",
-      "team": "VOKO DS 3",
-      "tegenstander": "Gilze dames",
-      "thuis": false,
-      "team_thuis": "Gilze dames",
-      "team_uit": "VOKO DS 3",
-      "datum": "Maandag 2 november",
-      "iso_datum": "2026-11-02",
-      "tijd": "20:30",
-      "locatie": "Sporthal De Opperdam",
-      "competitie": "ORV 2e Klasse Dames",
-      "stand_team": "6e in 2e Klasse Dames (ORV)",
-      "sets_thuis": 1,
-      "sets_uit": 3,
-      "uitslag": "1 - 3",
-      "winst": true,
-      "setstanden": "23-25, 25-21, 22-25, 17-25",
-      "bron": "ORV Breda",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
       "is_placeholder": true
     }
   ]
