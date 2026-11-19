@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-18T03:18:40.658298",
+  "updated_at": "2026-11-19T02:56:26.997229",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -253,8 +253,8 @@
           "positie": 1,
           "positie_tekst": "1e",
           "stand_omschrijving": "1e in Meiden A 1e Klasse D",
-          "gespeeld": 6,
-          "punten": 25,
+          "gespeeld": 7,
+          "punten": 29,
           "standen": [
             {
               "type": "1e_helft",
@@ -263,8 +263,8 @@
               "display_klasse": "Meiden A 1e Klasse D",
               "positie": 1,
               "positie_tekst": "1e",
-              "gespeeld": 6,
-              "punten": 25,
+              "gespeeld": 7,
+              "punten": 29,
               "stand_omschrijving": "1e in Meiden A 1e Klasse D"
             }
           ],

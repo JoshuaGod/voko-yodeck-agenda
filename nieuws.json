@@ -1,8 +1,20 @@
 {
-  "updated_at": "2026-11-18T03:18:37.566178",
+  "updated_at": "2026-11-19T02:55:53.558877",
   "filter": "afgelopen 3 maanden",
-  "total": 2,
+  "total": 3,
   "items": [
+    {
+      "titel": "Even voorstellen - Daniëlle Götz",
+      "datum": "18 november 2026",
+      "iso_datum": "2026-11-18T00:00:00",
+      "tekst": "Even voorstellen - Daniëlle Götz is het nieuwe aanspreekpunt voor onze ledenadministratie",
+      "paragrafen": [
+        "Even voorstellen - Daniëlle Götz is het nieuwe aanspreekpunt voor onze ledenadministratie"
+      ],
+      "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=13&np=",
+      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/danielle_20261118221753508.jpg",
+      "is_flyer": false
+    },
     {
       "titel": "Openen van de zaal op de thuisspeeldagen",
       "datum": "3 oktober 2026",

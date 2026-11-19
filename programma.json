@@ -1,27 +1,9 @@
 {
-  "updated_at": "2026-11-18T03:18:40.658842",
+  "updated_at": "2026-11-19T02:56:26.997654",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 33,
+  "total": 32,
   "items": [
-    {
-      "id": "2045147",
-      "team": "VOKO MA 2",
-      "tegenstander": "Volley Tilburg MA 1",
-      "thuis": false,
-      "team_thuis": "Volley Tilburg MA 1",
-      "team_uit": "VOKO MA 2",
-      "datum": "Woensdag 18 november",
-      "iso_datum": "2026-11-18",
-      "tijd": "18:30",
-      "locatie": "Reeshof Indoor Sportcentrum",
-      "competitie": "Meiden A 1e Klasse D Eerste helft",
-      "stand_team": "1e in Meiden A 1e Klasse D Eerste helft",
-      "bron": "Nevobo RSS",
-      "is_volleystars": false,
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
-      "is_placeholder": true
-    },
     {
       "id": "1979477",
       "team": "Ammers HS 3 - VOKO HS 1",

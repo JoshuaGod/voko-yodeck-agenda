@@ -1,9 +1,31 @@
 {
-  "updated_at": "2026-11-18T03:18:40.658384",
+  "updated_at": "2026-11-19T02:56:26.997317",
   "type": "uitslagen",
   "periode": "afgelopen week + live vandaag",
   "total": 13,
   "items": [
+    {
+      "id": "2045147",
+      "team": "VOKO MA 2",
+      "tegenstander": "Volley Tilburg MA 1",
+      "thuis": false,
+      "team_thuis": "Volley Tilburg MA 1",
+      "team_uit": "VOKO MA 2",
+      "datum": "Woensdag 18 november",
+      "iso_datum": "2026-11-18",
+      "tijd": "18:30",
+      "locatie": "Uitwedstrijd",
+      "competitie": "Meiden A 1e Klasse D Eerste helft",
+      "stand_team": "1e in Meiden A 1e Klasse D Eerste helft",
+      "sets_thuis": 1,
+      "sets_uit": 3,
+      "uitslag": "1 - 3",
+      "winst": true,
+      "setstanden": "26-24, 21-25, 14-25, 18-25",
+      "bron": "Nevobo RSS",
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
+      "is_placeholder": true
+    },
     {
       "id": "ORV_7_8_20261117",
       "team": "VOKO DS 3",
@@ -266,28 +288,6 @@
       "setstanden": "26-24, 25-16, 18-25, 25-12",
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204014728.jpg",
-      "is_placeholder": true
-    },
-    {
-      "id": "1984150",
-      "team": "VOKO HS 2",
-      "tegenstander": "Ardito HS 1",
-      "thuis": true,
-      "team_thuis": "VOKO HS 2",
-      "team_uit": "Ardito HS 1",
-      "datum": "Woensdag 11 november",
-      "iso_datum": "2026-11-11",
-      "tijd": "21:00",
-      "locatie": "Sporthal VOKO-Home",
-      "competitie": "Heren 1e Klasse D",
-      "stand_team": "9e in Heren 1e Klasse D",
-      "sets_thuis": 0,
-      "sets_uit": 4,
-      "uitslag": "0 - 4",
-      "winst": false,
-      "setstanden": "12-25, 12-25, 9-25, 21-25",
-      "bron": "Nevobo RSS",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204030542.jpg",
       "is_placeholder": true
     }
   ]
