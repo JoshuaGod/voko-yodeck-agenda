@@ -4,71 +4,124 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>VOKO Digital Signage - Op de agenda</title>
-  <link rel="stylesheet" href="style.css">
+  <title>VOKO Digital Signage - Agenda</title>
+  
+  <!-- Montserrat voor de karakteristieke strakke, zware typografie conform het nieuwe kalender-ontwerp -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000000;
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Vaste 16:9 canvas container met automatische responsieve schaling */
+    #viewport-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background-color: #000000;
+    }
+
+    #slide-canvas {
+      width: 1920px;
+      height: 1080px;
+      min-width: 1920px;
+      min-height: 1080px;
+      max-width: 1920px;
+      max-height: 1080px;
+      position: relative;
+      background: #ffffff url('assets/agenda_bg.jpg') no-repeat center center / cover;
+      transform-origin: center center;
+      overflow: hidden;
+    }
+
+    /* Rode brush-script "Agenda" titel */
+    .agenda-title-img {
+      position: absolute;
+      top: 72px;
+      left: 885px;
+      width: 326px;
+      height: auto;
+      display: block;
+      user-select: none;
+    }
+
+    /* Lijst met de 6 eerstvolgende agenda-items */
+    .agenda-list {
+      position: absolute;
+      top: 300px;
+      left: 885px;
+      right: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 65px;
+    }
+
+    .agenda-item {
+      font-size: 50px;
+      font-weight: 800;
+      color: #000000;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity 0.3s ease;
+    }
+
+    .agenda-item.fade-out {
+      opacity: 0;
+    }
+
+    .agenda-sep {
+      margin: 0 4px;
+      font-weight: 700;
+    }
+
+    /* Subtiele diagnostische timestamp (verborgen voor publiek) */
+    .signage-status {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
   <div id="viewport-scaler">
     <div id="slide-canvas">
       
-      <!-- 1. Bovenbalk met wit VOKO logo -->
-      <header class="top-bar">
-        <img src="assets/voko_wit.png" alt="VOKO Logo" class="voko-logo">
-      </header>
+      <!-- Rode brush-script "Agenda" kop -->
+      <img src="assets/agenda_title.png" alt="Agenda" class="agenda-title-img">
 
-      <!-- 2. Rode Banner met 'Op de agenda:' en subtiele curve onderzijde -->
-      <div class="red-banner-wrapper">
-        <svg class="banner-svg" viewBox="0 0 1920 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="vokoRedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#e42819" />
-              <stop offset="100%" stop-color="#cb1d12" />
-            </linearGradient>
-          </defs>
-          <path d="M 0,0 L 1920,0 L 1920,158 Q 1100,172 450,190 Q 180,192 0,176 Z" fill="url(#vokoRedGrad)" />
-        </svg>
-        <div class="banner-content">
-          <h1 class="banner-title">Op de agenda:</h1>
-        </div>
+      <!-- Dynamische agendalijst (met pre-rendered fallback items ter voorkoming van flikkering) -->
+      <div class="agenda-list" id="agenda-container">
+        <div class="agenda-item"><span class="agenda-date">2 december</span><span class="agenda-sep"> - </span><span class="agenda-title">Pieten training</span></div>
+        <div class="agenda-item"><span class="agenda-date">30 december</span><span class="agenda-sep"> - </span><span class="agenda-title">Oliebollentoernooi</span></div>
+        <div class="agenda-item"><span class="agenda-date">22 januari</span><span class="agenda-sep"> - </span><span class="agenda-title">Pubquiz</span></div>
+        <div class="agenda-item"><span class="agenda-date">27 februari</span><span class="agenda-sep"> - </span><span class="agenda-title">Winter BBQ</span></div>
+        <div class="agenda-item"><span class="agenda-date">21 maart</span><span class="agenda-sep"> - </span><span class="agenda-title">Ouder-kind toernooi</span></div>
+        <div class="agenda-item"><span class="agenda-date">10 april</span><span class="agenda-sep"> - </span><span class="agenda-title">Eindfeest</span></div>
       </div>
 
-      <!-- 3. Hoofdcontent: Agenda links, Bureaukalender rechts -->
-      <main class="content-area">
-        <div class="agenda-column" id="agenda-container">
-          <!-- Fallback items worden direct gerenderd om flikkeringen te voorkomen -->
-          <div class="agenda-row">
-            <div class="agenda-date">2 december</div>
-            <div class="agenda-title">Pietentraining - Volleystars</div>
-          </div>
-          <div class="agenda-row">
-            <div class="agenda-date">30 december</div>
-            <div class="agenda-title">Oliebollen Toernooi</div>
-          </div>
-          <div class="agenda-row">
-            <div class="agenda-date">22 januari</div>
-            <div class="agenda-title">Pubquiz</div>
-          </div>
-          <div class="agenda-row">
-            <div class="agenda-date">27 februari</div>
-            <div class="agenda-title">WinterBBQ</div>
-          </div>
-          <div class="agenda-row">
-            <div class="agenda-date">21 maart</div>
-            <div class="agenda-title">Ouder-Kind Toernooi - Familie</div>
-          </div>
-          <div class="agenda-row">
-            <div class="agenda-date">10 april</div>
-            <div class="agenda-title">Eindfeest</div>
-          </div>
-        </div>
-
-        <div class="calendar-column">
-          <img src="assets/calendar.png" alt="Life is short. Do stuff that matters" class="calendar-image">
-        </div>
-      </main>
-
-      <!-- Subtiele timestamp voor diagnostiek bij narrowcasting inspectie -->
       <div class="signage-status" id="status-indicator">VOKO Digital Signage</div>
 
     </div>
@@ -95,14 +148,32 @@
     fitViewport();
 
     // -------------------------------------------------------------------------
-    // 2. Client-Side Auto-Refresh (elke 15 minuten nieuwe agenda.json ophalen)
+    // 2. Normalisatie van activiteitstitels conform het strakke VOKO slide-ontwerp
+    // -------------------------------------------------------------------------
+    function formatAgendaTitle(rawTitle) {
+      if (!rawTitle) return '';
+      const t = rawTitle.trim();
+
+      if (/pieten\s*training/i.test(t)) return 'Pieten training';
+      if (/oliebollen\s*toernooi/i.test(t)) return 'Oliebollentoernooi';
+      if (/winter\s*bbq/i.test(t)) return 'Winter BBQ';
+      if (/ouder[- ]kind/i.test(t)) return 'Ouder-kind toernooi';
+      if (/pubquiz/i.test(t)) return 'Pubquiz';
+      if (/eindfeest/i.test(t)) return 'Eindfeest';
+
+      // Verwijder eventuele dubbele koppelteken achtervoegsels (zoals "Activiteit - Doelgroep")
+      // tenzij het titel-eigen is
+      return t;
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. Client-Side Auto-Refresh (elke 15 minuten nieuwe agenda.json ophalen)
     // -------------------------------------------------------------------------
     const REFRESH_INTERVAL_MS = 15 * 60 * 1000; // 15 minuten
     let currentAgendaFingerprint = '';
 
     async function fetchAgenda() {
       try {
-        // Cache-buster parameter voorkomt verouderde HTTP cache op de Yodeck player
         const cacheBuster = Date.now();
         const response = await fetch(`agenda.json?v=${cacheBuster}`, {
           headers: { 'Accept': 'application/json' },
@@ -127,7 +198,6 @@
           currentAgendaFingerprint = newFingerprint;
         }
 
-        // Werk statusindicator bij
         const statusEl = document.getElementById('status-indicator');
         if (statusEl) {
           const now = new Date();
@@ -143,37 +213,39 @@
       const container = document.getElementById('agenda-container');
       if (!container) return;
 
-      // Zachte overgang bij updates
-      const existingRows = container.querySelectorAll('.agenda-row');
-      existingRows.forEach(row => row.classList.add('fade-out'));
+      const existingItems = container.querySelectorAll('.agenda-item');
+      existingItems.forEach(el => el.classList.add('fade-out'));
 
       setTimeout(() => {
         container.innerHTML = '';
         items.forEach(item => {
-          const row = document.createElement('div');
-          row.className = 'agenda-row fade-out';
+          const itemEl = document.createElement('div');
+          itemEl.className = 'agenda-item fade-out';
 
-          const dateEl = document.createElement('div');
-          dateEl.className = 'agenda-date';
-          dateEl.textContent = item.datum || '';
+          const dateSpan = document.createElement('span');
+          dateSpan.className = 'agenda-date';
+          dateSpan.textContent = item.datum || '';
 
-          const titleEl = document.createElement('div');
-          titleEl.className = 'agenda-title';
-          titleEl.textContent = item.titel || '';
+          const sepSpan = document.createElement('span');
+          sepSpan.className = 'agenda-sep';
+          sepSpan.textContent = ' - ';
 
-          row.appendChild(dateEl);
-          row.appendChild(titleEl);
-          container.appendChild(row);
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'agenda-title';
+          titleSpan.textContent = formatAgendaTitle(item.titel);
 
-          // Force reflow en fade in
+          itemEl.appendChild(dateSpan);
+          itemEl.appendChild(sepSpan);
+          itemEl.appendChild(titleSpan);
+          container.appendChild(itemEl);
+
           requestAnimationFrame(() => {
-            row.classList.remove('fade-out');
+            itemEl.classList.remove('fade-out');
           });
         });
-      }, 350);
+      }, 300);
     }
 
-    // Direct ophalen bij pagina-initialisatie & periodieke timer instellen
     fetchAgenda();
     setInterval(fetchAgenda, REFRESH_INTERVAL_MS);
   </script>
