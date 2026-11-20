@@ -1,18 +1,37 @@
 {
-  "updated_at": "2026-11-19T02:55:53.558877",
+  "updated_at": "2026-11-20T02:49:57.510080",
   "filter": "afgelopen 3 maanden",
-  "total": 3,
+  "total": 4,
   "items": [
     {
       "titel": "Even voorstellen - Daniëlle Götz",
-      "datum": "18 november 2026",
-      "iso_datum": "2026-11-18T00:00:00",
-      "tekst": "Even voorstellen - Daniëlle Götz is het nieuwe aanspreekpunt voor onze ledenadministratie",
+      "datum": "19 november 2026",
+      "iso_datum": "2026-11-19T00:00:00",
+      "tekst": "Even voorstellen - Daniëlle Götz is het nieuwe aanspreekpunt voor onze ledenadministratie\n\nMijn naam is Daniëlle, ik ben 29 jaar en speel sinds dit seizoen bij dames 1 van VOKO. Na een tijdje niet te hebben gevolleybald, begon het toch weer te kriebelen en kon ik het niet laten om de volleybalschoenen weer uit de kast te trekken.\n\nIk woon inmiddels samen met mijn vriend in Terheijden. Hoewel ik lange tijd in Nijmegen heb gewoond en daar ook heb gevolleybald, liggen mijn roots officieel in Limburg. Een beetje een mix dus!\n\nNaast het volleyballen heb ik sinds dit seizoen ook de ledenadministratie van VOKO op me genomen. Met volleyballen ben ik inmiddels wel vertrouwd, maar de ledenadministratie is voor mij weer een heel nieuwe tak van sport. Een leuke nieuwe uitdaging dus!\n\nHopelijk bij VOKO!",
       "paragrafen": [
-        "Even voorstellen - Daniëlle Götz is het nieuwe aanspreekpunt voor onze ledenadministratie"
+        "Even voorstellen - Daniëlle Götz is het nieuwe aanspreekpunt voor onze ledenadministratie",
+        "Mijn naam is Daniëlle, ik ben 29 jaar en speel sinds dit seizoen bij dames 1 van VOKO. Na een tijdje niet te hebben gevolleybald, begon het toch weer te kriebelen en kon ik het niet laten om de volleybalschoenen weer uit de kast te trekken.",
+        "Ik woon inmiddels samen met mijn vriend in Terheijden. Hoewel ik lange tijd in Nijmegen heb gewoond en daar ook heb gevolleybald, liggen mijn roots officieel in Limburg. Een beetje een mix dus!",
+        "Naast het volleyballen heb ik sinds dit seizoen ook de ledenadministratie van VOKO op me genomen. Met volleyballen ben ik inmiddels wel vertrouwd, maar de ledenadministratie is voor mij weer een heel nieuwe tak van sport. Een leuke nieuwe uitdaging dus!",
+        "Hopelijk bij VOKO!"
       ],
       "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=13&np=",
-      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/danielle_20261118221753508.jpg",
+      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/danielle_20261118221753508.jpg",
+      "is_flyer": false
+    },
+    {
+      "titel": "Grote Club Actie",
+      "datum": "19 november 2026",
+      "iso_datum": "2026-11-19T00:00:00",
+      "tekst": "Met de Grote Club Actie hebben we dit jaar ruim 1800 opgehaald. Dit is een nieuw record!\n\nMede mogelijk gemaakt door de opkomende talenten van de VolleyStars, in het bijzonder Céline Nuij met 77 verkochte loten!\n\nDat moest natuurlijk gevierd worden. De beste verkopers kregen een echte medaille, iedereen een chocolade medaille en Celine een bioscoopbon.\n\nMet het geld kunnen we dit jaar wederom een fantastisch kamp gaan realiseren.",
+      "paragrafen": [
+        "Met de Grote Club Actie hebben we dit jaar ruim 1800 opgehaald. Dit is een nieuw record!",
+        "Mede mogelijk gemaakt door de opkomende talenten van de VolleyStars, in het bijzonder Céline Nuij met 77 verkochte loten!",
+        "Dat moest natuurlijk gevierd worden. De beste verkopers kregen een echte medaille, iedereen een chocolade medaille en Celine een bioscoopbon.",
+        "Met het geld kunnen we dit jaar wederom een fantastisch kamp gaan realiseren."
+      ],
+      "link": "https://www.voko-oosterhout.nl/nieuws/32/?nid=14&np=",
+      "afbeelding": "https://www.voko-oosterhout.nl/back-site/upload-bs/voko-oosterhout/fotoalbums/nieuws/_600x600/photo-2026-11-12-13-28-01_20261119211015978.jpg",
       "is_flyer": false
     },
     {
