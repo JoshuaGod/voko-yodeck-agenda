@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-20T02:50:01.322760",
+  "updated_at": "2026-11-21T00:59:38.865489",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -11,8 +11,8 @@
           "positie": 9,
           "positie_tekst": "9e",
           "stand_omschrijving": "9e in Heren Derde divisie B",
-          "gespeeld": 4,
-          "punten": 6,
+          "gespeeld": 5,
+          "punten": 7,
           "standen": [
             {
               "type": "competitie",
@@ -21,8 +21,8 @@
               "display_klasse": "Heren Derde divisie B",
               "positie": 9,
               "positie_tekst": "9e",
-              "gespeeld": 4,
-              "punten": 6,
+              "gespeeld": 5,
+              "punten": 7,
               "stand_omschrijving": "9e in Heren Derde divisie B"
             }
           ],
@@ -35,8 +35,8 @@
           "positie": 9,
           "positie_tekst": "9e",
           "stand_omschrijving": "9e in Heren 1e Klasse D",
-          "gespeeld": 6,
-          "punten": 9,
+          "gespeeld": 7,
+          "punten": 10,
           "standen": [
             {
               "type": "competitie",
@@ -45,8 +45,8 @@
               "display_klasse": "Heren 1e Klasse D",
               "positie": 9,
               "positie_tekst": "9e",
-              "gespeeld": 6,
-              "punten": 9,
+              "gespeeld": 7,
+              "punten": 10,
               "stand_omschrijving": "9e in Heren 1e Klasse D"
             }
           ],
@@ -83,7 +83,7 @@
           "positie": 5,
           "positie_tekst": "5e",
           "stand_omschrijving": "5e in Heren 3e Klasse C",
-          "gespeeld": 3,
+          "gespeeld": 4,
           "punten": 3,
           "standen": [
             {
@@ -93,7 +93,7 @@
               "display_klasse": "Heren 3e Klasse C",
               "positie": 5,
               "positie_tekst": "5e",
-              "gespeeld": 3,
+              "gespeeld": 4,
               "punten": 3,
               "stand_omschrijving": "5e in Heren 3e Klasse C"
             }
@@ -104,22 +104,22 @@
         {
           "team": "VOKO HS 5",
           "klasse": "Heren 3e Klasse D",
-          "positie": 7,
-          "positie_tekst": "7e",
-          "stand_omschrijving": "7e in Heren 3e Klasse D",
-          "gespeeld": 6,
-          "punten": 6,
+          "positie": 99,
+          "positie_tekst": "-",
+          "stand_omschrijving": "- in Heren 3e Klasse D",
+          "gespeeld": 0,
+          "punten": 0,
           "standen": [
             {
               "type": "competitie",
               "label": "Competitie",
               "klasse": "Heren 3e Klasse D",
               "display_klasse": "Heren 3e Klasse D",
-              "positie": 7,
-              "positie_tekst": "7e",
-              "gespeeld": 6,
-              "punten": 6,
-              "stand_omschrijving": "7e in Heren 3e Klasse D"
+              "positie": 99,
+              "positie_tekst": "-",
+              "gespeeld": 0,
+              "punten": 0,
+              "stand_omschrijving": "- in Heren 3e Klasse D"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/h5-foto-1-1-van-1_20251008202944717.jpg",
@@ -134,9 +134,9 @@
         {
           "team": "VOKO DS 1",
           "klasse": "Dames Derde divisie B",
-          "positie": 5,
-          "positie_tekst": "5e",
-          "stand_omschrijving": "5e in Dames Derde divisie B",
+          "positie": 6,
+          "positie_tekst": "6e",
+          "stand_omschrijving": "6e in Dames Derde divisie B",
           "gespeeld": 6,
           "punten": 15,
           "standen": [
@@ -145,11 +145,11 @@
               "label": "Competitie",
               "klasse": "Dames Derde divisie B",
               "display_klasse": "Dames Derde divisie B",
-              "positie": 5,
-              "positie_tekst": "5e",
+              "positie": 6,
+              "positie_tekst": "6e",
               "gespeeld": 6,
               "punten": 15,
-              "stand_omschrijving": "5e in Dames Derde divisie B"
+              "stand_omschrijving": "6e in Dames Derde divisie B"
             },
             {
               "type": "beker",
