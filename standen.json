@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-21T00:59:38.865489",
+  "updated_at": "2026-11-21T17:11:47.128263",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -59,8 +59,8 @@
           "positie": 6,
           "positie_tekst": "6e",
           "stand_omschrijving": "6e in Heren 2e Klasse D",
-          "gespeeld": 4,
-          "punten": 9,
+          "gespeeld": 5,
+          "punten": 10,
           "standen": [
             {
               "type": "competitie",
@@ -69,8 +69,8 @@
               "display_klasse": "Heren 2e Klasse D",
               "positie": 6,
               "positie_tekst": "6e",
-              "gespeeld": 4,
-              "punten": 9,
+              "gespeeld": 5,
+              "punten": 10,
               "stand_omschrijving": "6e in Heren 2e Klasse D"
             }
           ],
@@ -253,8 +253,8 @@
           "positie": 1,
           "positie_tekst": "1e",
           "stand_omschrijving": "1e in Meiden A 1e Klasse D",
-          "gespeeld": 7,
-          "punten": 29,
+          "gespeeld": 8,
+          "punten": 33,
           "standen": [
             {
               "type": "1e_helft",
@@ -263,8 +263,8 @@
               "display_klasse": "Meiden A 1e Klasse D",
               "positie": 1,
               "positie_tekst": "1e",
-              "gespeeld": 7,
-              "punten": 29,
+              "gespeeld": 8,
+              "punten": 33,
               "stand_omschrijving": "1e in Meiden A 1e Klasse D"
             }
           ],
@@ -277,7 +277,7 @@
           "positie": 5,
           "positie_tekst": "5e",
           "stand_omschrijving": "5e in Meiden B 1e Klasse D",
-          "gespeeld": 5,
+          "gespeeld": 6,
           "punten": 5,
           "standen": [
             {
@@ -287,7 +287,7 @@
               "display_klasse": "Meiden B 1e Klasse D",
               "positie": 5,
               "positie_tekst": "5e",
-              "gespeeld": 5,
+              "gespeeld": 6,
               "punten": 5,
               "stand_omschrijving": "5e in Meiden B 1e Klasse D"
             }
@@ -301,8 +301,8 @@
           "positie": 4,
           "positie_tekst": "4e",
           "stand_omschrijving": "4e in Meiden B 3e Klasse E",
-          "gespeeld": 5,
-          "punten": 7,
+          "gespeeld": 6,
+          "punten": 12,
           "standen": [
             {
               "type": "1e_helft",
@@ -311,8 +311,8 @@
               "display_klasse": "Meiden B 3e Klasse E",
               "positie": 4,
               "positie_tekst": "4e",
-              "gespeeld": 5,
-              "punten": 7,
+              "gespeeld": 6,
+              "punten": 12,
               "stand_omschrijving": "4e in Meiden B 3e Klasse E"
             }
           ],
@@ -349,8 +349,8 @@
           "positie": 6,
           "positie_tekst": "6e",
           "stand_omschrijving": "6e in C Jeugd 3e Klasse K",
-          "gespeeld": 7,
-          "punten": 2,
+          "gespeeld": 8,
+          "punten": 5,
           "standen": [
             {
               "type": "1e_helft",
@@ -359,8 +359,8 @@
               "display_klasse": "C Jeugd 3e Klasse K",
               "positie": 6,
               "positie_tekst": "6e",
-              "gespeeld": 7,
-              "punten": 2,
+              "gespeeld": 8,
+              "punten": 5,
               "stand_omschrijving": "6e in C Jeugd 3e Klasse K"
             }
           ],
