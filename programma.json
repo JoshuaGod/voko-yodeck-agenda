@@ -1,26 +1,9 @@
 {
-  "updated_at": "2026-11-23T02:11:38.456423",
+  "updated_at": "2026-11-24T05:44:46.916223",
   "type": "programma",
   "periode": "komende 7 dagen",
-  "total": 13,
+  "total": 14,
   "items": [
-    {
-      "id": "ORV_7_9_20261123",
-      "team": "VOKO DS 3",
-      "tegenstander": "AKS 1",
-      "thuis": true,
-      "team_thuis": "VOKO DS 3",
-      "team_uit": "AKS 1",
-      "datum": "Maandag 23 november",
-      "iso_datum": "2026-11-23",
-      "tijd": "19.30",
-      "locatie": "Sporthal",
-      "competitie": "ORV 2e Klasse Dames",
-      "stand_team": "3e in 2e Klasse Dames (ORV)",
-      "bron": "ORV Breda",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
-      "is_placeholder": true
-    },
     {
       "id": "1979300",
       "team": "VOKO HS 1",
@@ -236,6 +219,42 @@
       "is_volleystars": false,
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/dames1_2026-2027_20261102103926848747.jpg",
       "is_placeholder": false
+    },
+    {
+      "id": "2035326",
+      "team": "VOKO DS 2",
+      "tegenstander": "Pegasus DS 2",
+      "thuis": false,
+      "team_thuis": "Pegasus DS 2",
+      "team_uit": "VOKO DS 2",
+      "datum": "Dinsdag 1 december",
+      "iso_datum": "2026-12-01",
+      "tijd": "20:00",
+      "locatie": "VOKO-home",
+      "competitie": "Dames 3e Klasse G",
+      "stand_team": "2e in Dames 3e Klasse G",
+      "bron": "Nevobo RSS",
+      "is_volleystars": false,
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204014728.jpg",
+      "is_placeholder": true
+    },
+    {
+      "id": "2035551",
+      "team": "Ammers HS 7 - VOKO HS 4",
+      "tegenstander": "VC WIK Groot",
+      "thuis": false,
+      "team_thuis": "VC WIK Groot",
+      "team_uit": "Ammers HS 7 - VOKO HS 4",
+      "datum": "Dinsdag 1 december",
+      "iso_datum": "2026-12-01",
+      "tijd": "21:00",
+      "locatie": "De Reiger",
+      "competitie": "Nevobo Competitie",
+      "stand_team": "",
+      "bron": "Nevobo RSS",
+      "is_volleystars": false,
+      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204039331.jpg",
+      "is_placeholder": true
     }
   ]
 }
