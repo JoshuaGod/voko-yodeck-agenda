@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-11-24T05:44:46.915858",
+  "updated_at": "2026-11-25T04:46:51.181526",
   "type": "uitslagen",
   "periode": "afgelopen week + live vandaag",
-  "total": 14,
+  "total": 13,
   "items": [
     {
       "id": "ORV_7_9_20261123",
@@ -16,7 +16,7 @@
       "tijd": "19.30",
       "locatie": "Sporthal",
       "competitie": "ORV 2e Klasse Dames",
-      "stand_team": "2e in 2e Klasse Dames (ORV)",
+      "stand_team": "4e in 2e Klasse Dames (ORV)",
       "sets_thuis": 2,
       "sets_uit": 2,
       "uitslag": "2 - 2",
@@ -288,28 +288,6 @@
       "setstanden": "26-24, 21-25, 14-25, 18-25",
       "bron": "Nevobo RSS",
       "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204009442.jpg",
-      "is_placeholder": true
-    },
-    {
-      "id": "ORV_7_8_20261117",
-      "team": "VOKO DS 3",
-      "tegenstander": "De Burgst Breda Dames 1",
-      "thuis": false,
-      "team_thuis": "De Burgst Breda Dames 1",
-      "team_uit": "VOKO DS 3",
-      "datum": "Dinsdag 17 november",
-      "iso_datum": "2026-11-17",
-      "tijd": "20.30",
-      "locatie": "Sporthal",
-      "competitie": "ORV 2e Klasse Dames",
-      "stand_team": "2e in 2e Klasse Dames (ORV)",
-      "sets_thuis": 1,
-      "sets_uit": 3,
-      "uitslag": "1 - 3",
-      "winst": true,
-      "setstanden": "25-14, 21-25, 22-25, 17-25",
-      "bron": "ORV Breda",
-      "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204004538.jpg",
       "is_placeholder": true
     }
   ]
