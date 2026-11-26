@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-25T04:46:51.181454",
+  "updated_at": "2026-11-26T03:56:47.230295",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -11,7 +11,7 @@
           "positie": 10,
           "positie_tekst": "10e",
           "stand_omschrijving": "10e in Heren Derde divisie B",
-          "gespeeld": 5,
+          "gespeeld": 6,
           "punten": 7,
           "standen": [
             {
@@ -21,7 +21,7 @@
               "display_klasse": "Heren Derde divisie B",
               "positie": 10,
               "positie_tekst": "10e",
-              "gespeeld": 5,
+              "gespeeld": 6,
               "punten": 7,
               "stand_omschrijving": "10e in Heren Derde divisie B"
             }
