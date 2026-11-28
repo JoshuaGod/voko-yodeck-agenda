@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-27T03:56:00.328918",
+  "updated_at": "2026-11-28T02:19:42.715802",
   "categories": {
     "heren": {
       "titel": "Standen Heren",
@@ -35,7 +35,7 @@
           "positie": 9,
           "positie_tekst": "9e",
           "stand_omschrijving": "9e in Heren 1e Klasse D",
-          "gespeeld": 7,
+          "gespeeld": 8,
           "punten": 10,
           "standen": [
             {
@@ -45,7 +45,7 @@
               "display_klasse": "Heren 1e Klasse D",
               "positie": 9,
               "positie_tekst": "9e",
-              "gespeeld": 7,
+              "gespeeld": 8,
               "punten": 10,
               "stand_omschrijving": "9e in Heren 1e Klasse D"
             }
@@ -170,22 +170,22 @@
         {
           "team": "VOKO DS 2",
           "klasse": "Dames 3e Klasse G",
-          "positie": 2,
-          "positie_tekst": "2e",
-          "stand_omschrijving": "2e in Dames 3e Klasse G",
-          "gespeeld": 6,
-          "punten": 20,
+          "positie": 3,
+          "positie_tekst": "3e",
+          "stand_omschrijving": "3e in Dames 3e Klasse G",
+          "gespeeld": 7,
+          "punten": 24,
           "standen": [
             {
               "type": "competitie",
               "label": "Competitie",
               "klasse": "Dames 3e Klasse G",
               "display_klasse": "Dames 3e Klasse G",
-              "positie": 2,
-              "positie_tekst": "2e",
-              "gespeeld": 6,
-              "punten": 20,
-              "stand_omschrijving": "2e in Dames 3e Klasse G"
+              "positie": 3,
+              "positie_tekst": "3e",
+              "gespeeld": 7,
+              "punten": 24,
+              "stand_omschrijving": "3e in Dames 3e Klasse G"
             }
           ],
           "team_foto": "https://www.voko-oosterhout.nl/back-site/upload/voko-oosterhout/teams/_800x600/placeholder_20241213222914264_20250817204014728.jpg",
